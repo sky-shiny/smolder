@@ -3,8 +3,6 @@
 import os
 import sys
 
-from codecs import open
-
 from setuptools import setup
 
 if sys.argv[-1] == 'publish':
@@ -31,10 +29,10 @@ REQUIRES = [
   'six >= 1.8.0',
 ]
 
-with open('README.rst', 'r', 'utf-8') as f:
+with open('README.rst', 'r') as f:
   README = f.read()
 
-with open('HISTORY.rst', 'r', 'utf-8') as f:
+with open('HISTORY.rst', 'r') as f:
   HISTORY = f.read()
 
 setup(
