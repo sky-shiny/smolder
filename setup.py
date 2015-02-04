@@ -29,10 +29,10 @@ REQUIRES = [
   'six >= 1.8.0',
 ]
 
-with open('README.rst', 'r') as f:
+with open('README', 'r') as f:
   README = f.read()
 
-with open('HISTORY.rst', 'r') as f:
+with open('HISTORY', 'r') as f:
   HISTORY = f.read()
 
 setup(
