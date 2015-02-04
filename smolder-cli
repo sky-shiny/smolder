@@ -1,0 +1,53 @@
+#! /usr/bin/env python
+import os
+import json
+import sys
+from smolder import run_test, tcp_test, curl_request, http_test, failed_tests, passed_tests
+
+FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
+import logging
+import argh
+from argh import arg, dispatch_command
+logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:%S")
+LOG = logging.getLogger('smolder')
+LOG.setLevel(logging.INFO)
+PARSER = argh.ArghParser()
+
+@dispatch_command
+@arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))
+@arg('testfile', default=os.environ.get('TEST_FILE'), metavar='TEST_FILE', help='The json file that details the tests to execute')
+@arg('--force', help='Use http methods that can potentially change data (PUT, POST, DELETE, etc. ie !GET)', default=False)
+def smolder(**kwargs):
+  """ Parse CLI args and if valid dispatch to lower methods """
+  # Load the test specification file, parse the json and create a 'tests' object
+  try:
+    myfile = open(kwargs['testfile'])
+    test_json = json.load(myfile)
+    tests = test_json['tests']
+  except IOError:
+    LOG.exception("Couldn't open test file {0}".format(kwargs['testfile']))
+    raise
+  except ValueError:
+    LOG.exception("Invalid data in file {0}".format(kwargs['testfile']))
+    raise
+  except KeyError:
+    LOG.exception("No tests defined in {0}".format(kwargs['testfile']))
+    raise
+  if len(tests) == 0:
+    LOG.error("There are no tests configured in {0}: You MUST specify at least one test".format(kwargs['testfile']))
+    sys.exit(2)
+
+  LOG.debug("Beginning default TCP test")
+  tcp_test(str(kwargs['host']), tests[0]['port'])
+  LOG.debug("Passed default TCP test")
+  LOG.info("Preparing to execute {0} tests".format(len(tests)))
+  # Iterate through all the tests
+
+  for test in test_json['tests']:
+    run_test(test, str(kwargs['host']), kwargs['force'])
+
+  if failed_tests > 0:
+    LOG.info("FOUND {0} FAILURES IN {1} TESTS".format(str(failed_tests), str(passed_tests + failed_tests)))
+    sys.exit(1)
+  else:
+    LOG.info("ALL TESTS PASSED!")

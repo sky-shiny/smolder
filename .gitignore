@@ -1,0 +1,5 @@
+smolder.egg-info/
+dist/
+build/
+*.pyc
+requirements.txt

@@ -1,0 +1,42 @@
+
+Example Usage
+=============
+
+smolder 10.0.0.1 example_test.json --force
+
+
+What it does
+============
+
+It wraps the "requests" python library inserting headers, authentication etc and
+making your requests to a host, provided as a command line argument.
+
+It checks the response from the server for expected status codes and
+body/header/json dpath contents and passes or fails the test based on definition.
+
+Can be used to specify and pass/fail on performance of api response.
+
+Copy/paste curl equivalent of the request is included in the output for
+convenience.
+
+See the example_test.json file for a subset of the the tests
+available.
+
+Easily introduced into a CI/CD deploy pipeline.
+
+Without --force, any API requests that are not GET's will be skipped as a safety
+mechanism to ensure we're not overwriting or creating data unconciously.
+
+
+Installation
+============
+
+sudo python setup.py install
+
+
+Thanks
+======
+
+https://github.com/njsaunders
+https://github.com/nielsdraaisma
+https://github.com/lotia
