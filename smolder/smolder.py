@@ -132,7 +132,7 @@ def http_test(test, host, force):
     elif test['validate_cert'] == "True":
       args['verify'] = True
     else:
-      LOG.error("validate_cert must be 'True' or 'False'")
+      LOG.error("validate_cert must be 'True', 'False' or absent (defaults to False)")
       sys.exit(7)
   if not args['verify']:
     requests.packages.urllib3.disable_warnings()
