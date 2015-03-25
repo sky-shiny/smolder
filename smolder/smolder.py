@@ -71,6 +71,8 @@ def run_test(test, host, force):
     tcp_test(host, test['port'])
   elif test['protocol'].lower() == 'http':
     http_test(test, host, force)
+  elif test['protocol'].lower() == 'https':
+    http_test(test, host, force)
   elif test['protocol'].lower() == 'noop':
     noop_test()
 
