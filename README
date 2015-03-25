@@ -31,7 +31,9 @@ mechanism to ensure we're not overwriting or creating data unconciously.
 Installation
 ============
 
-sudo python setup.py install
+git clone gitlab@git.bskyb.com/lsd/smolder.git
+cd smolder
+pip install .
 
 
 Thanks
