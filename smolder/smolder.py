@@ -19,6 +19,7 @@ import argh
 from argh import arg, dispatch_command
 logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:%S")
 logging.getLogger('requests').setLevel(logging.ERROR)
+logging.getLogger('urllib3').setLevel(logging.ERROR)
 LOG = logging.getLogger('smolder')
 LOG.setLevel(logging.INFO)
 PARSER = argh.ArghParser()
@@ -122,8 +123,14 @@ def http_test(test, host, force):
   args = {}
   args['url'] = url
 
-  if test['protocol'] == 'https':
+  if 'protocol' in test and test['protocol'] == 'https':
     args['verify'] = False
+
+  if 'verify_ssl' in test:
+    args['verify'] = test['verify_ssl']
+
+  if not args['verify']:
+    requests.packages.urllib3.disable_warnings()
 
   # Check we have request headers
   if 'request_headers' in test:
