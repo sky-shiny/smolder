@@ -122,6 +122,9 @@ def http_test(test, host, force):
   args = {}
   args['url'] = url
 
+  if test['protocol'] == 'https':
+    args['verify'] = False
+
   # Check we have request headers
   if 'request_headers' in test:
     headers = test['request_headers']
