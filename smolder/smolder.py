@@ -123,9 +123,9 @@ def http_test(test, host, force):
   args = {}
   args['url'] = url
 
+  #SSL certificate management
   if 'protocol' in test and test['protocol'] == 'https':
     args['verify'] = False
-    LOG.debug("Verify: {0}".format(args['verify']))
   if 'validate_cert' in test:
     if test['validate_cert'] == "False":
       args['verify'] = False
@@ -134,10 +134,6 @@ def http_test(test, host, force):
     else:
       LOG.error("validate_cert must be 'True' or 'False'")
       sys.exit(7)
-    LOG.debug("Verify: {0}".format(args['verify']))
-
-  LOG.debug("Verify: {0}".format(args['verify']))
-
   if not args['verify']:
     requests.packages.urllib3.disable_warnings()
 
