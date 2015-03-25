@@ -126,8 +126,8 @@ def http_test(test, host, force):
   if 'protocol' in test and test['protocol'] == 'https':
     args['verify'] = False
 
-  if 'verify_ssl' in test:
-    args['verify'] = test['verify_ssl']
+  if 'validate_cert' in test:
+    args['verify'] = test['validate_cert']
 
   if not args['verify']:
     requests.packages.urllib3.disable_warnings()
