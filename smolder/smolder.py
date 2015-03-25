@@ -228,7 +228,10 @@ def http_test(test, host, force):
     LOG.debug("Ensuring '{0}' appears in the response body".format(required_text))
     my_re = re.search(required_text, req.content)
     if my_re is None:
-      LOG.info("    Body: {0}".format(req.content))
+      if 'show_body' in test:
+        LOG.info("    Body: {0}".format(req.content))
+      else:
+        LOG.debug("    Body: {0}".format(req.content))
       fail_test("Body contains \"{0}\"".format(required_text))
     else:
       pass_test("Body contains \"{0}\"".format(required_text))
