@@ -38,6 +38,7 @@ username (optional): basic auth username
 password (optional): basic auth password
 cookie (optional): cookie object to append to requests instansiation
 data (optional): data for POST or PUT.
+verify_ssl (optional): Should we verify the ssl cert when making an https request?  Defaults to False.
 
 Response Tests
 ==============
