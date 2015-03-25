@@ -1,10 +1,3 @@
-
-Example Usage
-=============
-
-smolder 10.0.0.1 example_test.json --force
-
-
 What it does
 ============
 
@@ -19,9 +12,6 @@ Can be used to specify and pass/fail on performance of api response.
 Copy/paste curl equivalent of the request is included in the output for
 convenience.
 
-See the example_test.json file for a subset of the the tests
-available.
-
 Easily introduced into a CI/CD deploy pipeline.
 
 Without --force, any API requests that are not GET's will be skipped as a safety
@@ -35,6 +25,30 @@ git clone gitlab@git.bskyb.com/lsd/smolder.git
 cd smolder
 pip install .
 
+Request Options
+===============
+
+name (required): name for the test
+protocol (required): tcp, http, https or noop
+port (required): 0 - 65535
+url (required): /url/path/to/resource.json
+method (optional): GET, POST, PUT, DELETE, OPTION
+request_headers (recommended): header object to append to requests instansiation.  The host header is probably the most likely requirement.
+username (optional): basic auth username
+password (optional): basic auth password
+cookie (optional): cookie object to append to requests instansiation
+data (optional): data for POST or PUT.
+
+Response Tests
+==============
+
+response_body_contains: PASS if string in body.
+response_body_doesnt_contain: FAIL if string in body.
+show_body: output the body to stdout.
+response_max_time_ms: FAIL if response takes longer than int.
+response_json_contains: FAIL if json response at path doesn't match.
+expect_status_code: FAIL if response status code differs from int.
+response_redirect: FAIL if string not in response location header.
 
 Thanks
 ======

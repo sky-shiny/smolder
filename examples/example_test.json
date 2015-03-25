@@ -27,7 +27,7 @@
         "Host": "bskyb.com",
         "content-type": "Application/json"
       },
-      "expect_status_code": "401"
+      "expect_status_code": 401
     }
   ]
 }

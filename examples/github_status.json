@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "name": "Github Status",
+      "protocol": "http",
+      "port": 80,
+      "url": "/",
+      "method": "get",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library"
+      },
+      "expect_status_code": 301,
+      "response_redirect": "https://status.github.com/"
+    },
+    {
+      "name": "Github Status",
+      "protocol": "https",
+      "port": 443,
+      "url": "/",
+      "method": "get",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library"
+      },
+      "response_body_contains": "All systems operational",
+      "response_max_time_ms": 200
+    }
+  ]
+}

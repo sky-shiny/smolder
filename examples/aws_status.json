@@ -1,0 +1,15 @@
+{
+  "tests": [
+    {
+      "name": "AWS Status",
+      "protocol": "http",
+      "port": 80,
+      "url": "/",
+      "method": "get",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library"
+      },
+      "response_body_contains": "Service is operating normally"
+    }
+  ]
+}
