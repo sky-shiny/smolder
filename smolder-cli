@@ -2,7 +2,9 @@
 import os
 import json
 import sys
-from smolder import run_test, tcp_test, curl_request, http_test, failed_tests, passed_tests
+import smolder
+
+#from smolder import run_test, tcp_test, curl_request, http_test, failed_tests, passed_tests
 
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
 import logging
@@ -17,7 +19,7 @@ PARSER = argh.ArghParser()
 @arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))
 @arg('testfile', default=os.environ.get('TEST_FILE'), metavar='TEST_FILE', help='The json file that details the tests to execute')
 @arg('--force', help='Use http methods that can potentially change data (PUT, POST, DELETE, etc. ie !GET)', default=False)
-def smolder(**kwargs):
+def smolder_cli(**kwargs):
   """ Parse CLI args and if valid dispatch to lower methods """
   # Load the test specification file, parse the json and create a 'tests' object
   try:
@@ -38,16 +40,17 @@ def smolder(**kwargs):
     sys.exit(2)
 
   LOG.debug("Beginning default TCP test")
-  tcp_test(str(kwargs['host']), tests[0]['port'])
+  smolder.tcp_test(str(kwargs['host']), tests[0]['port'])
   LOG.debug("Passed default TCP test")
   LOG.info("Preparing to execute {0} tests".format(len(tests)))
   # Iterate through all the tests
 
   for test in test_json['tests']:
-    run_test(test, str(kwargs['host']), kwargs['force'])
+    smolder.run_test(test, str(kwargs['host']), kwargs['force'])
 
-  if failed_tests > 0:
-    LOG.info("FOUND {0} FAILURES IN {1} TESTS".format(str(failed_tests), str(passed_tests + failed_tests)))
+  reload(smolder)
+  if smolder.failed_tests > 0:
+    LOG.info("FOUND {0} FAILURES IN {1} TESTS".format(str(smolder.failed_tests), str(smolder.passed_tests + smolder.failed_tests)))
     sys.exit(1)
   else:
     LOG.info("ALL TESTS PASSED!")
