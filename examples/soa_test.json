@@ -10,6 +10,7 @@
         "User-Agent": "Smolder smoke test library",
         "Host": "android.sky.com"
       },
+      "validate_cert": "False",
       "expect_status_code": 405
     }
   ]
