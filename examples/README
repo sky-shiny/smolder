@@ -10,3 +10,7 @@ smolder-cli status.aws.amazon.com aws_status.json
 This example tests an RFC1928 address by trying to PUT data to it and verifying the result. (This won't work out of the box: it tests some random API)
 
 smolder-cli 10.0.0.1 example_test.json --force
+
+This example tests an https endpoint which has an issue with it's certificate:
+
+smolder-cli 173.223.194.219 examples/soa_test.json

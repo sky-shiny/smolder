@@ -203,16 +203,23 @@ def http_test(test, host, force):
   duration_ms = end - start
   LOG.info('Request took {0}ms'.format(duration_ms))
 
-  if 'response_headers' in test:
-    for header in test['response_headers']:
+  if 'response_header_values' in test:
+    for header in test['response_header_values']:
       if header not in req.headers:
         fail_test("Expected header {0} not present".format(header))
-      elif req.headers[header] != test['response_headers'][header]:
+      elif req.headers[header] != test['response_header_values'][header]:
         fail_test("Expecting {0}: {1}, got {2}: {3}".format(
           header,
-          test['response_headers'][header],
+          test['response_header_values'][header],
           header,
           req.headers[header]))
+      else:
+        pass_test("Header {0}: {1} present".format(header, req.headers[header]))
+
+  if 'response_headers_present' in test:
+    for header in test['response_headers_present']:
+      if header not in req.headers:
+        fail_test("Expected header {0} not present".format(header))
       else:
         pass_test("Header {0}: {1} present".format(header, req.headers[header]))
 
