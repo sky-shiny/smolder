@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Smolder by sky-shiny</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Smolder</h1>
+        <p>Simple rest smoke testing.</p>
+
+        <p class="view"><a href="https://github.com/sky-shiny/smolder">View the Project on GitHub <small>sky-shiny/smolder</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/sky-shiny/smolder/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/sky-shiny/smolder/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/sky-shiny/smolder">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="what-it-does" class="anchor" href="#what-it-does" aria-hidden="true"><span class="octicon octicon-link"></span></a>What it does</h1>
+
+<p>It wraps the "requests" python library inserting headers, authentication etc and
+making your requests to a host: provided as a command line argument.</p>
+
+<p>It checks the response from the server for expected status-codes/body/header/dpath-json 
+contents and passes or fails the test based on definition.</p>
+
+<p>Can be used to specify and pass/fail on performance of api response.</p>
+
+<p>A copy/paste curl equivalent of the request is included in the output for
+convenience.</p>
+
+<p>Easily introduced into a CI/CD deploy pipeline.</p>
+
+<p>Without --force, any API requests that are not GET's will be skipped as a safety
+mechanism to ensure we're not overwriting or creating data unconciously.  </p>
+
+<h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<p>Virtualenv recommended.</p>
+
+<pre><code>git clone git@github.com:sky-shiny/smolder.git
+cd smolder
+pip install . 
+</code></pre>
+
+<h1>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h1>
+
+<p><a href="examples/README.md">Example readme</a></p>
+
+<h1>
+<a id="request" class="anchor" href="#request" aria-hidden="true"><span class="octicon octicon-link"></span></a>Request</h1>
+
+<table>
+<thead>
+<tr>
+<th>Request Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name *</td>
+<td>name for the test</td>
+</tr>
+<tr>
+<td>protocol *</td>
+<td>tcp, http, https or noop</td>
+</tr>
+<tr>
+<td>port *</td>
+<td>0 - 65535</td>
+</tr>
+<tr>
+<td>url</td>
+<td>/url/path/to/resource.json</td>
+</tr>
+<tr>
+<td>method</td>
+<td>GET, POST, PUT, DELETE, OPTION</td>
+</tr>
+<tr>
+<td>request_headers (recommended)</td>
+<td>header object to append to requests instansiation.  The host header is probably the most likely requirement.</td>
+</tr>
+<tr>
+<td>username</td>
+<td>basic auth username</td>
+</tr>
+<tr>
+<td>password</td>
+<td>basic auth password</td>
+</tr>
+<tr>
+<td>cookie</td>
+<td>cookie object to append to requests instansiation</td>
+</tr>
+<tr>
+<td>data</td>
+<td>data for POST or PUT.</td>
+</tr>
+<tr>
+<td>validate_cert</td>
+<td>Should we verify the ssl cert when making an https request?  Defaults to False.</td>
+</tr>
+</tbody>
+</table>
+
+<p>*: required</p>
+
+<h1>
+<a id="response" class="anchor" href="#response" aria-hidden="true"><span class="octicon octicon-link"></span></a>Response</h1>
+
+<table>
+<thead>
+<tr>
+<th>Response Test Options</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>response_body_contains</td>
+<td>PASS if string in body.</td>
+</tr>
+<tr>
+<td>response_body_doesnt_contain</td>
+<td>FAIL if string in body.</td>
+</tr>
+<tr>
+<td>response_max_time_ms</td>
+<td>FAIL if response takes longer than int.</td>
+</tr>
+<tr>
+<td>response_json_contains</td>
+<td>FAIL if json response at path doesn't match.</td>
+</tr>
+<tr>
+<td>expect_status_code</td>
+<td>FAIL if response status code differs from int.</td>
+</tr>
+<tr>
+<td>response_redirect</td>
+<td>FAIL if string not in response location header.</td>
+</tr>
+<tr>
+<td>response_headers</td>
+<td>FAIL if the headers received from the request doesn't contain the list of headers provided.</td>
+</tr>
+<tr>
+<td>response_header_values</td>
+<td>FAIL if the <em>values</em> of the headers in the test don't match the values in the response.</td>
+</tr>
+<tr>
+<td>show_body</td>
+<td>output the body to stdout.</td>
+</tr>
+</tbody>
+</table>
+
+<h1>
+<a id="thanks" class="anchor" href="#thanks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thanks</h1>
+
+<p><a href="https://github.com/njsaunders">https://github.com/njsaunders</a></p>
+
+<p><a href="https://github.com/nielsdraaisma">https://github.com/nielsdraaisma</a></p>
+
+<p><a href="https://github.com/lotia">https://github.com/lotia</a></p>
+
+<p><a href="https://github.com/casibbald">https://github.com/casibbald</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/sky-shiny">sky-shiny</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
