@@ -126,16 +126,16 @@ def http_test(test, host, force):
   #SSL certificate management
   if 'protocol' in test and test['protocol'] == 'https':
     args['verify'] = False
-  if 'validate_cert' in test:
-    if test['validate_cert'] == "False":
-      args['verify'] = False
-    elif test['validate_cert'] == "True":
-      args['verify'] = True
-    else:
-      LOG.error("validate_cert must be 'True', 'False' or absent (defaults to False)")
-      sys.exit(7)
-  if not args['verify']:
-    requests.packages.urllib3.disable_warnings()
+    if 'validate_cert' in test:
+      if test['validate_cert'] == "False":
+        args['verify'] = False
+      elif test['validate_cert'] == "True":
+        args['verify'] = True
+      else:
+        LOG.error("validate_cert must be 'True', 'False' or absent (defaults to False)")
+        sys.exit(7)
+    if not args['verify']:
+      requests.packages.urllib3.disable_warnings()
 
   # Check we have request headers
   if 'request_headers' in test:

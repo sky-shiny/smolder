@@ -1,0 +1,101 @@
+{
+  "tests": [
+    {
+      "name": "AWS Status",
+      "protocol": "http",
+      "port": 80,
+      "url": "/",
+      "method": "get",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library"
+      },
+      "response_body_contains": "Service is operating normally"
+    },
+    {
+      "name": "Status",
+      "protocol": "http",
+      "port": 80,
+      "url": "/status",
+      "method": "get",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library"
+      },
+      "response_body_contains": "HEALTHY"
+    },
+    {
+      "name": "Finalize verify requires auth",
+      "protocol": "http",
+      "port": 80,
+      "url": "/downloads/539e92c0-06a1-11e4-9191-0800200c9a66/finalise",
+      "method": "put",
+      "data": {
+        "downloadTransaction": {
+          "status": "COMPLETE"
+        }
+      },
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library",
+        "Host": "bskyb.com",
+        "content-type": "Application/json"
+      },
+      "expect_status_code": 401
+    },
+    {
+      "name": "Github Status",
+      "protocol": "http",
+      "port": 80,
+      "url": "/",
+      "method": "get",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library"
+      },
+      "expect_status_code": 301,
+      "response_redirect": "https://status.github.com/"
+    },
+    {
+      "name": "Github Status",
+      "protocol": "https",
+      "port": 443,
+      "url": "/",
+      "method": "get",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library"
+      },
+      "response_body_contains": "All systems operational",
+      "response_max_time_ms": 200
+    },
+    {
+      "name": "Download API (Transactions endpoint)",
+      "protocol": "https",
+      "port": 443,
+      "url": "/download/transactions",
+      "method": "post",
+      "data": {
+        "downloadTransaction": {
+          "status": "COMPLETE"
+        }
+      },
+      "validate_cert": "False",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library",
+        "Host": "p.sky.com",
+        "Content-Type": "application/vnd.initiatetransaction.v1+json"
+      },
+      "expect_status_code": 200,
+      "response_headers_present": ["x-skyint-requestid"]
+    },
+    {
+      "name": "Acquire Token (SSO/OAUTH/SAML)",
+      "protocol": "https",
+      "port": 443,
+      "url": "/auth/tokens",
+      "method": "get",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library",
+        "Host": "android.sky.com"
+      },
+      "validate_cert": "False",
+      "expect_status_code": 405
+    }
+  ]
+}
