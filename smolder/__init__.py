@@ -15,4 +15,4 @@ __author__ = 'Max Cameron'
 __license__ = 'BSD License'
 __copyright__ = 'Copyright 2015 Maxwell Cameron'
 
-from .smolder import run_test, tcp_test, curl_request, http_test, failed_tests, passed_tests
+from .smolder import run_test, tcp_test, curl_request, http_test, noop_test, failed_tests, passed_tests
