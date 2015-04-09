@@ -28,8 +28,15 @@ cd smolder
 pip install . 
 ```
 
+Examples
+========
+[Example readme](examples/README.md)
+
+Request
+=======
+
 Request Option | Description
------------------------------
+---------------|-------------
 name \* | name for the test
 protocol \* | tcp, http, https or noop
 port \* | 0 - 65535
@@ -44,8 +51,11 @@ validate_cert | Should we verify the ssl cert when making an https request?  Def
 
 *: required
 
+Response
+========
+
 Response Test Options | Description
-----------------------------------------------------
+----------------------|-----------------------------
 response_body_contains | PASS if string in body.
 response_body_doesnt_contain | FAIL if string in body.
 response_max_time_ms | FAIL if response takes longer than int.
