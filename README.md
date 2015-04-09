@@ -70,6 +70,9 @@ Thanks
 ======
 
 https://github.com/njsaunders
+
 https://github.com/nielsdraaisma
+
 https://github.com/lotia
+
 https://github.com/casibbald
