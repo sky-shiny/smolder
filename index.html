@@ -29,12 +29,17 @@
       </header>
       <section>
         <h1>
+<a id="smolder" class="anchor" href="#smolder" aria-hidden="true"><span class="octicon octicon-link"></span></a>smolder</h1>
+
+<p><a href="https://travis-ci.org/sky-shiny/smolder"><img src="https://travis-ci.org/sky-shiny/smolder.svg" alt="Build Status"></a></p>
+
+<h1>
 <a id="what-it-does" class="anchor" href="#what-it-does" aria-hidden="true"><span class="octicon octicon-link"></span></a>What it does</h1>
 
 <p>It wraps the "requests" python library inserting headers, authentication etc and
 making your requests to a host: provided as a command line argument.</p>
 
-<p>It checks the response from the server for expected status-codes/body/header/dpath-json 
+<p>It checks the response from the server for expected status-codes/body/header/dpath-json
 contents and passes or fails the test based on definition.</p>
 
 <p>Can be used to specify and pass/fail on performance of api response.</p>
@@ -45,7 +50,7 @@ convenience.</p>
 <p>Easily introduced into a CI/CD deploy pipeline.</p>
 
 <p>Without --force, any API requests that are not GET's will be skipped as a safety
-mechanism to ensure we're not overwriting or creating data unconciously.  </p>
+mechanism to ensure we're not overwriting or creating data unconciously.</p>
 
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
@@ -54,13 +59,13 @@ mechanism to ensure we're not overwriting or creating data unconciously.  </p>
 
 <pre><code>git clone git@github.com:sky-shiny/smolder.git
 cd smolder
-pip install . 
+pip install .
 </code></pre>
 
 <h1>
 <a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h1>
 
-<p><a href="https://github.com/sky-shiny/smolder/blob/master/examples/README.md">Example readme</a></p>
+<p><a href="examples/README.md">Example readme</a></p>
 
 <h1>
 <a id="request" class="anchor" href="#request" aria-hidden="true"><span class="octicon octicon-link"></span></a>Request</h1>
