@@ -11,7 +11,6 @@ import requests
 from requests.auth import HTTPBasicAuth
 import random
 from retrying import retry
-from fabric.api import env, run
 
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
 import logging
