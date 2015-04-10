@@ -1,0 +1,78 @@
+What it does
+============
+
+It wraps the "requests" python library inserting headers, authentication etc and
+making your requests to a host: provided as a command line argument.
+
+It checks the response from the server for expected status-codes/body/header/dpath-json 
+contents and passes or fails the test based on definition.
+
+Can be used to specify and pass/fail on performance of api response.
+
+A copy/paste curl equivalent of the request is included in the output for
+convenience.
+
+Easily introduced into a CI/CD deploy pipeline.
+
+Without --force, any API requests that are not GET's will be skipped as a safety
+mechanism to ensure we're not overwriting or creating data unconciously.  
+
+Installation
+============
+
+Virtualenv recommended.
+
+```
+git clone git@github.com:sky-shiny/smolder.git
+cd smolder
+pip install . 
+```
+
+Examples
+========
+[Example readme](examples/README.md)
+
+Request
+=======
+
+Request Option | Description
+---------------|-------------
+name \* | name for the test
+protocol \* | tcp, http, https or noop
+port \* | 0 - 65535
+url | /url/path/to/resource.json
+method | GET, POST, PUT, DELETE, OPTION
+request_headers (recommended) |  header object to append to requests instansiation.  The host header is probably the most likely requirement.
+username | basic auth username
+password | basic auth password
+cookie | cookie object to append to requests instansiation
+data | data for POST or PUT.
+validate_cert | Should we verify the ssl cert when making an https request?  Defaults to False.
+
+*: required
+
+Response
+========
+
+Response Test Options | Description
+----------------------|-----------------------------
+response_body_contains | PASS if string in body.
+response_body_doesnt_contain | FAIL if string in body.
+response_max_time_ms | FAIL if response takes longer than int.
+response_json_contains | FAIL if json response at path doesn't match.
+expect_status_code | FAIL if response status code differs from int.
+response_redirect | FAIL if string not in response location header.
+response_headers | FAIL if the headers received from the request doesn't contain the list of headers provided. 
+response_header_values | FAIL if the *values* of the headers in the test don't match the values in the response.
+show_body | output the body to stdout.
+
+Thanks
+======
+
+https://github.com/njsaunders
+
+https://github.com/nielsdraaisma
+
+https://github.com/lotia
+
+https://github.com/casibbald
