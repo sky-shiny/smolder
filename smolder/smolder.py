@@ -95,7 +95,7 @@ def tcp_test(host, port):
     my_sock.close()
     LOG.debug("    Waiting for {0}:{1} to accept a connection".format(host, port))
     raise
-  except Exception, error:
+  except Exception as error:
     LOG.debug("TCP test failed: {0}".format(error.message))
     raise
 
@@ -103,7 +103,7 @@ def curl_request(url, method, headers, data):
   # construct the curl command from request
   command = 'curl -v -s -o /dev/null {headers} {data} -X {method} "{uri}"'
   if headers != '':
-    header_list = ['"{0}: {1}"'.format(k, v) for k, v in headers.items()]
+    header_list = ['"{0}: {1}"'.format(k, v) for k, v in list(headers.items())]
     header = "-H " + (" -H ".join(header_list))
   else:
     header = headers
@@ -284,7 +284,7 @@ def http_test(test, host, force):
 
   # Validate presence of partial dicts in response json
   if 'response_json_contains' in test:
-    for path in test['response_json_contains'].keys():
+    for path in list(test['response_json_contains'].keys()):
       expected_value = test['response_json_contains'][path]
       actual_value = dpath.util.search(req.json(), path)
       if expected_value == actual_value:
