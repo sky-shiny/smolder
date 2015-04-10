@@ -3,6 +3,7 @@ import os
 import json
 import sys
 import smolder
+from imp import reload
 
 #from smolder import run_test, tcp_test, curl_request, http_test, failed_tests, passed_tests
 
