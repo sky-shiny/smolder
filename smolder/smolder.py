@@ -247,7 +247,11 @@ def http_test(test, host, force):
   if 'response_body_contains' in test:
     required_text = test['response_body_contains']
     LOG.debug("Ensuring '{0}' appears in the response body".format(required_text))
-    my_re = re.search(required_text, req.content.decode())
+    try:
+      req_content = req.content.decode()
+    except UnicodeDecodeError as error:
+      req_content = req.content
+    my_re = re.search(required_text, req_content)
     if my_re is None:
       if 'show_body' in test:
         LOG.info("    Body: {0}".format(req.content))
