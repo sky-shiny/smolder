@@ -32,12 +32,12 @@ cd smolder
 pip install .
 ```
 
-Examples
+[Examples](examples/README.md)
 ========
-[Example readme](examples/README.md)
 
-Request
-=======
+
+Request Options
+===============
 
 Request Option | Description
 ---------------|-------------
@@ -55,8 +55,8 @@ validate_cert | Should we verify the ssl cert when making an https request?  Def
 
 *: required
 
-Response
-========
+Response Options
+================
 
 Response Test Options | Description
 ----------------------|-----------------------------
