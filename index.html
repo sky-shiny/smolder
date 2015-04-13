@@ -20,9 +20,32 @@
 
     <section class="main-content">
       <h1>
-<a id="smolder" class="anchor" href="#smolder" aria-hidden="true"><span class="octicon octicon-link"></span></a>smolder</h1>
+<a id="smolder" class="anchor" href="#smolder" aria-hidden="true"><span class="octicon octicon-link"></span></a>Smolder</h1>
 
 <p><a href="https://travis-ci.org/sky-shiny/smolder"><img src="https://travis-ci.org/sky-shiny/smolder.svg" alt="Build Status"></a></p>
+
+<ul>
+<li>Smoke test your rest API.</li>
+<li>Validate response times.</li>
+<li>Validate redirects.</li>
+<li>Validate ssl certificates.</li>
+<li>Validate headers.</li>
+<li>More</li>
+</ul>
+
+<h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<pre><code>pip install git+git://github.com/sky-shiny/smolder.git
+</code></pre>
+
+<h1>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h1>
+
+<pre><code>smolder-cli status.github.com examples/github_status.json
+</code></pre>
+
+<p>Example <a href="https://github.com/sky-shiny/smolder/blob/master/examples/README.md">Readme</a></p>
 
 <h1>
 <a id="what-it-does" class="anchor" href="#what-it-does" aria-hidden="true"><span class="octicon octicon-link"></span></a>What it does</h1>
@@ -44,22 +67,7 @@ convenience.</p>
 mechanism to ensure we're not overwriting or creating data unconciously.</p>
 
 <h1>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
-
-<p>Virtualenv recommended.</p>
-
-<pre><code>git clone git@github.com:sky-shiny/smolder.git
-cd smolder
-pip install .
-</code></pre>
-
-<h1>
-<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h1>
-
-<p><a href="examples/README.md">Example readme</a></p>
-
-<h1>
-<a id="request" class="anchor" href="#request" aria-hidden="true"><span class="octicon octicon-link"></span></a>Request</h1>
+<a id="request-options" class="anchor" href="#request-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Request Options</h1>
 
 <table>
 <thead>
@@ -119,7 +127,7 @@ pip install .
 <p>*: required</p>
 
 <h1>
-<a id="response" class="anchor" href="#response" aria-hidden="true"><span class="octicon octicon-link"></span></a>Response</h1>
+<a id="response-options" class="anchor" href="#response-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Response Options</h1>
 
 <table>
 <thead>
