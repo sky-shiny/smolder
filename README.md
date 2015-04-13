@@ -1,6 +1,29 @@
-smolder
+Smolder
 =======
 [![Build Status](https://travis-ci.org/sky-shiny/smolder.svg)](https://travis-ci.org/sky-shiny/smolder)
+
+- Smoke test your rest API.
+- Validate response times.
+- Validate redirects.
+- Validate ssl certificates.
+- Validate headers.
+- More
+
+Installation
+============
+
+```
+pip install git+git://github.com/sky-shiny/smolder.git
+```
+
+Example
+=======
+
+```
+smolder-cli status.github.com examples/github_status.json
+```
+
+Example [Readme](https://github.com/sky-shiny/smolder/blob/master/examples/README.md)
 
 What it does
 ============
@@ -21,21 +44,6 @@ Easily introduced into a CI/CD deploy pipeline.
 Without --force, any API requests that are not GET's will be skipped as a safety
 mechanism to ensure we're not overwriting or creating data unconciously.
 
-Installation
-============
-
-```
-pip install git+git://github.com/sky-shiny/smolder.git
-```
-
-Example
-=======
-
-```
-smolder-cli status.github.com examples/github_status.json
-```
-
-Example [Readme](https://github.com/sky-shiny/smolder/blob/master/examples/README.md)
 
 Request Options
 ===============
