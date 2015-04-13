@@ -24,17 +24,18 @@ mechanism to ensure we're not overwriting or creating data unconciously.
 Installation
 ============
 
-Virtualenv recommended.
-
 ```
-git clone git@github.com:sky-shiny/smolder.git
-cd smolder
-pip install .
+pip install git+git://github.com/sky-shiny/smolder.git
 ```
 
-[Examples](examples/README.md)
-========
+Example
+=======
 
+```
+smolder-cli status.github.com examples/github_status.json
+```
+
+Example [Readme](https://github.com/sky-shiny/smolder/blob/master/examples/README.md)
 
 Request Options
 ===============
