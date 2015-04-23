@@ -225,10 +225,7 @@ def http_test(test, host, force):
   if 'expect_status_code' in test:
     if 'response_redirect' in test and (req.status_code == 301 or req.status_code == 302 or req.status_code == 307 or req.status_code == 308):
       LOG.debug("{0}".format(req.headers))
-      location = req.headers['location']
-      compilation = re.compile(test['response_redirect'])
-      my_re = re.search(compilation, location)
-      if int(test['expect_status_code']) == req.status_code and my_re is not None:
+      if int(test['expect_status_code']) == req.status_code and test['response_redirect'] == req.headers['location']:
         pass_test("Status code == {0} and redirect == {1}".format(test['expect_status_code'], test['response_redirect']))
       else:
         fail_test("Got status code {0} but got redirected to {1} instead of {2}".format(test['expect_status_code'], req.headers['location'], test['response_redirect']))
@@ -289,7 +286,7 @@ def http_test(test, host, force):
   if 'response_json_contains' in test:
     for path in list(test['response_json_contains'].keys()):
       expected_value = test['response_json_contains'][path]
-      actual_value = dpath.util.search(req.json(), path)
+      actual_value = dpath.util.search(req.json(), path)[path]
       if expected_value == actual_value:
         pass_test("Body contains expected json value at path \"{0}\"".format(path))
       else:
