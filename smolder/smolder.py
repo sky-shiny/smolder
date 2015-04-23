@@ -2,7 +2,6 @@
 import os
 import json
 import sys
-import re
 import socket
 import time
 import jinja2
@@ -248,8 +247,7 @@ def http_test(test, host, force):
       req_content = req.content.decode()
     except UnicodeDecodeError as error:
       req_content = req.content
-    my_re = re.search(required_text, req_content)
-    if my_re is None:
+    if required_text not in req_content:
       if 'show_body' in test:
         LOG.info("    Body: {0}".format(req.content))
       else:
@@ -264,8 +262,11 @@ def http_test(test, host, force):
   if 'response_body_doesnt_contain' in test:
     banned_text = test['response_body_doesnt_contain']
     LOG.debug("Ensuring {0} doesn't appear in the body of the response".format(banned_text))
-    my_re = re.search(banned_text, req.content)
-    if my_re is not None:
+    try:
+      req_content = req.content.decode()
+    except UnicodeDecodeError as error:
+      req_content = req.content
+    if banned_text in req_content:
       LOG.debug("    Body: {0}".format(req.content))
       fail_test("Body contains \"{0}\" and shouldn't".format(banned_text))
     else:
