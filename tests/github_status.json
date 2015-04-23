@@ -22,7 +22,8 @@
         "User-Agent": "Smolder smoke test library"
       },
       "response_body_contains": "All systems operational",
-      "response_max_time_ms": 2000
+      "response_max_time_ms": 2000,
+      "show_body": ""
     }
   ]
 }
