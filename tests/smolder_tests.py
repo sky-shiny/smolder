@@ -4,6 +4,8 @@ import nose
 import json
 import os
 from nose.tools import assert_raises
+from imp import reload
+
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def test_noop_test():
@@ -30,3 +32,4 @@ def test_tcp_test():
 
 def test_fail_tcp_test():
   assert_raises(Exception, smolder.tcp_test, '127.0.0.1', 4242)
+

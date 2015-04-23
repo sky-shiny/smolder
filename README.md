@@ -1,10 +1,61 @@
+Smolder
+=======
+[![Build Status](https://travis-ci.org/sky-shiny/smolder.svg)](https://travis-ci.org/sky-shiny/smolder)
+
+- Smoke test your rest API.
+- Validate response times.
+- Validate redirects.
+- Validate ssl certificates.
+- Validate headers.
+- More
+
+Installation
+============
+
+```
+pip install git+git://github.com/sky-shiny/smolder.git
+```
+
+Example
+=======
+
+```
+$> smolder-cli status.github.com examples/github_status.json
+
+Success connecting to status.github.com on port 80
+Preparing to execute 2 tests
+
+------------------------------- Github Status -------------------------------
+                          http://status.github.com:80/
+-----------------------------------------------------------------------------
+
+curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
+"http://status.github.com:80/"
+Request took 227ms
+Status code == 301 and redirect == https://status.github.com/ ........ [PASS]
+
+------------------------------- Github Status -------------------------------
+                         https://status.github.com:443/
+-----------------------------------------------------------------------------
+
+curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
+"https://status.github.com:443/"
+Request took 541ms
+Status code == 200 ................................................... [PASS]
+Body contains "All systems operational" .............................. [PASS]
+Response time was 341ms longer than 200ms max (541ms) ................ [FAIL]
+FOUND 1 FAILURES IN 4 TESTS
+```
+
+Example [Readme](https://github.com/sky-shiny/smolder/blob/master/examples/README.md)
+
 What it does
 ============
 
 It wraps the "requests" python library inserting headers, authentication etc and
 making your requests to a host: provided as a command line argument.
 
-It checks the response from the server for expected status-codes/body/header/dpath-json 
+It checks the response from the server for expected status-codes/body/header/dpath-json
 contents and passes or fails the test based on definition.
 
 Can be used to specify and pass/fail on performance of api response.
@@ -15,25 +66,11 @@ convenience.
 Easily introduced into a CI/CD deploy pipeline.
 
 Without --force, any API requests that are not GET's will be skipped as a safety
-mechanism to ensure we're not overwriting or creating data unconciously.  
+mechanism to ensure we're not overwriting or creating data unconciously.
 
-Installation
-============
 
-Virtualenv recommended.
-
-```
-git clone git@github.com:sky-shiny/smolder.git
-cd smolder
-pip install . 
-```
-
-Examples
-========
-[Example readme](examples/README.md)
-
-Request
-=======
+Request Options
+===============
 
 Request Option | Description
 ---------------|-------------
@@ -51,8 +88,8 @@ validate_cert | Should we verify the ssl cert when making an https request?  Def
 
 *: required
 
-Response
-========
+Response Options
+================
 
 Response Test Options | Description
 ----------------------|-----------------------------
@@ -62,7 +99,7 @@ response_max_time_ms | FAIL if response takes longer than int.
 response_json_contains | FAIL if json response at path doesn't match.
 expect_status_code | FAIL if response status code differs from int.
 response_redirect | FAIL if string not in response location header.
-response_headers | FAIL if the headers received from the request doesn't contain the list of headers provided. 
+response_headers | FAIL if the headers received from the request doesn't contain the list of headers provided.
 response_header_values | FAIL if the *values* of the headers in the test don't match the values in the response.
 show_body | output the body to stdout.
 
