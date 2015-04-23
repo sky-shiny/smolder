@@ -1,1 +1,1 @@
-include README.rst LICENSE example_test.json
+include README.md LICENSE examples/github_status.json
