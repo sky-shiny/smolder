@@ -25,8 +25,8 @@ $> smolder-cli status.github.com examples/github_status.json
 Success connecting to status.github.com on port 80
 Preparing to execute 2 tests
 
------------------------------------- Github Status --------------------------
-                               http://status.github.com:80/
+------------------------------- Github Status -------------------------------
+                          http://status.github.com:80/
 -----------------------------------------------------------------------------
 
 curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
@@ -34,8 +34,8 @@ curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
 Request took 227ms
 Status code == 301 and redirect == https://status.github.com/ ........ [PASS]
 
------------------------------------- Github Status --------------------------
-                              https://status.github.com:443/
+------------------------------- Github Status -------------------------------
+                         https://status.github.com:443/
 -----------------------------------------------------------------------------
 
 curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
