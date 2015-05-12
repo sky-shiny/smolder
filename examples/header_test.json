@@ -10,16 +10,16 @@
         "downloadTransaction": {
           "status": "COMPLETE"
         }
-    },
-    "validate_cert": "False",
-    "request_headers": {
-      "User-Agent": "Smolder smoke test library",
-      "Host": "p.sky.com",
-      "Content-Type": "application/vnd.initiatetransaction.v1+json"
-    },
-    "expect_status_code": 200,
+      },
+      "validate_cert": "False",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library",
+        "Host": "example.com",
+        "Content-Type": "application/json"
+      },
+      "expect_status_code": 200,
       "response_headers_present": [
-        "x-skyint-requestid"
+        "x-int-requestid"
       ]
     }
   ]

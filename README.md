@@ -84,6 +84,7 @@ username | basic auth username
 password | basic auth password
 cookie | cookie object to append to requests instansiation
 data | data for POST or PUT.
+file | provide dummy "filename" and dummy "content" as json arguments. Uploads the content as filename to the specified host.
 validate_cert | Should we verify the ssl cert when making an https request?  Defaults to False.
 
 *: required
