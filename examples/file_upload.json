@@ -1,0 +1,21 @@
+{
+"tests": [
+    {
+      "name": "Upload Dummy File",
+      "protocol": "http",
+      "port": 80,
+      "url": "/files/upload",
+      "method": "post",
+      "file": {
+        "filename": "test_file.txt",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus."
+      },
+      "validate_cert": "False",
+      "request_headers": {
+        "User-Agent": "Smolder smoke test library",
+        "Host": "localhost"
+      },
+      "expect_status_code": 200
+    }
+  ]
+}

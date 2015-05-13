@@ -1,6 +1,13 @@
 RELEASE HISTORY
 ===============
 
+Version 0.1.2
+-------------
+- fixed bug with json search path
+- deprecated use of regex (will reintroduce after fixing handling of binary objects)
+- Improved tests
+- Python 3 support
+
 Version 0.0.1
 -------------
 

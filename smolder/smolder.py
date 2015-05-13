@@ -170,6 +170,14 @@ def http_test(test, host, force):
   else:
     LOG.debug("    No data to post/put")
 
+  # Do we need to send files?
+  if 'file' in test:
+    LOG.debug("    Request file: {0}".format(test['file']))
+    data = (str(json.dumps(test['files']['filename'])), str(json.dumps(test['files']['content'])))
+    args['files'] = data
+  else:
+    LOG.debug("    No data to post/put")
+
   # By default we only allow GET tests as we don't want to allow a test to
   # PUT or POST data since we don't want to change live data in the course
   # of testing. We can override this behaviour by using the --force
