@@ -47,8 +47,8 @@
 Success connecting to status.github.com on port 80
 Preparing to execute 2 tests
 
------------------------------------- Github Status --------------------------
-                               http://status.github.com:80/
+------------------------------- Github Status -------------------------------
+                          http://status.github.com:80/
 -----------------------------------------------------------------------------
 
 curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
@@ -56,8 +56,8 @@ curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
 Request took 227ms
 Status code == 301 and redirect == https://status.github.com/ ........ [PASS]
 
------------------------------------- Github Status --------------------------
-                              https://status.github.com:443/
+------------------------------- Github Status -------------------------------
+                         https://status.github.com:443/
 -----------------------------------------------------------------------------
 
 curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
@@ -140,6 +140,10 @@ mechanism to ensure we're not overwriting or creating data unconciously.</p>
 <tr>
 <td>data</td>
 <td>data for POST or PUT.</td>
+</tr>
+<tr>
+<td>file</td>
+<td>provide dummy "filename" and dummy "content" as json arguments. Uploads the content as filename to the specified host.</td>
 </tr>
 <tr>
 <td>validate_cert</td>
