@@ -33,3 +33,22 @@ smolder-cli 10.0.0.1 example_test.json --force
 ```
 smolder-cli 173.223.194.219 soa_test.json
 ```
+{
+    "files": [],
+    "cookies": None,
+    "url": None,
+    "hooks": {
+        "response": []
+    },
+    "auth": None,
+    "headers": {},
+    "json": None,
+    "params": {},
+    "data": [],
+    "method": None,
+    "verify": False,
+    "stream": True,
+    "cert": None,
+    "allow_redirects": False,
+    "timeout": 30
+}

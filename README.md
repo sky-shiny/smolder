@@ -1,5 +1,7 @@
 Smolder
 =======
+
+"Requests for humans."  :)
 [![Build Status](https://travis-ci.org/sky-shiny/smolder.svg)](https://travis-ci.org/sky-shiny/smolder)
 
 - Smoke test your rest API.

@@ -24,6 +24,7 @@ REQUIRES = [
   'retry >= 0.4.2',
   'retrying >= 1.3.3',
   'six >= 1.8.0',
+  'jsonpickle >= 0.9.2',
 ]
 
 with open('README.md', 'r') as f:

@@ -23,6 +23,7 @@ def test_github_status_response_time_expect_fail():
   myfile = open(THIS_DIR + '/harsh_github_status.json')
   test_json = json.load(myfile)
   for test in test_json['tests']:
+    test_obj = smolder.charcoal.Charcoal(test=test, host=kwargs['host'])
     smolder.http_test(test, 'status.github.com', False)
   reload(smolder)
   assert smolder.failed_tests > 0

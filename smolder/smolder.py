@@ -93,7 +93,7 @@ def tcp_test(host, port):
         my_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         my_sock.settimeout(1)
         my_sock.connect((host, port))
-        LOG.info("Success connecting to {0} on port {1}".format(host, port))
+        print("Connecting to {0} on port {1}....................[PASS]".format(host, port))
         my_sock.shutdown(2)
         my_sock.close()
     except socket.error:
@@ -115,50 +115,6 @@ def curl_request(url, method, headers, data):
         header = headers
     output = command.format(method=method.upper(), headers=header, data=data, uri=url)
     LOG.info("\n{0}".format(output))
-
-
-class Smolder():
-    def __init__(url):
-        self.url = url
-        self.allow_redirects = False
-        self.verify = False
-
-    def set_headers(headers):
-        self.headers = headers
-
-    def set_cookie(cookie):
-        self.cookie = cookie
-
-    def set_auth(username, password):
-        self.username = username
-        self.password = password
-
-    def set_data(data):
-        self.data = data
-
-    def set_file(contents):
-        self.file = contents
-
-    def set_verify(verify):
-        assert isinstance(verify, bool)
-        self.verify = verify
-
-
-def __repr__(self):
-    command = 'curl -v -s -o /dev/null {headers} {data} -X {method} "{uri}"'
-    if self.headers != '':
-        header_list = ['"{0}: {1}"'.format(k, v) for k, v in list(self.headers.items())]
-        header = "-H " + (" -H ".join(header_list))
-    else:
-        header = args.headers
-    output = command.format(method=self.method.upper(), headers=header, data=self.data, uri=self.url)
-    return output
-
-
-def build_test(test, host, force):
-    url = '{0}://{1}:{2}{3}'.format(test['protocol'], host, test['port'], test['url'])
-    http_unit = SmolderArgs(url)
-    print http_unit
 
 
 def http_test(test, host, force):
