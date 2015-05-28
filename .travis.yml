@@ -12,3 +12,6 @@ install:
   - pip install .
 # command to run tests
 script: nosetests
+branches:
+  only:
+    - master
