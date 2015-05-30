@@ -74,27 +74,33 @@ mechanism to ensure we're not overwriting or creating data unconciously.
 Request Options
 ===============
 
-Request Option | Description
+Inputs accept all verbs that requests does, in the same format for convenience.
+
+
+Inputs | Description
 ---------------|-------------
 name \* | name for the test
 protocol \* | tcp, http, https or noop
 port \* | 0 - 65535
-url | /url/path/to/resource.json
+uri \* | /url/path/to/resource.json
 method | GET, POST, PUT, DELETE, OPTION
-request_headers (recommended) |  header object to append to requests instansiation.  The host header is probably the most likely requirement.
+headers (recommended) |  header object to append to requests instansiation.  The host header is probably the most likely requirement.
 username | basic auth username
 password | basic auth password
 cookie | cookie object to append to requests instansiation
 data | data for POST or PUT.
 file | provide dummy "filename" and dummy "content" as json arguments. Uploads the content as filename to the specified host.
-validate_cert | Should we verify the ssl cert when making an https request?  Defaults to False.
+verify | Should we verify the ssl cert when making an https request?  Defaults to False.
+allow_redirects | Follow links. Defauts to False so that you can be explicit about the redirect.
+timeout | timeout for the request. Defaults to 30
+
 
 *: required
 
 Response Options
 ================
 
-Response Test Options | Description
+Outcomes | Description
 ----------------------|-----------------------------
 response_body_contains | PASS if string in body.
 response_body_doesnt_contain | FAIL if string in body.
@@ -105,6 +111,11 @@ response_redirect | FAIL if string not in response location header.
 response_headers | FAIL if the headers received from the request doesn't contain the list of headers provided.
 response_header_values | FAIL if the *values* of the headers in the test don't match the values in the response.
 show_body | output the body to stdout.
+colour  | Colour PASS/FAIL
+
+Plugins
+=======
+
 
 Thanks
 ======

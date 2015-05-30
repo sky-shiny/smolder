@@ -1,6 +1,14 @@
 RELEASE HISTORY
 ===============
 
+Version 0.2.1
+-------------
+- Rewrote and reorganised everything
+- Implemented first pass at a plugin system
+- Breaking changes to the test schema
+    - Added input dict section with inputs and structure matching the underlying requests verbs exactly (passthrough)
+    - Added an outcomes section to be more understandable
+
 Version 0.1.2
 -------------
 - fixed bug with json search path
