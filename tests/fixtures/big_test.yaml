@@ -1,0 +1,60 @@
+tests:
+- method: get
+  name: AWS Status
+  port: 80
+  protocol: http
+  request_headers: {User-Agent: Smolder smoke test library}
+  response_body_contains: Service is operating normally
+  url: /
+- method: get
+  name: Status
+  port: 80
+  protocol: http
+  request_headers: {User-Agent: Smolder smoke test library}
+  response_body_contains: HEALTHY
+  url: /status
+- data:
+    downloadTransaction: {status: COMPLETE}
+  expect_status_code: 401
+  method: put
+  name: Finalize verify requires auth
+  port: 80
+  protocol: http
+  request_headers: {Host: bskyb.com, User-Agent: Smolder smoke test library, content-type: Application/json}
+  url: /downloads/539e92c0-06a1-11e4-9191-0800200c9a66/finalise
+- expect_status_code: 301
+  method: get
+  name: Github Status
+  port: 80
+  protocol: http
+  request_headers: {User-Agent: Smolder smoke test library}
+  response_redirect: https://status.github.com/
+  url: /
+- method: get
+  name: Github Status
+  port: 443
+  protocol: https
+  request_headers: {User-Agent: Smolder smoke test library}
+  response_body_contains: All systems operational
+  response_max_time_ms: 200
+  url: /
+- data:
+    downloadTransaction: {status: COMPLETE}
+  expect_status_code: 200
+  method: post
+  name: Download API (Transactions endpoint)
+  port: 443
+  protocol: https
+  request_headers: {Content-Type: application/vnd.initiatetransaction.v1+json, Host: p.sky.com,
+    User-Agent: Smolder smoke test library}
+  response_headers_present: [x-skyint-requestid]
+  url: /download/transactions
+  validate_cert: 'False'
+- expect_status_code: 405
+  method: get
+  name: Acquire Token (SSO/OAUTH/SAML)
+  port: 443
+  protocol: https
+  request_headers: {Host: android.sky.com, User-Agent: Smolder smoke test library}
+  url: /auth/tokens
+  validate_cert: 'False'
