@@ -136,8 +136,8 @@ def http_test(test, host, force):
         for header in headers:
             LOG.debug("        {0}: {1}".format(header, headers[header]))
             args['headers'] = headers
-        else:
-            LOG.debug('    Getting {0} with no specified headers'.format(url))
+    else:
+        LOG.debug('    Getting {0} with no specified headers'.format(url))
 
     if 'cookie' in test:
         cookie = test['cookie']
@@ -247,7 +247,7 @@ def http_test(test, host, force):
         LOG.debug("Ensuring '{0}' appears in the response body".format(required_text))
         try:
             req_content = req.content.decode()
-        except UnicodeDecodeError as error:
+        except UnicodeDecodeError:
             req_content = req.content
         if required_text not in req_content:
             if 'show_body' in test:
@@ -256,7 +256,7 @@ def http_test(test, host, force):
                 LOG.debug("    Body: {0}".format(req.content))
                 fail_test("Body contains \"{0}\"".format(required_text))
         else:
-              pass_test("Body contains \"{0}\"".format(required_text))
+            pass_test("Body contains \"{0}\"".format(required_text))
     else:
         LOG.debug("    No body content search requested")
 
@@ -266,7 +266,7 @@ def http_test(test, host, force):
         LOG.debug("Ensuring {0} doesn't appear in the body of the response".format(banned_text))
         try:
             req_content = req.content.decode()
-        except UnicodeDecodeError as error:
+        except UnicodeDecodeError:
             req_content = req.content
             if banned_text in req_content:
                 LOG.debug("    Body: {0}".format(req.content))
