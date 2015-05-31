@@ -125,9 +125,9 @@ def http_test(test, host, force):
                 args['verify'] = False
             elif test['validate_cert'] == "True":
                 args['verify'] = True
-        else:
-            LOG.error("validate_cert must be 'True', 'False' or absent (defaults to False)")
-            sys.exit(7)
+            else:
+                LOG.error("validate_cert must be 'True', 'False' or absent (defaults to False)")
+                sys.exit(7)
 
     # Check we have request headers
     if 'request_headers' in test:
