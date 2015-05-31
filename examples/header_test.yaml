@@ -1,0 +1,13 @@
+tests:
+- data:
+    downloadTransaction: {status: COMPLETE}
+  expect_status_code: 200
+  method: post
+  name: Download API (Transactions endpoint)
+  port: 443
+  protocol: https
+  request_headers: {Content-Type: application/json, Host: example.com, User-Agent: Smolder
+      smoke test library}
+  response_headers_present: [x-int-requestid]
+  url: /download/transactions
+  validate_cert: 'False'

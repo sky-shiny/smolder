@@ -1,0 +1,11 @@
+tests:
+- expect_status_code: 200
+  file: {content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+      a diam lectus.', filename: test_file.txt}
+  method: post
+  name: Upload Dummy File
+  port: 80
+  protocol: http
+  request_headers: {Host: localhost, User-Agent: Smolder smoke test library}
+  url: /files/upload
+  validate_cert: 'False'

@@ -1,0 +1,8 @@
+tests:
+- method: get
+  name: AWS Status
+  port: 80
+  protocol: http
+  request_headers: {User-Agent: Smolder smoke test library}
+  response_body_contains: Service is operating normally
+  url: /

@@ -1,0 +1,9 @@
+tests:
+- expect_status_code: 405
+  method: get
+  name: Acquire Token (SSO/OAUTH/SAML)
+  port: 443
+  protocol: https
+  request_headers: {Host: android.sky.com, User-Agent: Smolder smoke test library}
+  url: /auth/tokens
+  validate_cert: 'False'
