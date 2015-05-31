@@ -4,23 +4,19 @@ import json
 import sys
 import socket
 import time
-import jinja2
+import logging
+
 import dpath.util
 import requests
 from requests.auth import HTTPBasicAuth
-import random
 from retrying import retry
 
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
-import logging
-import argh
-from argh import arg, dispatch_command
 logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:%S")
 logging.getLogger('requests').setLevel(logging.ERROR)
 logging.getLogger('urllib3').setLevel(logging.ERROR)
 LOG = logging.getLogger('smolder')
 LOG.setLevel(logging.INFO)
-PARSER = argh.ArghParser()
 
 OUTPUT_WIDTH = 90
 TEST_LINE_FORMAT = "{0:.<" + str(OUTPUT_WIDTH - 10) + "s} {1:4s}"
