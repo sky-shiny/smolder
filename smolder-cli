@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-import json
+import yaml
 import sys
 import smolder
 from imp import reload
@@ -17,15 +17,20 @@ LOG.setLevel(logging.INFO)
 PARSER = argh.ArghParser()
 
 @dispatch_command
-@arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))
-@arg('testfile', default=os.environ.get('TEST_FILE'), metavar='TEST_FILE', help='The json file that details the tests to execute')
-@arg('--force', help='Use http methods that can potentially change data (PUT, POST, DELETE, etc. ie !GET)', default=False)
+@arg('host', help='IP address or DNS name to run tests against',
+     default=os.environ.get('TEST_HOST'))
+@arg('testfile', default=os.environ.get('TEST_FILE'),
+     metavar='TEST_FILE',
+     help='The json/yaml file that details the tests to execute')
+@arg('--force',
+     help='Use http methods that can potentially change data (PUT, POST, DELETE, etc. ie !GET)',
+     default=False)
 def smolder_cli(**kwargs):
   """ Parse CLI args and if valid dispatch to lower methods """
   # Load the test specification file, parse the json and create a 'tests' object
   try:
     myfile = open(kwargs['testfile'])
-    test_json = json.load(myfile)
+    test_json = yaml.load(myfile)
     tests = test_json['tests']
   except IOError:
     LOG.exception("Couldn't open test file {0}".format(kwargs['testfile']))
