@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-import json
+import yaml
 import sys
 import smolder
 from imp import reload
@@ -17,27 +17,34 @@ LOG.setLevel(logging.INFO)
 PARSER = argh.ArghParser()
 
 @dispatch_command
-@arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))
-@arg('testfile', default=os.environ.get('TEST_FILE'), metavar='TEST_FILE', help='The json file that details the tests to execute')
-@arg('--force', help='Use http methods that can potentially change data (PUT, POST, DELETE, etc. ie !GET)', default=False)
+@arg('host', help='IP address or DNS name to run tests against',
+     default=os.environ.get('TEST_HOST'))
+@arg('testfile', default=os.environ.get('TEST_FILE'),
+     metavar='TEST_FILE',
+     help='The json/yaml file that details the tests to execute')
+@arg('--force',
+     help='Use http methods that can potentially change data (PUT, POST, DELETE, etc. ie !GET)',
+     default=False)
 def smolder_cli(**kwargs):
   """ Parse CLI args and if valid dispatch to lower methods """
   # Load the test specification file, parse the json and create a 'tests' object
   try:
     myfile = open(kwargs['testfile'])
-    test_json = json.load(myfile)
+    test_json = yaml.load(myfile)
     tests = test_json['tests']
   except IOError:
-    LOG.exception("Couldn't open test file {0}".format(kwargs['testfile']))
+    LOG.exception("Couldn't open test file %s", kwargs['testfile'])
     raise
+  except yaml.ScannerError:
+    LOG.exception("Invalid data in file %s", kwargs['testfile'])
   except ValueError:
-    LOG.exception("Invalid data in file {0}".format(kwargs['testfile']))
+    LOG.exception("Invalid data in file %s", kwargs['testfile'])
     raise
   except KeyError:
-    LOG.exception("No tests defined in {0}".format(kwargs['testfile']))
+    LOG.exception("No tests defined in %s", kwargs['testfile'])
     raise
   if len(tests) == 0:
-    LOG.error("There are no tests configured in {0}: You MUST specify at least one test".format(kwargs['testfile']))
+    LOG.error("There are no tests configured in %s: You MUST specify at least one test", kwargs['testfile'])
     sys.exit(2)
 
   LOG.debug("Beginning default TCP test")
@@ -51,7 +58,7 @@ def smolder_cli(**kwargs):
 
   reload(smolder)
   if smolder.failed_tests > 0:
-    LOG.info("FOUND {0} FAILURES IN {1} TESTS".format(str(smolder.failed_tests), str(smolder.passed_tests + smolder.failed_tests)))
+    LOG.info("FOUND %s FAILURES IN %s TESTS", str(smolder.failed_tests), str(smolder.passed_tests + smolder.failed_tests))
     sys.exit(1)
   else:
     LOG.info("ALL TESTS PASSED!")

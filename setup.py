@@ -24,6 +24,7 @@ REQUIRES = [
   'retry >= 0.4.2',
   'retrying >= 1.3.3',
   'six >= 1.8.0',
+  'pyyaml==3.11',
 ]
 
 with open('README.md', 'r') as f:
