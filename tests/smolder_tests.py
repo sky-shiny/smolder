@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 import smolder
-import json
+import yaml
 import os
 from nose.tools import assert_raises
 from imp import reload
@@ -13,7 +13,7 @@ def test_noop_test():
 
 def test_github_status():
   myfile = open(THIS_DIR + '/github_status.json')
-  test_json = json.load(myfile)
+  test_json = yaml.load(myfile)
   for test in test_json['tests']:
     smolder.http_test(test, 'status.github.com', False)
   reload(smolder)
@@ -22,7 +22,7 @@ def test_github_status():
 
 def test_github_status_response_time_expect_fail():
   myfile = open(THIS_DIR + '/harsh_github_status.json')
-  test_json = json.load(myfile)
+  test_json = yaml.load(myfile)
   for test in test_json['tests']:
     smolder.http_test(test, 'status.github.com', False)
   reload(smolder)
