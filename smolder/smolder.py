@@ -128,8 +128,6 @@ def http_test(test, host, force):
       else:
         LOG.error("validate_cert must be 'True', 'False' or absent (defaults to False)")
         sys.exit(7)
-    if not args['verify']:
-      requests.packages.urllib3.disable_warnings()
 
   # Check we have request headers
   if 'request_headers' in test:
