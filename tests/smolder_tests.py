@@ -1,6 +1,5 @@
 #!/usr/bin/env python2
 import smolder
-import nose
 import json
 import os
 from nose.tools import assert_raises
