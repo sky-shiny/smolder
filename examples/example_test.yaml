@@ -1,0 +1,17 @@
+tests:
+- method: get
+  name: Status
+  port: 80
+  protocol: http
+  request_headers: {User-Agent: Smolder smoke test library}
+  response_body_contains: HEALTHY
+  url: /status
+- data:
+    downloadTransaction: {status: COMPLETE}
+  expect_status_code: 401
+  method: put
+  name: Finalize verify requires auth
+  port: 80
+  protocol: http
+  request_headers: {Host: bskyb.com, User-Agent: Smolder smoke test library, content-type: Application/json}
+  url: /downloads/539e92c0-06a1-11e4-9191-0800200c9a66/finalise
