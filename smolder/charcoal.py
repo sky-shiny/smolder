@@ -4,7 +4,6 @@ import time
 import logging
 import dpath
 import requests
-from requests import Request
 from . import COLOURS
 import inspect
 
@@ -36,6 +35,13 @@ def plugin(view):
     # mark the method as something that requires view's class
     view.use_method = True
     return view
+
+def in_test(view):
+    def func_wrapper(name):
+        if name in view.test:
+            return view(name)
+        else:
+            pass
 
 @class_decorator
 class Charcoal(object):
@@ -125,17 +131,14 @@ class Charcoal(object):
     def _to_json(self):
         return jsonpickle.encode(self)
 
-
+    @in_test
     @plugin
     def headers_present(self):
-        if 'response_headers_present' in self.test:
-            for header in self.test['response_headers_present']:
-                if header not in self.req.headers:
-                    return self.fail_test("Expected header {0} not present".format(header))
-                else:
-                    return self.pass_test("Header {0}: {1} present".format(header, self.req.headers[header]))
-        else:
-            pass
+        for header in self.test['response_headers_present']:
+            if header not in self.req.headers:
+                return self.fail_test("Expected header {0} not present".format(header))
+            else:
+                return self.pass_test("Header {0}: {1} present".format(header, self.req.headers[header]))
 
 
     @plugin
@@ -151,102 +154,88 @@ class Charcoal(object):
             else:
                 return self.fail_test("Status code != 200: {0}".format(self.req.status_code))
 
-
+    @in_test
     @plugin
     def response_redirect(self):
-        if 'response_redirect' in self.test and (self.req.status_code == 301 or self.req.status_code == 302 or self.req.status_code == 307 or self.req.status_code == 308):
-            LOG.debug("{0}".format(self.req.headers))
-            if int(self.test['outcomes']['expect_status_code']) == self.req.status_code and self.test['outcomes']['response_redirect'] == self.req.headers['location']:
-                message = self.pass_test("Status code == {0} and redirect == {1}".format(self.test['outcomes']['expect_status_code'], self.test['outcomes']['response_redirect']))
-                return message
-            else:
-                return self.fail_test("Got status code {0} but got redirected to {1} instead of {2}".format(
-                    self.test['outcomes']['expect_status_code'],
-                    self.req.headers['location'],
-                    self.test['outcomes']['response_redirect']))
+        LOG.debug("{0}".format(self.req.headers))
+        if int(self.test['outcomes']['expect_status_code']) == self.req.status_code and self.test['outcomes']['response_redirect'] == self.req.headers['location']:
+            message = self.pass_test("Status code == {0} and redirect == {1}".format(self.test['outcomes']['expect_status_code'], self.test['outcomes']['response_redirect']))
+            return message
         else:
-            pass
+            return self.fail_test("Got status code {0} but got redirected to {1} instead of {2}".format(
+                self.test['outcomes']['expect_status_code'],
+                self.req.headers['location'],
+                self.test['outcomes']['response_redirect']))
 
-
+    @in_test
     @plugin
     def response_body_contains(self):
         # Did we expect something specific in the response body?
-        if 'response_body_contains' in self.test['outcomes']:
-            required_text = self.test['outcomes']['response_body_contains']
-            LOG.debug("Ensuring '{0}' appears in the response body".format(required_text))
-            try:
-                req_content = self.req.content.decode()
-            except UnicodeDecodeError:
-                req_content = self.req.content
-            if required_text not in req_content:
-                return self.fail_test("Body contains \"{0}\"".format(required_text))
-            else:
-                return self.pass_test("Body contains \"{0}\"".format(required_text))
+        required_text = self.test['outcomes']['response_body_contains']
+        LOG.debug("Ensuring '{0}' appears in the response body".format(required_text))
+        try:
+            req_content = self.req.content.decode()
+        except UnicodeDecodeError:
+            req_content = self.req.content
+        if required_text not in req_content:
+            return self.fail_test("Body contains \"{0}\"".format(required_text))
         else:
-            pass
+            return self.pass_test("Body contains \"{0}\"".format(required_text))
 
 
+    @in_test
     @plugin
     def response_body_doesnt_contain(self):
         # Do we need to ensure something does NOT appear in the response body?
-        if 'response_body_doesnt_contain' in self.test['outcomes']:
-            banned_text = self.test['outcomes']['response_body_doesnt_contain']
-            LOG.debug("Ensuring {0} doesn't appear in the body of the response".format(banned_text))
-            try:
-                req_content = self.req.content.decode()
-            except UnicodeDecodeError:
-                req_content = self.req.content
-            if banned_text in req_content:
-                LOG.debug("    Body: {0}".format(req_content))
-                return self.fail_test("Body contains \"{0}\" and shouldn't".format(banned_text))
-            else:
-                return self.pass_test("Body doesn't contain \"{0}\"".format(banned_text))
+        banned_text = self.test['outcomes']['response_body_doesnt_contain']
+        LOG.debug("Ensuring {0} doesn't appear in the body of the response".format(banned_text))
+        try:
+            req_content = self.req.content.decode()
+        except UnicodeDecodeError:
+            req_content = self.req.content
+        if banned_text in req_content:
+            LOG.debug("    Body: {0}".format(req_content))
+            return self.fail_test("Body contains \"{0}\" and shouldn't".format(banned_text))
         else:
-            pass
+            return self.pass_test("Body doesn't contain \"{0}\"".format(banned_text))
 
 
+    @in_test
     @plugin
     def response_max_time_ms(self):
         # Check response time
-        if 'response_max_time_ms' in self.test['outcomes']:
-            if self.duration_ms > int(self.test['outcomes']['response_max_time_ms']):
-                longer_by_ms = self.duration_ms - int(self.test['outcomes']['response_max_time_ms'])
-                return self.fail_test('Response time was {0}ms longer than {1}ms max ({2}ms)'.format(str(longer_by_ms), self.test['outcomes']['response_max_time_ms'], str(self.duration_ms)))
-            else:
-                shorter_by_ms = int(self.test['outcomes']['response_max_time_ms']) - self.duration_ms
-                return self.pass_test('Response time was {0}ms shorter than max ({1}ms)'.format(str(shorter_by_ms), str(self.duration_ms)))
+        if self.duration_ms > int(self.test['outcomes']['response_max_time_ms']):
+            longer_by_ms = self.duration_ms - int(self.test['outcomes']['response_max_time_ms'])
+            return self.fail_test('Response time was {0}ms longer than {1}ms max ({2}ms)'.format(str(longer_by_ms), self.test['outcomes']['response_max_time_ms'], str(self.duration_ms)))
         else:
-            pass
+            shorter_by_ms = int(self.test['outcomes']['response_max_time_ms']) - self.duration_ms
+            return self.pass_test('Response time was {0}ms shorter than max ({1}ms)'.format(str(shorter_by_ms), str(self.duration_ms)))
 
 
+    @in_test
     @plugin
     def response_json_contains(self):
         # Validate presence of partial dicts in response json
-        if 'response_json_contains' in self.test['outcomes']:
-            for path in list(self.test['outcomes']['response_json_contains'].keys()):
-                expected_value = self.test['outcomes']['response_json_contains'][path]
-                actual_value = dpath.util.search(self.req.json(), path)[path]
-                if expected_value == actual_value:
-                    return self.pass_test("Body contains expected json value at path \"{0}\"".format(path))
-                else:
-                    return self.fail_test("Invalid json value {0} at path \"{1}\", expecting {2}".format(actual_value, path, expected_value))
-        else:
-            pass
+        for path in list(self.test['outcomes']['response_json_contains'].keys()):
+            expected_value = self.test['outcomes']['response_json_contains'][path]
+            actual_value = dpath.util.search(self.req.json(), path)[path]
+            if expected_value == actual_value:
+                return self.pass_test("Body contains expected json value at path \"{0}\"".format(path))
+            else:
+                return self.fail_test("Invalid json value {0} at path \"{1}\", expecting {2}".format(actual_value, path, expected_value))
 
 
+    @in_test
     @plugin
     def response_header_values(self):
-        if 'response_header_values' in self.test['outcomes']:
-            for header in self.test['outcomes']['response_header_values']:
-                if header not in self.req.headers:
-                    return self.fail_test("Expected header {0} not present".format(header))
-                elif self.req.headers[header] != self.test['outcomes']['response_header_values'][header]:
-                    return self.fail_test("Expecting {0}: {1}, got {2}: {3}".format(
-                        header,
-                        self.test['outcomes']['response_header_values'][header],
-                        header,
-                        self.req.headers[header]))
-                else:
-                    return self.pass_test("Header {0}: {1} present".format(header, self.req.headers[header]))
-        else:
-            pass
+        for header in self.test['outcomes']['response_header_values']:
+            if header not in self.req.headers:
+                return self.fail_test("Expected header {0} not present".format(header))
+            elif self.req.headers[header] != self.test['outcomes']['response_header_values'][header]:
+                return self.fail_test("Expecting {0}: {1}, got {2}: {3}".format(
+                    header,
+                    self.test['outcomes']['response_header_values'][header],
+                    header,
+                    self.req.headers[header]))
+            else:
+                return self.pass_test("Header {0}: {1} present".format(header, self.req.headers[header]))
