@@ -25,23 +25,16 @@ _plugins = []
 def class_decorator(cls):
     LOG.debug("Decorating class")
     for name, method in inspect.getmembers(cls, predicate=inspect.ismethod):
-        if hasattr(method, "use_method"):
+        if hasattr(method, "use_method") or name is 'expect_status_code':
             # do something with the method and class
             cls.add_plugin(method)
     return cls
 
+
 def plugin(view):
-    LOG.debug("Decorating plugin")
-    # mark the method as something that requires view's class
+    LOG.info("Checking method")
     view.use_method = True
     return view
-
-def in_test(view):
-    def deco(self):
-        if view.__name__ in self.test['outcomes']:
-            return deco
-        else:
-            pass
 
 @class_decorator
 class Charcoal(object):
@@ -71,10 +64,11 @@ class Charcoal(object):
         if 'show_body' in self.test:
             self.output = "\n".join([self.output, self.req.content])
         for run_plugin in _plugins:
-            LOG.debug("Running plugin: {0}".format(run_plugin))
-            text = run_plugin(self)
-            if text is not None:
-                self.output = "\n".join([self.output, text])
+            if run_plugin.__name__ is 'expect_status_code' or run_plugin.__name__ in self.test['outcomes']:
+                LOG.debug("Running plugin: {0}".format(run_plugin))
+                text = run_plugin(self)
+                if text is not None:
+                    self.output = "\n".join([self.output, text])
 
     @staticmethod
     def add_plugin(plug):
@@ -119,7 +113,6 @@ class Charcoal(object):
     def _to_json(self):
         return jsonpickle.encode(self)
 
-    @in_test
     @plugin
     def headers_present(self):
         for header in self.test['response_headers_present']:
@@ -129,7 +122,6 @@ class Charcoal(object):
                 return self.pass_test("Header {0}: {1} present".format(header, self.req.headers[header]))
 
 
-    @plugin
     def expect_status_code(self):
         if 'expect_status_code' in self.test['outcomes']:
             if int(self.test['outcomes']['expect_status_code']) == self.req.status_code:
@@ -142,7 +134,6 @@ class Charcoal(object):
             else:
                 return self.fail_test("Status code != 200: {0}".format(self.req.status_code))
 
-    @in_test
     @plugin
     def response_redirect(self):
         LOG.debug("{0}".format(self.req.headers))
@@ -155,7 +146,6 @@ class Charcoal(object):
                 self.req.headers['location'],
                 self.test['outcomes']['response_redirect']))
 
-    @in_test
     @plugin
     def response_body_contains(self):
         # Did we expect something specific in the response body?
@@ -171,7 +161,6 @@ class Charcoal(object):
             return self.pass_test("Body contains \"{0}\"".format(required_text))
 
 
-    @in_test
     @plugin
     def response_body_doesnt_contain(self):
         # Do we need to ensure something does NOT appear in the response body?
@@ -188,7 +177,6 @@ class Charcoal(object):
             return self.pass_test("Body doesn't contain \"{0}\"".format(banned_text))
 
 
-    @in_test
     @plugin
     def response_max_time_ms(self):
         # Check response time
@@ -200,7 +188,6 @@ class Charcoal(object):
             return self.pass_test('Response time was {0}ms shorter than max ({1}ms)'.format(str(shorter_by_ms), str(self.duration_ms)))
 
 
-    @in_test
     @plugin
     def response_json_contains(self):
         # Validate presence of partial dicts in response json
@@ -213,7 +200,6 @@ class Charcoal(object):
                 return self.fail_test("Invalid json value {0} at path \"{1}\", expecting {2}".format(actual_value, path, expected_value))
 
 
-    @in_test
     @plugin
     def response_header_values(self):
         for header in self.test['outcomes']['response_header_values']:

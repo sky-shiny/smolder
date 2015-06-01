@@ -3,10 +3,12 @@ import smolder
 import nose
 import json
 import os
+import logging
 from nose.tools import raises
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-
+LOG = logging.getLogger('smolder')
+LOG.setLevel(logging.DEBUG)
 
 def test_github_status():
     myfile = open(THIS_DIR + '/github_status.json')
