@@ -3,12 +3,10 @@ import smolder
 import nose
 import json
 import os
-from nose.tools import assert_raises
+from nose.tools import raises
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
-def test_noop_test():
-    assert smolder.noop_test()
 
 def test_github_status():
     myfile = open(THIS_DIR + '/github_status.json')
@@ -27,6 +25,7 @@ def test_github_status_response_time_expect_fail():
 def test_tcp_test():
     smolder.tcp_test('127.0.0.1', 22) #Are you running an ssh server?
 
+@raises(Exception)
 def test_fail_tcp_test():
-    assert_raises(Exception, smolder.tcp_test, '127.0.0.1', 4242)
+    smolder.tcp_test, '127.0.0.1', 4242)
 
