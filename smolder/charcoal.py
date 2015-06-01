@@ -38,7 +38,7 @@ def plugin(view):
 
 def in_test(view):
     if view.__name__ in view.test['outcomes']:
-        return view()
+        return view
     else:
         pass
 
