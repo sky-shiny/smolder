@@ -1,6 +1,6 @@
 Smolder
 =======
-[![Build Status](https://travis-ci.org/sky-shiny/smolder.svg)](https://travis-ci.org/sky-shiny/smolder)
+[![Build Status](https://travis-ci.org/sky-shiny/smolder.svg?branch=master)](https://travis-ci.org/sky-shiny/smolder)
 
 - Smoke test your rest API.
 - Validate response times.
