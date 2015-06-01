@@ -37,11 +37,10 @@ def plugin(view):
     return view
 
 def in_test(view):
-    def func_wrapper(name):
-        if name in view.test:
-            return view(name)
-        else:
-            pass
+    if view.__name__ in view.test['outcomes']:
+        return view()
+    else:
+        pass
 
 @class_decorator
 class Charcoal(object):
