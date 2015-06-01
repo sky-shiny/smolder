@@ -99,18 +99,6 @@ class Charcoal(object):
         output = command.format(method=str(self.test['method']).upper(), headers=header, data=data, uri=self.inputs['url'])
         return output
 
-    # def __str__(self):
-    #     output = ""
-    #     LOG.debug("PLUGINS: {0}".format(self.plugins))
-    #     if 'show_body' in self.test:
-    #         output = "\n".join(output, self.req.content)
-    #     for run_plugin in self.plugins:
-    #         LOG.debug("Running plugin: {0}".format(run_plugin))
-    #         text = run_plugin(self)
-    #         if text is not None:
-    #             output = output.join([text, "\n"])
-    #     return output
-
 
     def pass_test(self, message):
         self.passed += 1
