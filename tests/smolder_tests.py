@@ -27,5 +27,5 @@ def test_tcp_test():
 
 @raises(Exception)
 def test_fail_tcp_test():
-    smolder.tcp_test, '127.0.0.1', 4242)
+    smolder.tcp_test('127.0.0.1', 4242)
 
