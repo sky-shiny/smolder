@@ -43,7 +43,7 @@ setup(
     author_email='maxwell.cameron@bskyb.com',
     url='http://git.bskyb.com/lsd/smolder',
     packages=PACKAGES,
-    package_data={'': ['LICENSE']},
+    package_data={'': ['LICENSE', '*.yapsy-plugin']},
     package_dir={'smolder': 'smolder'},
     scripts=['smolder-cli'],
     include_package_data=True,

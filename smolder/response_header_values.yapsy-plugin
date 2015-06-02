@@ -1,0 +1,9 @@
+[Core]
+Name = response_header_values
+Module = response_header_values
+
+[Documentation]
+Author = Max Cameron
+Version = 0.1
+Website = http://lotsofplugins.com
+Description = My first plugin

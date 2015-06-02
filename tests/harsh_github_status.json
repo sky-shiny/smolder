@@ -33,7 +33,8 @@
                 "status": "good"
             },
             "response_body_contains": "good",
-            "response_max_time_ms": 5
+            "response_max_time_ms": 1,
+            "colour_output": "True",
         }
     }
   ]

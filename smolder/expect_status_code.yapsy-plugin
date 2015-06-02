@@ -1,0 +1,9 @@
+[Core]
+Name = expect_status_code
+Module = expect_status_code
+
+[Documentation]
+Author = Max Cameron
+Version = 0.1
+Website = http://lotsofplugins.com
+Description = My first plugin

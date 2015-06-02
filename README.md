@@ -111,10 +111,16 @@ response_redirect | FAIL if string not in response location header.
 response_headers | FAIL if the headers received from the request doesn't contain the list of headers provided.
 response_header_values | FAIL if the *values* of the headers in the test don't match the values in the response.
 show_body | output the body to stdout.
-colour  | Colour PASS/FAIL
+colour_output  | Colour PASS/FAIL
 
 Plugins
 =======
+
+Place your custom plugins in .plugins dir in your CWD.  They will be loaded in addition to the builtin plugins.
+
+Smolder uses yapsy for our plugin system and plugins are comprised of two files: a .yapsy-plugin config file and the plugin python file.
+
+The plugin python file is comprised of a Plugin class and a run method, which is expected to call req.pass_test or req.fail_test with the results of a process upon test['outcomes'].
 
 
 Thanks

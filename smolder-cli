@@ -44,12 +44,13 @@ def smolder_cli(**kwargs):
     LOG.debug("Beginning default TCP test")
     smolder.tcp_test(str(kwargs['host']), tests[0]['port'])
     LOG.debug("Passed default TCP test")
-    print "Preparing to execute {0} tests".format(len(tests))
+    print("Preparing to execute {0} tests".format(len(tests)))
     # Iterate through all the tests
 
     for test in test_input['tests']:
         test_obj = smolder.charcoal.Charcoal(test=test, host=kwargs['host'])
-        print test_obj.output
+        print(test_obj.output)
+        print(str(test_obj))
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
         all_tests.append(test_obj)
@@ -57,10 +58,10 @@ def smolder_cli(**kwargs):
 
     LOG.debug("failed: {0}, passed: {1}".format(total_failed_tests, total_passed_tests))
     if total_failed_tests > 0:
-        print "FOUND {0} FAILURES IN {1} TESTS".format(str(total_failed_tests), str(total_passed_tests + total_failed_tests))
+        print("FOUND {0} FAILURES IN {1} TESTS".format(str(total_failed_tests), str(total_passed_tests + total_failed_tests)))
         sys.exit(1)
     elif total_failed_tests == 0 and total_passed_tests == 0:
-        print "No tests run: check plugins"
+        print("No tests run: check plugins")
         sys.exit(3)
     else:
-        print "ALL TESTS PASSED!"
+        print("ALL TESTS PASSED!")

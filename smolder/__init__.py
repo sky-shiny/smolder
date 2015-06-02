@@ -19,3 +19,4 @@ from .tcptest import tcp_test
 from .colours import Colours
 from .colours import COLOURS
 from .charcoal import Charcoal
+__all__ = ['.']
