@@ -34,7 +34,7 @@
             },
             "response_body_contains": "good",
             "response_max_time_ms": 1,
-            "colour_output": "True",
+            "colour_output": "True"
         }
     }
   ]
