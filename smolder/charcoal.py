@@ -41,6 +41,12 @@ class Charcoal(object):
             self.test['inputs']['timeout'] = 30
         if not hasattr(self.test['inputs'], 'verify'):
             self.test['inputs']['verify'] = False
+        if not hasattr(self.test, "protocol"):
+            self.test['protocol'] = "http"
+        if not hasattr(self.test, "port"):
+            self.test["port"] = 80
+        if not hasattr(self.test, "method"):
+            self.test["method"] = "get"
 
         start = int(round(time.time() * 1000))
         self.req = getattr(requests, kwargs['test']['method'], 'get')(**inputs)
@@ -55,7 +61,7 @@ class Charcoal(object):
         # Trigger 'some action' from the loaded plugins
         for plugin_info in manager.getAllPlugins():
             if plugin_info.name in self.test['outcomes']:
-                test_out = '  %10s: %s' % (plugin_info.name, plugin_info.plugin_object.run(self))
+                test_out = '%10s: %s' % (plugin_info.name, plugin_info.plugin_object.run(self))
                 self.output = "\n".join([self.output, test_out])
 
 
