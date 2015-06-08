@@ -1,10 +1,9 @@
 from yapsy.IPlugin import IPlugin
-import smolder
 import dpath
 import logging
 LOG = logging.getLogger('smolder')
 
-class ExpectStatusCode(IPlugin):
+class ResponseJsonContains(IPlugin):
 
     def run(self, req):
         # Validate presence of partial dicts in response json

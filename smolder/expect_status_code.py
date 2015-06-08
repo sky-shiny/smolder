@@ -1,9 +1,6 @@
 
 from yapsy.IPlugin import IPlugin
 import smolder
-import logging
-LOG = logging.getLogger('smolder')
-LOG.info("Hello")
 
 class ExpectStatusCode(IPlugin):
 

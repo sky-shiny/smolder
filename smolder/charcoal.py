@@ -15,7 +15,6 @@ logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:
 LOG = logging.getLogger('smolder')
 REQUESTS_LOG = logging.getLogger('requests')
 REQUESTS_LOG.setLevel(logging.ERROR)
-LOG.setLevel(logging.DEBUG)
 
 logging.getLogger('yapsy').setLevel(logging.INFO)
 
@@ -23,17 +22,16 @@ manager = PluginManager()
 manager.setPluginPlaces([THIS_DIR, "./.plugins"])
 manager.collectPlugins()
 
+
 class Charcoal(object):
 
-    def __init__(self, **kwargs):
+    def __init__(self, name, test, host):
         self.passed = 0
         self.failed = 0
-        self.test = kwargs['test']
-        host = kwargs['host']
+        self.test = test
+        host = host
         inputs = self.test['inputs']
         self.formatters = {}
-        inputs['url'] = REQUEST_URL_FORMAT.format(protocol=self.test['protocol'], host=host, port=self.test['port'], uri=self.test['uri'])
-        self.inputs = inputs
 
         if not hasattr(self.test['inputs'], 'allow_redirects'):
             self.test['inputs']['allow_redirects'] = False
@@ -48,15 +46,22 @@ class Charcoal(object):
         if not hasattr(self.test, "method"):
             self.test["method"] = "get"
 
+        inputs['url'] = REQUEST_URL_FORMAT.format(protocol=self.test['protocol'], host=host, port=self.test['port'], uri=self.test['uri'])
+        self.inputs = inputs
+
         start = int(round(time.time() * 1000))
-        self.req = getattr(requests, kwargs['test']['method'], 'get')(**inputs)
+        self.req = getattr(requests, test['method'], 'get')(**inputs)
         end = int(round(time.time() * 1000))
         self.duration_ms = end - start
 
         self.output = self.test['name']
         self.output = "\n".join([self.output, self.__repr__()])
         if 'show_body' in self.test:
-            self.output = "\n".join([self.output, self.req.content])
+            try:
+                req_content = self.req.content.decode()
+            except UnicodeDecodeError:
+                req_content = self.req.content
+            self.output = "\n".join([self.output, req_content])
 
         # Trigger 'some action' from the loaded plugins
         for plugin_info in manager.getAllPlugins():

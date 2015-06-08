@@ -29,9 +29,6 @@
           }
         },
         "outcomes": {
-            "response_json_contains": {
-                "status": "good"
-            },
             "response_body_contains": "good",
             "response_max_time_ms": 2000
         }

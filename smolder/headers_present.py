@@ -1,5 +1,4 @@
 from yapsy.IPlugin import IPlugin
-import smolder
 import logging
 LOG = logging.getLogger('smolder')
 

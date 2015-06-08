@@ -1,9 +1,8 @@
 from yapsy.IPlugin import IPlugin
-import smolder
 import logging
 LOG = logging.getLogger('smolder')
 
-class ExpectStatusCode(IPlugin):
+class ResponseHeaderValues(IPlugin):
 
     def run(self, req):
 
