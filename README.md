@@ -66,7 +66,7 @@ convenience.
 Easily introduced into a CI/CD deploy pipeline.
 
 Without --force, any API requests that are not GET's will be skipped as a safety
-mechanism to ensure we're not overwriting or creating data unconciously.
+mechanism to ensure we're not overwriting or creating data unconsciously.
 
 Checks may be defined in json or yaml documents. See [examples](examples).
 
