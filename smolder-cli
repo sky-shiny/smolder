@@ -13,6 +13,7 @@ LOG = logging.getLogger('smolder')
 LOG.setLevel(logging.DEBUG)
 PARSER = argh.ArghParser()
 
+
 @dispatch_command
 @arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))
 @arg('testfile', default=os.environ.get('TEST_FILE'), metavar='TEST_FILE', help='The json file that details the tests to execute')
@@ -50,7 +51,6 @@ def smolder_cli(**kwargs):
 
     for test in test_input['tests']:
         test_obj = Charcoal(name=test['name'], test=test, host=kwargs['host'])
-        print(test_obj.output)
         print(str(test_obj))
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed

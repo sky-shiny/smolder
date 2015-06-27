@@ -2,9 +2,11 @@ from yapsy.IPlugin import IPlugin
 import logging
 LOG = logging.getLogger('smolder')
 
+
 class ResponseRedirect(IPlugin):
 
-    def run(self, req):
+    @staticmethod
+    def run(req):
         if req.test['outcomes']['response_redirect'] == req.req.headers['location']:
             message = req.pass_test("Redirect to {0}".format(req.test['outcomes']['response_redirect']))
             return message

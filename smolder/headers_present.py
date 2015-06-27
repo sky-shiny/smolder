@@ -2,9 +2,11 @@ from yapsy.IPlugin import IPlugin
 import logging
 LOG = logging.getLogger('smolder')
 
+
 class HeadersPresent(IPlugin):
 
-    def run(self, req):
+    @staticmethod
+    def run(req):
         for header in req.test['response_headers_present']:
             if header not in req.req.headers:
                 return req.fail_test("Expected header {0} not present".format(header))

@@ -1,10 +1,11 @@
 
 from yapsy.IPlugin import IPlugin
-import smolder
+
 
 class ExpectStatusCode(IPlugin):
 
-    def run(self, req):
+    @staticmethod
+    def run(req):
         if 'expect_status_code' in req.test['outcomes']:
             if int(req.test['outcomes']['expect_status_code']) == req.req.status_code:
                 return req.pass_test("Status code == {0}".format(req.test['outcomes']['expect_status_code']))

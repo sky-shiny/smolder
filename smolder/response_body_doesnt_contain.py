@@ -2,9 +2,11 @@ from yapsy.IPlugin import IPlugin
 import logging
 LOG = logging.getLogger('smolder')
 
+
 class ResponseBodyDoesntContain(IPlugin):
 
-    def run(self, req):
+    @staticmethod
+    def run(req):
 
         # Do we need to ensure something does NOT appear in the response body?
         banned_text = req.test['outcomes']['response_body_doesnt_contain']
@@ -16,4 +18,3 @@ class ResponseBodyDoesntContain(IPlugin):
             return req.fail_test("Body contains \"{0}\" and shouldn't".format(banned_text))
         else:
             return req.pass_test("Body doesn't contain \"{0}\"".format(banned_text))
-

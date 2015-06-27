@@ -1,7 +1,6 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 import logging
 import socket
-import random
 from retrying import retry
 
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
@@ -29,7 +28,5 @@ def tcp_test(host, port):
         LOG.debug("Waiting for {0}:{1} to accept a connection".format(host, port))
         raise
     except Exception as error:
-        LOG.debug("TCP test failed: {0}".format(error.message))
+        LOG.debug("TCP test failed: {0}".format(error))
         raise
-
-

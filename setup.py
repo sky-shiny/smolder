@@ -27,6 +27,9 @@ REQUIRES = [
     'jsonpickle >= 0.9.2',
     'PyYAML >= 3.11',
     'Yapsy >= 1.11.23',
+    'validictory >= 1.0.0',
+    'nose >= 1.3.7',
+    'httpretty >= 0.8.10'
 ]
 
 with open('README.md', 'r') as f:
