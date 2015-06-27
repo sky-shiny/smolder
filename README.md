@@ -105,6 +105,14 @@ response_headers | FAIL if the headers received from the request doesn't contain
 response_header_values | FAIL if the *values* of the headers in the test don't match the values in the response.
 show_body | output the body to stdout.
 
+Testing
+=======
+Make sure that nose is installed:
+
+```pip install nose```
+
+At the project root run ```nosetests``` to run the tests.
+
 Thanks
 ======
 
