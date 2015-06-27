@@ -111,7 +111,7 @@ Make sure that nose is installed:
 
 ```pip install nose```
 
-At the project root run ```nosetests```
+At the project root run ```nosetests``` to run the tests.
 
 Thanks
 ======
