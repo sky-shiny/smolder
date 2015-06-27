@@ -107,9 +107,9 @@ show_body | output the body to stdout.
 
 Testing
 =======
-Make sure that nose is installed:
+Install smolder from source (from the project root) to get the relevant dependencies:
 
-```pip install nose```
+```pip install . --upgrade```
 
 At the project root run ```nosetests``` to run the tests.
 
