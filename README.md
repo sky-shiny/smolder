@@ -113,6 +113,12 @@ Install smolder from source (from the project root) to get the relevant dependen
 
 At the project root run ```nosetests``` to run the tests.
 
+Contributing
+============
+Contributions welcome.  For the most part, if tests pass and and the request is logical, it will get accepted.  
+Please squash your commits into logical units.
+Pep8 is encouraged (for the code you write) and a big effort is being made on that regard in v0.2 branch.
+
 Thanks
 ======
 
