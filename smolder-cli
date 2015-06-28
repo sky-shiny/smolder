@@ -50,7 +50,7 @@ def smolder_cli(**kwargs):
     # Iterate through all the tests
 
     for test in test_input['tests']:
-        test_obj = Charcoal(name=test['name'], test=test, host=kwargs['host'])
+        test_obj = Charcoal(test=test, host=kwargs['host'])
         print(str(test_obj))
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed

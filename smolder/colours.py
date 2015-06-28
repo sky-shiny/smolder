@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 class Colours(dict):
     def __init__(self):
-        dict.__init__(self)
+        dict.__init__(dict(self))
         self.yellow = '\033[93m'
         self.green = '\033[92m'
         self.red = '\033[91m'

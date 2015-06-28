@@ -8,7 +8,6 @@ from yapsy.PluginManager import PluginManager
 from . import COLOURS
 
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
-REQUEST_URL_FORMAT = '{protocol}://{host}:{port}{uri}'
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:%S")
@@ -17,7 +16,6 @@ REQUESTS_LOG = logging.getLogger('requests')
 REQUESTS_LOG.setLevel(logging.ERROR)
 
 logging.getLogger('yapsy').setLevel(logging.INFO)
-
 manager = PluginManager()
 manager.setPluginPlaces([THIS_DIR, "./.plugins"])
 manager.collectPlugins()
@@ -25,32 +23,55 @@ manager.collectPlugins()
 
 class Charcoal(object):
 
-    def __init__(self, name, test, host):
+    def __init__(self, test, host):
+        """
+
+        :rtype : object
+        """
+
         self.passed = 0
         self.failed = 0
-        self.test = test
+        test_defaults = {}
+        test_defaults['inputs'] = {}
         host = host
-        inputs = self.test['inputs']
         self.formatters = {}
+        LOG.debug("Test: {0}".format(test))
+        try:
+            test_defaults['inputs']['allow_redirects'] = test['inputs']['allow_redirects']
+        except (AttributeError, KeyError):
+            test_defaults['inputs']['allow_redirects'] = False
+        try:
+            test_defaults['inputs']['timeout'] = test['inputs']['timeout']
+        except (AttributeError, KeyError):
+            test_defaults['inputs']['timeout'] = 30
+        try:
+            test_defaults['inputs']['verify'] = test['inputs']['verify']
+        except (AttributeError, KeyError):
+            test_defaults['inputs']['verify'] = False
+        try:
+            test_defaults['protocol'] = test["protocol"]
+        except (AttributeError, KeyError):
+            test_defaults['protocol'] = "http"
+        try:
+            test_defaults["port"] = test["port"]
+        except (AttributeError, KeyError):
+            test_defaults["port"] = 80
+        try:
+            test_defaults["method"] = test["method"]
+        except (AttributeError, KeyError):
+            test_defaults["method"] = "get"
 
-        if not hasattr(self.test['inputs'], 'allow_redirects'):
-            self.test['inputs']['allow_redirects'] = False
-        if not hasattr(self.test['inputs'], 'timeout'):
-            self.test['inputs']['timeout'] = 30
-        if not hasattr(self.test['inputs'], 'verify'):
-            self.test['inputs']['verify'] = False
-        if not hasattr(self.test, "protocol"):
-            self.test['protocol'] = "http"
-        if not hasattr(self.test, "port"):
-            self.test["port"] = 80
-        if not hasattr(self.test, "method"):
-            self.test["method"] = "get"
-
-        inputs['url'] = REQUEST_URL_FORMAT.format(protocol=self.test['protocol'], host=host, port=self.test['port'], uri=self.test['uri'])
+        self.test = test.copy()
+        self.test.update(test_defaults)
+        LOG.debug("Test with defaults: {0}".format(self.test))
+        inputs = self.test['inputs']
+        request_url_format = '{protocol}://{host}:{port}{uri}'
+        inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=host, port=self.test['port'], uri=self.test['uri'])
+        LOG.info("Testing {0}".format(inputs['url']))
         self.inputs = inputs
 
         start = int(round(time.time() * 1000))
-        self.req = getattr(requests, test['method'], 'get')(**inputs)
+        self.req = getattr(requests, self.test['method'], 'get')(**inputs)
         end = int(round(time.time() * 1000))
         self.duration_ms = end - start
 
@@ -65,10 +86,12 @@ class Charcoal(object):
 
         # Trigger 'some action' from the loaded plugins
         for plugin_info in manager.getAllPlugins():
-            if plugin_info.name in self.test['outcomes']:
-                test_out = '%10s: %s' % (plugin_info.name, plugin_info.plugin_object.run(self))
-                self.output = "\n".join([self.output, test_out])
-
+            for outcome in self.test['outcomes']:
+                if plugin_info.name == outcome:
+                    manager.activatePluginByName(plugin_info.name)
+                    test_out = '%10s: %s' % (plugin_info.name, plugin_info.plugin_object.run(self))
+                    self.output = "\n".join([self.output, test_out])
+                    manager.deactivatePluginByName(plugin_info.name)
 
     def __str__(self):
         return self.output
@@ -86,11 +109,10 @@ class Charcoal(object):
             data = self.inputs.data
         else:
             data = ''
-        #Adding curl output to allow simple debugging of the requests
+        # Adding curl output to allow simple debugging of the requests
         command = 'curl -v -s -o /dev/null {headers} -d {data} -X {method} "{uri}"'
         output = command.format(method=str(self.test['method']).upper(), headers=header, data=data, uri=self.inputs['url'])
         return output
-
 
     def pass_test(self, message):
         self.passed += 1
@@ -99,14 +121,12 @@ class Charcoal(object):
             status = COLOURS.to_green(status)
         return message + " " + status
 
-
     def fail_test(self, message):
         self.failed += 1
         status = "[FAIL]"
         if getattr(self.test['outcomes'], "colour_output", True):
             status = COLOURS.to_red(status)
         return message + " " + status
-
 
     def _to_json(self):
         return jsonpickle.encode(self)
