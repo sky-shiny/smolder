@@ -71,19 +71,21 @@ Without --force, any API requests that are not GET's will be skipped as a safety
 mechanism to ensure we're not overwriting or creating data unconciously.
 
 
-Request Options
-===============
+Tests
+=====
 
-Inputs accept all verbs that requests does, in the same format for convenience.
-
+Test Options | Description
+--------------------------
+name \* | name for the test
+uri \* | /url/path/to/resource.json
+protocol | tcp, http, https or noop
+port | 0 - 65535
+method | GET, POST, PUT, DELETE, OPTION
+inputs | Inputs accept all verbs that requests does, in the same format for convenience. See below for details.
+outcomes | Outcomes is a list of tests to run against the response. See below for details.
 
 Inputs | Description
 ---------------|-------------
-name \* | name for the test
-protocol \* | tcp, http, https or noop
-port \* | 0 - 65535
-uri \* | /url/path/to/resource.json
-method | GET, POST, PUT, DELETE, OPTION
 headers (recommended) |  header object to append to requests instantiation.  The host header is probably the most likely requirement.
 username | basic auth username
 password | basic auth password
@@ -93,12 +95,6 @@ file | provide dummy "filename" and dummy "content" as json arguments. Uploads t
 verify | Should we verify the ssl cert when making an https request?  Defaults to False.
 allow_redirects | Follow links. Defauts to False so that you can be explicit about the redirect.
 timeout | timeout for the request. Defaults to 30
-
-
-*: required
-
-Response Options
-================
 
 Outcomes | Description
 ----------------------|-----------------------------
@@ -116,12 +112,15 @@ colour_output  | Colour PASS/FAIL
 Plugins
 =======
 
-Place your custom plugins in .plugins dir in your CWD.  They will be loaded in addition to the builtin plugins.
+Place your custom plugins in ~/.smolder_plugins.  They will be loaded in addition to the builtin plugins.
 
-Smolder uses yapsy for our plugin system and plugins are comprised of two files: a .yapsy-plugin config file and the plugin python file.
+Smolder uses [yapsy](https://yapsy.readthedocs.org/en/latest/) for our plugin system.
 
-The plugin python file is comprised of a Plugin class and a run method, which is expected to call req.pass_test or req.fail_test with the results of a process upon test['outcomes'].
+Plugins are comprised of two files: a .yapsy-plugin config file and the plugin python file referenced in the .yapsy file.
 
+The plugin python file is comprised of a Plugin class and a run method, which is expected to call req.pass_test or req.fail_test with the pass or failure message.
+
+Here is an example [plugin](charcoal/response_redirect.py.
 
 Thanks
 ======
