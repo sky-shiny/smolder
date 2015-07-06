@@ -9,6 +9,7 @@ Smolder
 - Validate redirects.
 - Validate ssl certificates.
 - Validate headers.
+- Validate json object types using [validictory](https://github.com/jamesturk/validictory)
 - More
 
 Installation
