@@ -17,7 +17,7 @@ LOG.setLevel(logging.DEBUG)
 def test_github_status():
     total_failed_tests = 0
     total_passed_tests = 0
-    myfile = open(THIS_DIR + '/github_status.json')
+    myfile = open(THIS_DIR + '/fixtures/github_status.json')
     test_json = yaml.load(myfile)
     for test in test_json['tests']:
         test_obj = smolder.charcoal.Charcoal(test=test, host='status.github.com')
@@ -29,7 +29,7 @@ def test_github_status():
 def test_github_status_expect_fail():
     total_failed_tests = 0
     total_passed_tests = 0
-    myfile = open(THIS_DIR + '/harsh_github_status.json')
+    myfile = open(THIS_DIR + '/fixtures/harsh_github_status.json')
     test_json = yaml.load(myfile)
     for test in test_json['tests']:
         test_obj = smolder.charcoal.Charcoal(test=test, host='status.github.com')
@@ -46,7 +46,7 @@ def test_validate_json():
     httpretty.register_uri(httpretty.GET, "http://fakehost111.com/somejson", body=json.dumps(yaml.load(mytest)), content_type="application/json")
     validate_httpretty = requests.get("http://fakehost111.com/somejson")
     LOG.debug("Expected response: {0}".format(validate_httpretty.json()))
-    myfile = open(THIS_DIR + '/validate_json.yaml')
+    myfile = open(THIS_DIR + '/fixtures/validate_json.yaml')
     test_json = yaml.load(myfile)
     for test in test_json['tests']:
         test_obj = smolder.charcoal.Charcoal(test=test, host='fakehost111.com')
@@ -62,7 +62,7 @@ def test_validate_json_fail():
     mytest = open(THIS_DIR + '/mocks/validate_json_response_fail.json')
     json_response = yaml.load(mytest)
     httpretty.register_uri(httpretty.GET, "http://fakehost111.com/somejson", body=str(json_response), content_type="application/json")
-    myfile = open(THIS_DIR + '/validate_json.yaml')
+    myfile = open(THIS_DIR + '/fixtures/validate_json.yaml')
     test_json = yaml.load(myfile)
     for test in test_json['tests']:
         test_obj = Charcoal(test=test, host='fakehost111.com')
