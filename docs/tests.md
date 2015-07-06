@@ -13,8 +13,8 @@ uri \* | /url/path/to/resource.json
 protocol | tcp, http, https or noop
 port | 0 - 65535
 method | GET, POST, PUT, DELETE, OPTION
-[inputs.md](inputs) | Inputs accept all verbs that requests does, in the same format for convenience. See below for details.
-[outcomes.md](outcomes) | Outcomes is a list of tests to run against the response. See below for details.
+[inputs](inputs.md) | Inputs accept all verbs that requests does, in the same format for convenience. See below for details.
+[outcomes](outcomes.md) | Outcomes is a list of tests to run against the response. See below for details.
 
-See these [examples.md](examples).
+See these [examples](examples.md).
 
