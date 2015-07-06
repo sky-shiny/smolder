@@ -17,7 +17,7 @@ REQUESTS_LOG.setLevel(logging.ERROR)
 
 logging.getLogger('yapsy').setLevel(logging.INFO)
 manager = PluginManager()
-manager.setPluginPlaces([THIS_DIR, "./.plugins"])
+manager.setPluginPlaces([THIS_DIR, "~/.smolder_plugins"])
 manager.collectPlugins()
 
 
