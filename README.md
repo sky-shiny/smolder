@@ -22,7 +22,7 @@ Example
 =======
 
 ```
-$> smolder-cli status.github.com examples/github_status.json
+$> smolder status.github.com examples/github_status.json
 
 Success connecting to status.github.com on port 80
 Preparing to execute 2 tests
@@ -84,10 +84,10 @@ protocol \* | tcp, http, https or noop
 port \* | 0 - 65535
 uri \* | /url/path/to/resource.json
 method | GET, POST, PUT, DELETE, OPTION
-headers (recommended) |  header object to append to requests instansiation.  The host header is probably the most likely requirement.
+headers (recommended) |  header object to append to requests instantiation.  The host header is probably the most likely requirement.
 username | basic auth username
 password | basic auth password
-cookie | cookie object to append to requests instansiation
+cookie | cookie object to append to requests instantiation
 data | data for POST or PUT.
 file | provide dummy "filename" and dummy "content" as json arguments. Uploads the content as filename to the specified host.
 verify | Should we verify the ssl cert when making an https request?  Defaults to False.

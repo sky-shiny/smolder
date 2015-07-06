@@ -3,12 +3,15 @@ RELEASE HISTORY
 
 Version 0.2.1
 -------------
-- Rewrote and reorganised everything
-- Implemented a plugin system
+- Rewrote and reorganised everything to be more pythonic
+- Implemented the yapsy plugin system
+- json validation from validictory
 - Breaking changes to the test schema
-    - Added input dict section with inputs and structure matching the underlying requests verbs exactly (passthrough)
+    - Added input dict section with inputs and structure matching the underlying requests verbs exactly (pass through)
     - Added an outcomes section to be more understandable
     - request_headers becomes simply headers
+    - smolder-cli command line tool becomes simply smolder
+    - If you are inheriting, inherit from charcoal package
 
 Version 0.1.2
 -------------
