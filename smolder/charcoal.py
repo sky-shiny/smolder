@@ -21,6 +21,9 @@ manager.setPluginPlaces([THIS_DIR, "~/.smolder_plugins"])
 manager.collectPlugins()
 
 
+OUTPUT_WIDTH        = 93
+TEST_LINE_FORMAT    = "{0:.<" + str(OUTPUT_WIDTH - 20) + "s} {1:4s}"
+
 class Charcoal(object):
 
     def __init__(self, test, host):
@@ -67,15 +70,19 @@ class Charcoal(object):
         inputs = self.test['inputs']
         request_url_format = '{protocol}://{host}:{port}{uri}'
         inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=host, port=self.test['port'], uri=self.test['uri'])
-        LOG.info("Testing {0}".format(inputs['url']))
+        LOG.debug("Testing {0}".format(inputs['url']))
         self.inputs = inputs
 
         start = int(round(time.time() * 1000))
         self.req = getattr(requests, self.test['method'], 'get')(**inputs)
         end = int(round(time.time() * 1000))
         self.duration_ms = end - start
-
-        self.output = self.test['name']
+        self.output = ("-" * (OUTPUT_WIDTH - 3))
+        this_name = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.test['name'][:OUTPUT_WIDTH-2])
+        self.output = "\n".join([self.output, this_name])
+        this_url = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.inputs["url"][:OUTPUT_WIDTH-2])
+        self.output = "\n".join([self.output, this_url])
+        self.output = "\n".join([self.output, ("-" * (OUTPUT_WIDTH - 3))])
         self.output = "\n".join([self.output, self.__repr__()])
         if 'show_body' in self.test:
             try:
@@ -119,14 +126,14 @@ class Charcoal(object):
         status = "[PASS]"
         if getattr(self.test['outcomes'], "colour_output", True):
             status = COLOURS.to_green(status)
-        return message + " " + status
+        return TEST_LINE_FORMAT.format(message + " ", status)
 
     def fail_test(self, message):
         self.failed += 1
         status = "[FAIL]"
         if getattr(self.test['outcomes'], "colour_output", True):
             status = COLOURS.to_red(status)
-        return message + " " + status
+            return TEST_LINE_FORMAT.format(message + " ", status)
 
     def _to_json(self):
         return jsonpickle.encode(self)
