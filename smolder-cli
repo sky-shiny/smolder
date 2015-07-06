@@ -10,7 +10,7 @@ import argh
 from argh import arg, dispatch_command
 logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:%S")
 LOG = logging.getLogger('smolder')
-LOG.setLevel(logging.DEBUG)
+LOG.setLevel(logging.INFO)
 PARSER = argh.ArghParser()
 
 
