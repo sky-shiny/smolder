@@ -75,6 +75,7 @@ class Charcoal(object):
         self.req = getattr(requests, self.test['method'], 'get')(**inputs)
         end = int(round(time.time() * 1000))
         self.duration_ms = end - start
+
         self.output = ("-" * (OUTPUT_WIDTH - 3))
         this_name = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.test['name'][:OUTPUT_WIDTH - 2])
         self.output = "\n".join([self.output, this_name])
@@ -89,7 +90,6 @@ class Charcoal(object):
                 req_content = self.req.content
             self.output = "\n".join([self.output, req_content])
 
-        # Trigger 'some action' from the loaded plugins
         for plugin_info in manager.getAllPlugins():
             for outcome in self.test['outcomes']:
                 if plugin_info.name == outcome:
