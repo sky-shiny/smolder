@@ -16,6 +16,7 @@ def tcp_test(host, port):
 
     """
     LOG.debug("TCP test called")
+    my_sock = None
     try:
         my_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         my_sock.settimeout(1)

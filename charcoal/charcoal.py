@@ -20,12 +20,11 @@ manager = PluginManager()
 manager.setPluginPlaces([THIS_DIR, "~/.smolder_plugins"])
 manager.collectPlugins()
 
+OUTPUT_WIDTH = 93
+TEST_LINE_FORMAT = "{0:.<" + str(OUTPUT_WIDTH - 20) + "s} {1:4s}"
 
-OUTPUT_WIDTH        = 93
-TEST_LINE_FORMAT    = "{0:.<" + str(OUTPUT_WIDTH - 20) + "s} {1:4s}"
 
 class Charcoal(object):
-
     def __init__(self, test, host):
         """
 
@@ -34,8 +33,7 @@ class Charcoal(object):
 
         self.passed = 0
         self.failed = 0
-        test_defaults = {}
-        test_defaults['inputs'] = {}
+        test_defaults = {'inputs': {}}
         host = host
         self.formatters = {}
         LOG.debug("Test: {0}".format(test))
@@ -78,9 +76,9 @@ class Charcoal(object):
         end = int(round(time.time() * 1000))
         self.duration_ms = end - start
         self.output = ("-" * (OUTPUT_WIDTH - 3))
-        this_name = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.test['name'][:OUTPUT_WIDTH-2])
+        this_name = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.test['name'][:OUTPUT_WIDTH - 2])
         self.output = "\n".join([self.output, this_name])
-        this_url = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.inputs["url"][:OUTPUT_WIDTH-2])
+        this_url = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.inputs["url"][:OUTPUT_WIDTH - 2])
         self.output = "\n".join([self.output, this_url])
         self.output = "\n".join([self.output, ("-" * (OUTPUT_WIDTH - 3))])
         self.output = "\n".join([self.output, self.__repr__()])
