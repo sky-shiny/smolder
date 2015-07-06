@@ -75,7 +75,7 @@ Tests
 =====
 
 Test Options | Description
---------------------------
+-------------|------------
 name \* | name for the test
 uri \* | /url/path/to/resource.json
 protocol | tcp, http, https or noop
