@@ -13,7 +13,9 @@ What it does
 
 It will run tests defined in your test file against a dns or ip address.
 
-It wraps the "requests" python library inserting headers, authentication etc.
+It wraps Kenneth Reitz' superb [https://github.com/kennethreitz/requests](requests) python library.
+ 
+It inserts some sane defaults and passes through options from your definition (headers, authentication etc).
 
 It checks the response from the server for expected status-codes/body/header/dpath-json
 contents and passes or fails the test based on your definition.

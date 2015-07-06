@@ -1,6 +1,10 @@
 Outcomes
 ========
 
+Outcomes are where the logic goes.  We verify the response from the server against these defined outcomes.
+
+Pass or fail scenarios are defined below.
+
 Outcomes | Description
 ----------------------|-----------------------------
 response_body_contains | PASS if string in body.
