@@ -4,3 +4,4 @@ build/
 *.pyc
 requirements.txt
 .coverage
+.idea
