@@ -34,4 +34,5 @@ mechanism (to ensure you're not overwriting or creating data unconsciously).
 2. [inputs](inputs.md)
 3. [outcomes](outcomes.md)
 4. [plugins](plugins.md)
-5. [history](../HISTORY)
+5. [examples](examples.md)
+6. [history](../HISTORY)
