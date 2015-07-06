@@ -49,7 +49,10 @@ Response time was 341ms longer than 200ms max (541ms) ................ [FAIL]
 FOUND 1 FAILURES IN 4 TESTS
 ```
 
-Example [Readme](https://github.com/sky-shiny/smolder/blob/master/examples/README.md)
+Documentation
+=============
+
+[Index](docs/index.md)
 
 Thanks
 ======
