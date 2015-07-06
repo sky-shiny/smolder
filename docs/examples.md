@@ -10,45 +10,27 @@ Here are some contrived examples that you can run.
 - Expect the final test of site speed to fail as 200ms is typically about half the normal page load time for https://status.github.com.
 
 ```
-smolder-cli status.github.com github_status.json
+smolder status.github.com github_status.json
 ```
 
 [../examples/aws_status.json](aws_status.json)
 - another contrived status page example
 
 ```
-smolder-cli status.aws.amazon.com aws_status.json
+smolder status.aws.amazon.com aws_status.json
 ```
 
 [../examples/example_test.json](example_test.json)
 - tests an RFC1918 (won't work out of the box) address by trying to PUT data to it and verifying the result.
 
 ```
-smolder-cli 10.0.0.1 example_test.json --force
+smolder 10.0.0.1 example_test.json --force
 ```
 
 
 [../examples/soa_test.json](soa_test.json)
 - tests an https endpoint which has an issue with it's certificate
 ```
-smolder-cli 173.223.194.219 soa_test.json
+smolder 173.223.194.219 soa_test.json
 ```
-{
-    "files": [],
-    "cookies": None,
-    "url": None,
-    "hooks": {
-        "response": []
-    },
-    "auth": None,
-    "headers": {},
-    "json": None,
-    "params": {},
-    "data": [],
-    "method": None,
-    "verify": False,
-    "stream": True,
-    "cert": None,
-    "allow_redirects": False,
-    "timeout": 30
-}
+
