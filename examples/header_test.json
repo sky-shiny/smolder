@@ -1,26 +1,30 @@
 {
 "tests": [
     {
-      "name": "Download API (Transactions endpoint)",
-      "protocol": "https",
-      "port": 443,
-      "url": "/download/transactions",
-      "method": "post",
-      "data": {
-        "downloadTransaction": {
-          "status": "COMPLETE"
+        "name": "Download API (Transactions endpoint)",
+        "protocol": "https",
+        "port": 443,
+        "uri": "/download/transactions",
+        "method": "post",
+        "inputs": {
+            "data": {
+                "downloadTransaction": {
+                    "status": "COMPLETE"
+                }
+            },
+            "headers": {
+                "User-Agent": "Smolder smoke test library",
+                "Host": "example.com",
+                "Content-Type": "application/json"
+            },
+            "verify": "False"
+        },
+        "outcomes": {
+            "expect_status_code": 200,
+            "response_headers_present": [
+                "x-int-requestid"
+            ]
         }
-      },
-      "validate_cert": "False",
-      "request_headers": {
-        "User-Agent": "Smolder smoke test library",
-        "Host": "example.com",
-        "Content-Type": "application/json"
-      },
-      "expect_status_code": 200,
-      "response_headers_present": [
-        "x-int-requestid"
-      ]
     }
   ]
 }

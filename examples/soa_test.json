@@ -4,14 +4,17 @@
       "name": "Acquire Token (SSO/OAUTH/SAML)",
       "protocol": "https",
       "port": 443,
-      "url": "/auth/tokens",
-      "method": "get",
-      "request_headers": {
-        "User-Agent": "Smolder smoke test library",
-        "Host": "android.sky.com"
+      "uri": "/auth/tokens",
+      "inputs": {
+          "headers": {
+              "User-Agent": "Smolder smoke test library",
+              "Host": "android.sky.com"
+          },
+          "verify": "False"
       },
-      "validate_cert": "False",
-      "expect_status_code": 405
+      "outcomes": {
+          "expect_status_code": 405
+      }
     }
   ]
 }

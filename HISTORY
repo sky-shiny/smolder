@@ -7,11 +7,12 @@ Version 0.2.1
 - Implemented the yapsy plugin system
 - json validation from validictory
 - Breaking changes to the test schema
-    - Added input dict section with inputs and structure matching the underlying requests verbs exactly (pass through)
-    - Added an outcomes section to be more understandable
+    - Added inputs dict section with inputs and structure matching the underlying requests verbs exactly (pass through)
+    - Added an outcomes section to be more clear about logic
     - request_headers becomes simply headers
     - smolder-cli command line tool becomes simply smolder
     - If you are inheriting, inherit from charcoal package
+    - validate_cert becomes verify (as it is passed through to requests directly), and goes under inputs
 
 Version 0.1.2
 -------------

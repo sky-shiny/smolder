@@ -1,33 +1,36 @@
 {
   "tests": [
     {
-      "name": "Status",
-      "protocol": "http",
-      "port": 80,
-      "url": "/status",
-      "method": "get",
-      "request_headers": {
-        "User-Agent": "Smolder smoke test library"
-      },
-      "response_body_contains": "HEALTHY"
+        "name": "Status",
+        "uri": "/status",
+        "inputs": {
+            "headers": {
+                "User-Agent": "Smolder smoke test library"
+            }
+        },
+        "outcomes": {
+            "response_body_contains": "HEALTHY"
+        }
     },
     {
-      "name": "Finalize verify requires auth",
-      "protocol": "http",
-      "port": 80,
-      "url": "/downloads/539e92c0-06a1-11e4-9191-0800200c9a66/finalise",
-      "method": "put",
-      "data": {
-        "downloadTransaction": {
-          "status": "COMPLETE"
+        "name": "Finalize verify requires auth",
+        "uri": "/downloads/539e92c0-06a1-11e4-9191-0800200c9a66/finalise",
+        "method": "put",
+        "inputs": {
+            "data": {
+                "downloadTransaction": {
+                    "status": "COMPLETE"
+                }
+            },
+            "headers": {
+                "User-Agent": "Smolder smoke test library",
+                "Host": "bskyb.com",
+                "content-type": "Application/json"
+            }
+        },
+        "outcomes": {
+            "expect_status_code": 401
         }
-      },
-      "request_headers": {
-        "User-Agent": "Smolder smoke test library",
-        "Host": "bskyb.com",
-        "content-type": "Application/json"
-      },
-      "expect_status_code": 401
     }
   ]
 }
