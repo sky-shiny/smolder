@@ -9,6 +9,13 @@ Smolder
 - Validate headers.
 - More
 
+Next Release
+============
+The next release includes breaking changes and is available in the v0.2 branch.
+The release will become the master branch in less than 7 days time.
+Master will remain available on the v0.1 branch for a few months after the upgrade.
+I encourage you to check it out.
+
 Installation
 ============
 
