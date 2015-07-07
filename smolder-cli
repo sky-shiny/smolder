@@ -16,6 +16,10 @@ LOG = logging.getLogger('smolder')
 LOG.setLevel(logging.INFO)
 PARSER = argh.ArghParser()
 
+print("\033[91mv0.2 is ready and includes some breaking changes to the test structure. " +
+            "Please see https://raw.githubusercontent.com/sky-shiny/smolder/v0.2/HISTORY for details" +
+            "v0.2 will be released to master and v0.1 moved into a branch on the weekend of the 11th July 2015\033[0m")
+
 @dispatch_command
 @arg('host', help='IP address or DNS name to run tests against',
      default=os.environ.get('TEST_HOST'))
