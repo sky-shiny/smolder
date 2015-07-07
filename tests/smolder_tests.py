@@ -73,6 +73,20 @@ def test_validate_json_fail():
     assert total_failed_tests >= 0
 
 
+@raises(yaml.parser.ParserError)
+def test_invalid_yaml_yaml_format():
+    total_failed_tests = 0
+    total_passed_tests = 0
+    myfile = open(THIS_DIR + '/fixtures/invalid_yaml.yaml')
+    test_json = yaml.load(myfile)
+    for test in test_json['tests']:
+        test_obj = Charcoal(test=test, host='status.github.com')
+        if test_obj.failed > 0:
+            LOG.debug(str(test_obj))
+        total_failed_tests += test_obj.failed
+        total_passed_tests += test_obj.passed
+    assert total_failed_tests == 0
+
 def test_tcp_test():
     smolder.tcp_test('127.0.0.1', 22)  # Are you running an ssh server?
 
