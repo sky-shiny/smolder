@@ -105,6 +105,20 @@ response_headers | FAIL if the headers received from the request doesn't contain
 response_header_values | FAIL if the *values* of the headers in the test don't match the values in the response.
 show_body | output the body to stdout.
 
+Testing
+=======
+Install smolder from source (from the project root) to get the relevant dependencies:
+
+```pip install . --upgrade```
+
+At the project root run ```nosetests``` to run the tests.
+
+Contributing
+============
+Contributions welcome.  For the most part, if tests pass and and the request is logical, it will get accepted.  
+Please squash your commits into logical units.
+Pep8 is encouraged (for the code you write) and a big effort is being made on that regard in v0.2 branch.
+
 Thanks
 ======
 

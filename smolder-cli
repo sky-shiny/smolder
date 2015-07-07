@@ -38,15 +38,16 @@ def smolder_cli(**kwargs):
     tests = test_json['tests']
   except IOError:
     LOG.exception("Couldn't open test file %s", kwargs['testfile'])
-    raise
-  except yaml.ScannerError:
-    LOG.exception("Invalid data in file %s", kwargs['testfile'])
+    sys.exit(6)
+  except yaml.parser.ParserError:
+    LOG.exception("Invalid yaml in file %s", kwargs['testfile'])
+    sys.exit(5)
   except ValueError:
     LOG.exception("Invalid data in file %s", kwargs['testfile'])
-    raise
+    sys.exit(4)
   except KeyError:
     LOG.exception("No tests defined in %s", kwargs['testfile'])
-    raise
+    sys.exit(3)
   if len(tests) == 0:
     LOG.error("There are no tests configured in %s: You MUST specify at least one test", kwargs['testfile'])
     sys.exit(2)
