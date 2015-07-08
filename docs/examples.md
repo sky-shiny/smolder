@@ -4,7 +4,7 @@ Examples
 Here are some contrived examples that you can run.
 
 
-[github_status.json](github_status.json)
+[../examples/github_status.json](github_status.json)
 - connects to http://status.github.com/api/status.json on port 80 and expects to be redirected to https://status.github.com/api/status.json with a 301.
 - then tests https://status.github.com/api/status.json and FAILs if github is reporting issues on their status page.
 - Expect the final test of site speed to fail as 200ms is typically about half the normal page load time for https://status.github.com.
