@@ -1,34 +1,35 @@
 ---
 tests:
-    - inputs:
-        files:
-            file:
-                content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Doneca diam lectus."
-                filename: test_file.txt
-        headers:
-            Host: localhost
-            User-Agent: "Smolder smoke test library"
-      name: "Test Json Validation"
-      outcomes:
-        expect_status_code: 200
-        validate_json:
-          schema:
-            properties:
-              address:
-                type: string
-              country:
-                type: string
-              date-of-birth:
-                type: string
-              email:
-                type: string
-              gender:
-                type: string
-              name:
-                type: string
-              phones:
-                type: object
-              zip:
-                type: string
-            type: object
-      uri: /somejson
+  -
+    inputs:
+      files:
+        file:
+          content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Doneca diam lectus."
+          filename: test_file.txt
+      headers:
+        Host: localhost
+        User-Agent: "Smolder smoke test library"
+    name: "Test Json Validation"
+    outcomes:
+      expect_status_code: 200
+      validate_json:
+        schema:
+          properties:
+            address:
+              type: string
+            country:
+              type: string
+            date-of-birth:
+              type: string
+            email:
+              type: string
+            gender:
+              type: string
+            name:
+              type: string
+            phones:
+              type: object
+            zip:
+              type: string
+          type: object
+    uri: /somejson

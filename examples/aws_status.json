@@ -1,16 +1,16 @@
 {
-  "tests": [
-    {
-      "name": "AWS Status",
-      "uri": "/",
-      "inputs": {
-          "headers": {
-             "User-Agent": "Smolder smoke test library"
-          }
-      },
-      "outcomes": {
-          "response_body_contains": "Service is operating normally"
-      }
-    }
-  ]
+    "tests": [
+        {
+            "name": "AWS Status",
+            "uri": "/",
+            "inputs": {
+                "headers": {
+                    "User-Agent": "Smolder smoke test library"
+                }
+            },
+            "outcomes": {
+                "response_body_contains": "Service is operating normally"
+            }
+        }
+    ]
 }

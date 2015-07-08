@@ -1,12 +1,12 @@
 {
     "name": "Some Random",
-     "address": "Timbuktoo",
-     "zip": 94301,
-     "country": "US",
-     "date-of-birth": "1981-10-18",
-     "gender": "male",
-     "email": "blah@blah.com",
-     "phones": {
+    "address": "Timbuktoo",
+    "zip": 94301,
+    "country": "US",
+    "date-of-birth": "1981-10-18",
+    "gender": "male",
+    "email": "blah@blah.com",
+    "phones": {
         "home": "+1 650-555-1234",
         "cell": "+1 650-555-4321"
     }

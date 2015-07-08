@@ -1,20 +1,20 @@
 {
-  "tests": [
-    {
-      "name": "Acquire Token (SSO/OAUTH/SAML)",
-      "protocol": "https",
-      "port": 443,
-      "uri": "/auth/tokens",
-      "inputs": {
-          "headers": {
-              "User-Agent": "Smolder smoke test library",
-              "Host": "android.sky.com"
-          },
-          "verify": "False"
-      },
-      "outcomes": {
-          "expect_status_code": 405
-      }
-    }
-  ]
+    "tests": [
+        {
+            "name": "Acquire Token (SSO/OAUTH/SAML)",
+            "protocol": "https",
+            "port": 443,
+            "uri": "/auth/tokens",
+            "inputs": {
+                "headers": {
+                    "User-Agent": "Smolder smoke test library",
+                    "Host": "android.sky.com"
+                },
+                "verify": "False"
+            },
+            "outcomes": {
+                "expect_status_code": 405
+            }
+        }
+    ]
 }

@@ -1,23 +1,23 @@
 {
-"tests": [
-    {
-        "name": "Upload Dummy File",
-        "uri": "/files/upload",
-        "method": "post",
-        "inputs": {
-            "file": {
-                "filename": "test_file.txt",
-                "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus."
+    "tests": [
+        {
+            "name": "Upload Dummy File",
+            "uri": "/files/upload",
+            "method": "post",
+            "inputs": {
+                "file": {
+                    "filename": "test_file.txt",
+                    "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus."
+                },
+                "request_headers": {
+                    "User-Agent": "Smolder smoke test library",
+                    "Host": "localhost"
+                },
+                "verify": "False"
             },
-            "request_headers": {
-                "User-Agent": "Smolder smoke test library",
-                "Host": "localhost"
-            },
-            "verify": "False"
-        },
-        "outcomes": {
-            "expect_status_code": 200
+            "outcomes": {
+                "expect_status_code": 200
+            }
         }
-    }
-  ]
+    ]
 }
