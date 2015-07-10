@@ -53,7 +53,13 @@ FOUND 1 FAILURES IN 4 TESTS
 Documentation
 =============
 
-[Index](docs/index.md)
+1. [tests](docs/tests.md)
+2. [inputs](docs/inputs.md)
+3. [outcomes](docs/outcomes.md)
+4. [plugins](docs/plugins.md)
+5. [examples](docs/examples.md)
+6. [contributing](docs/contributing.md)
+7. [history](HISTORY)
 
 Thanks
 ======

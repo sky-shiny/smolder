@@ -87,6 +87,7 @@ def test_invalid_yaml_yaml_format():
         total_passed_tests += test_obj.passed
     assert total_failed_tests == 0
 
+
 def test_tcp_test():
     smolder.tcp_test('127.0.0.1', 22)  # Are you running an ssh server?
 

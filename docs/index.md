@@ -13,7 +13,7 @@ What it does
 
 It will run tests defined in your test file against a dns or ip address.
 
-It wraps Kenneth Reitz' superb [https://github.com/kennethreitz/requests](requests) python library.
+It wraps Kenneth Reitz' superb [requests](https://github.com/kennethreitz/requests) python library.
  
 It inserts some sane defaults and passes through options from your definition (headers, authentication etc).
 
