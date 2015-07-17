@@ -54,12 +54,12 @@ Documentation
 =============
 
 1. [tests](docs/tests.md)
-2. [inputs](docs/inputs.md)
-3. [outcomes](docs/outcomes.md)
-4. [plugins](docs/plugins.md)
-5. [examples](docs/examples.md)
-6. [contributing](docs/contributing.md)
-7. [history](HISTORY)
+    - [inputs](docs/inputs.md)
+    - [outcomes](docs/outcomes.md)
+2. [plugins](docs/plugins.md)
+3. [examples](docs/examples.md)
+4. [contributing](docs/contributing.md)
+5. [history](HISTORY)
 
 Thanks
 ======

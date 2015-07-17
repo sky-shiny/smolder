@@ -31,9 +31,9 @@ Without --force, any API requests that are not a GET will be skipped as a safety
 mechanism (to ensure you're not overwriting or creating data unconsciously).
 
 1. [tests](tests.md)
-2. [inputs](inputs.md)
-3. [outcomes](outcomes.md)
-4. [plugins](plugins.md)
-5. [examples](examples.md)
-6. [contributing](contributing.md)
-7. [history](../HISTORY)
+    - [inputs](inputs.md)
+    - [outcomes](outcomes.md)
+2. [plugins](plugins.md)
+3. [examples](examples.md)
+4. [contributing](contributing.md)
+5. [history](../HISTORY)
