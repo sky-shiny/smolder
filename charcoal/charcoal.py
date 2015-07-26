@@ -3,6 +3,7 @@ import os
 import jsonpickle
 import time
 import logging
+import warnings
 import requests
 from yapsy.PluginManager import PluginManager
 from . import COLOURS
@@ -46,13 +47,16 @@ class Charcoal(object):
         except (AttributeError, KeyError):
             test_defaults['inputs']['timeout'] = 30
         try:
-            test_defaults['inputs']['verify'] = test['inputs']['verify']
-        except (AttributeError, KeyError):
-            test_defaults['inputs']['verify'] = False
-        try:
             test_defaults['protocol'] = test["protocol"]
         except (AttributeError, KeyError):
             test_defaults['protocol'] = "http"
+        try:
+            test_defaults['inputs']['verify'] = test['inputs']['verify']
+        except (AttributeError, KeyError):
+            if 'https' in test_defaults['protocol']:
+                test_defaults['inputs']['verify'] = True
+            else:
+                test_defaults['inputs']['verify'] = False
         try:
             test_defaults["port"] = test["port"]
         except (AttributeError, KeyError):
@@ -64,18 +68,13 @@ class Charcoal(object):
 
         self.test = test.copy()
         self.test.update(test_defaults)
+
         LOG.debug("Test with defaults: {0}".format(self.test))
         inputs = self.test['inputs']
         request_url_format = '{protocol}://{host}:{port}{uri}'
         inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=host, port=self.test['port'], uri=self.test['uri'])
         LOG.debug("Testing {0}".format(inputs['url']))
         self.inputs = inputs
-
-        start = int(round(time.time() * 1000))
-        self.req = getattr(requests, self.test['method'], 'get')(**inputs)
-        end = int(round(time.time() * 1000))
-        self.duration_ms = end - start
-
         self.output = ("-" * (OUTPUT_WIDTH - 3))
         this_name = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.test['name'][:OUTPUT_WIDTH - 2])
         self.output = "\n".join([self.output, this_name])
@@ -83,6 +82,26 @@ class Charcoal(object):
         self.output = "\n".join([self.output, this_url])
         self.output = "\n".join([self.output, ("-" * (OUTPUT_WIDTH - 3))])
         self.output = "\n".join([self.output, self.__repr__()])
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            try:
+                start = int(round(time.time() * 1000))
+                self.req = getattr(requests, self.test['method'], 'get')(**inputs)
+                end = int(round(time.time() * 1000))
+                self.duration_ms = end - start
+            except Exception:
+                warnings.simplefilter("ignore")
+                start = int(round(time.time() * 1000))
+                self.req = getattr(requests, self.test['method'], 'get')(**inputs)
+                end = int(round(time.time() * 1000))
+                self.duration_ms = end - start
+                if self.test['inputs']['verify']:
+                    test_out = '%10s: %s' % ("SecureRequest", self.fail_test("Insecure request made"))
+                    self.output = "\n".join([self.output, test_out])
+                else:
+                    test_out = '%10s: %s' % ("SecureRequest", self.fail_test("Insecure request made: add verify to your test['input']"))
+                    self.output = "\n".join([self.output, test_out])
+
         if 'show_body' in self.test:
             try:
                 req_content = self.req.content.decode()
