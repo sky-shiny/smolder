@@ -1,8 +1,15 @@
 Smolder
 =======
 
-"Requests for humans."  :)
-[![Build Status](https://travis-ci.org/sky-shiny/smolder.svg)](https://travis-ci.org/sky-shiny/smolder)
+"[Requests](https://github.com/kennethreitz/requests) for humans."  :)
+[![Build Status](https://travis-ci.org/sky-shiny/smolder.svg?branch=master)](https://travis-ci.org/sky-shiny/smolder)
+
+The prevalence of SOA, microservices and dev/stage/live environment build processes precipitated the development of smolder.
+The challenges these technologies pose requires the use of restful api tests which are simple, and repeatable on 
+different endpoints without modifying the tests or the endpoints.  A lot of these environments require agents running the
+tests to be inside the network boundary and running inside internal build pipelines.  
+
+Smolder aims to solve these problems by providing features such as:
 
 - Smoke test your rest API.
 - Validate response times.
@@ -60,6 +67,13 @@ Documentation
 3. [examples](docs/examples.md)
 4. [contributing](docs/contributing.md)
 5. [history](HISTORY)
+
+Alternatives
+============
+
+1. [Runscope](https://www.runscope.com/)
+2. [vrest.io](http://vrest.io)
+3. [Stackoverflow](http://stackoverflow.com/questions/12135309/automated-testing-for-rest-api)
 
 Thanks
 ======
