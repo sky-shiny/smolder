@@ -5,8 +5,9 @@ tests:
     outcomes:
       expect_status_code: 301
       response_redirect: "https://status.github.com/api/status.json"
-    request_headers:
-      User-Agent: "Smolder smoke test library"
+    inputs:
+      headers:
+        User-Agent: "Smolder smoke test library"
     uri: /api/status.json
   -
     inputs:
