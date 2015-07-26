@@ -42,7 +42,7 @@ def smolder_cli(**kwargs):
         LOG.exception("No tests defined in %s", kwargs['testfile'])
         sys.exit(3)
     if len(tests) == 0:
-        LOG.error("There are no tests configured in %s: You MUST specify at least one test", kwargs['testfile'])
+        LOG.error("There are no tests configured in %s: You need at least one test", kwargs['testfile'])
         sys.exit(2)
 
     LOG.debug("Beginning default TCP test")

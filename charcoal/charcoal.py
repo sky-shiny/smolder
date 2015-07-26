@@ -22,8 +22,6 @@ manager.setPluginPlaces([THIS_DIR, "~/.smolder_plugins"])
 manager.collectPlugins()
 
 OUTPUT_WIDTH = 93
-TEST_LINE_FORMAT = "{0:.<" + str(OUTPUT_WIDTH - 20) + "s} {1:4s}"
-
 
 class Charcoal(object):
     def __init__(self, test, host):
@@ -66,22 +64,22 @@ class Charcoal(object):
         except (AttributeError, KeyError):
             test_defaults["method"] = "get"
 
-        self.test = test.copy()
-        self.test.update(test_defaults)
 
+        test.update(test_defaults)
+        self.test = test.copy()
         LOG.debug("Test with defaults: {0}".format(self.test))
         inputs = self.test['inputs']
         request_url_format = '{protocol}://{host}:{port}{uri}'
         inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=host, port=self.test['port'], uri=self.test['uri'])
         LOG.debug("Testing {0}".format(inputs['url']))
         self.inputs = inputs
-        self.output = ("-" * (OUTPUT_WIDTH - 3))
-        this_name = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.test['name'][:OUTPUT_WIDTH - 2])
+        self.output = ("-" * (OUTPUT_WIDTH))
+        this_name = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.test['name'][:OUTPUT_WIDTH])
         self.output = "\n".join([self.output, this_name])
-        this_url = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.inputs["url"][:OUTPUT_WIDTH - 2])
+        this_url = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.inputs["url"][:OUTPUT_WIDTH])
         self.output = "\n".join([self.output, this_url])
-        self.output = "\n".join([self.output, ("-" * (OUTPUT_WIDTH - 3))])
         self.output = "\n".join([self.output, self.__repr__()])
+        self.output = "\n".join([self.output, ("-" * (OUTPUT_WIDTH))])
         with warnings.catch_warnings():
             warnings.simplefilter("error")
             try:
@@ -113,9 +111,13 @@ class Charcoal(object):
             for outcome in self.test['outcomes']:
                 if plugin_info.name == outcome:
                     manager.activatePluginByName(plugin_info.name)
-                    test_out = '%10s: %s' % (plugin_info.name, plugin_info.plugin_object.run(self))
+                    message, status = plugin_info.plugin_object.run(self)
+                    test_out = plugin_info.name + ": " + message + "." * (
+                    OUTPUT_WIDTH - len(plugin_info.name) - len(message) - 8) + status.rjust(8)
                     self.output = "\n".join([self.output, test_out])
                     manager.deactivatePluginByName(plugin_info.name)
+
+        self.output = "\n".join([self.output, "\n"])
 
     def __str__(self):
         return self.output
@@ -130,12 +132,17 @@ class Charcoal(object):
         else:
             header = ''
         if hasattr(self.inputs, 'data'):
-            data = self.inputs.data
+            data = '-d' + str(self.inputs.data)
         else:
             data = ''
+        vfy = self.test['inputs']['verify']
+        if not vfy:
+            curl_insecure = '--insecure'
+        else:
+            curl_insecure = ''
         # Adding curl output to allow simple debugging of the requests
-        command = 'curl -v -s -o /dev/null {headers} -d {data} -X {method} "{uri}"'
-        output = command.format(method=str(self.test['method']).upper(), headers=header, data=data, uri=self.inputs['url'])
+        command = 'curl {curl_insecure} -v -s -o /dev/null {headers} {data} -X {method} "{uri}"'
+        output = command.format(method=str(self.test['method']).upper(), headers=header, data=data, uri=self.inputs['url'], curl_insecure=curl_insecure)
         return output
 
     def pass_test(self, message):
@@ -143,14 +150,14 @@ class Charcoal(object):
         status = "[PASS]"
         if getattr(self.test['outcomes'], "colour_output", True):
             status = COLOURS.to_green(status)
-        return TEST_LINE_FORMAT.format(message + " ", status)
+        return (message, status)
 
     def fail_test(self, message):
         self.failed += 1
         status = "[FAIL]"
         if getattr(self.test['outcomes'], "colour_output", True):
             status = COLOURS.to_red(status)
-            return TEST_LINE_FORMAT.format(message + " ", status)
+            return (message, status)
 
     def _to_json(self):
         return jsonpickle.encode(self)
