@@ -5,9 +5,9 @@ Smolder
 [![Build Status](https://travis-ci.org/sky-shiny/smolder.svg?branch=master)](https://travis-ci.org/sky-shiny/smolder)
 
 The prevalence of SOA, microservices and dev/stage/live environment build processes precipitated the development of smolder.
-The challenges these technologies pose requires the use of restful api tests which are simple and repeatable on 
+The challenges these technologies pose requires the use of restful api tests which are simple and repeatable on
 different endpoints without modifying the tests or the endpoints.  A lot of these environments require agents running the
-tests to be inside the network boundary and running inside internal build pipelines.  
+tests to be inside the network boundary and running inside internal build pipelines.
 
 Smolder aims to solve these problems by providing features such as:
 
@@ -23,7 +23,7 @@ Installation
 ============
 
 ```
-pip install git+git://github.com/sky-shiny/smolder.git
+pip install git+https://github.com/sky-shiny/smolder.git
 ```
 
 Example
