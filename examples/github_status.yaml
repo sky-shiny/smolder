@@ -13,7 +13,7 @@ tests:
     inputs:
       headers:
         User-Agent: "Smolder smoke test library"
-    name: "Github Status"
+    name: "Github Status ssl"
     outcomes:
       response_json_contains:
         status: good

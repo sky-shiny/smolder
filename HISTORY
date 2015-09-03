@@ -1,6 +1,11 @@
 RELEASE HISTORY
 ===============
 
+Version 0.2.2
+-------------
+- Added input validation for tests
+- Moved classification to production/stable
+
 Version 0.2.1
 -------------
 - Rewrote and reorganised everything to be more pythonic

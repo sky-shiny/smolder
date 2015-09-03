@@ -74,7 +74,7 @@ def test_validate_json_fail():
 
 
 @raises(yaml.parser.ParserError)
-def test_invalid_yaml_yaml_format():
+def test_invalid_yaml_format():
     total_failed_tests = 0
     total_passed_tests = 0
     myfile = open(THIS_DIR + '/fixtures/invalid_yaml.yaml')
@@ -86,7 +86,6 @@ def test_invalid_yaml_yaml_format():
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
     assert total_failed_tests == 0
-
 
 def test_tcp_test():
     smolder.tcp_test('127.0.0.1', 22)  # Are you running an ssh server?
