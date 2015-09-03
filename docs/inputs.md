@@ -1,7 +1,7 @@
 Inputs
 ======
 
-Inputs are passed through to "requests" and 
+Inputs are passed through to "requests" unmodified.
 
 Inputs | Description | Default
 -------|-------------|-------
