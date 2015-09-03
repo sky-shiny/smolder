@@ -60,6 +60,8 @@ FOUND 1 FAILURES IN 4 TESTS
 Documentation
 =============
 
+[readthedocs](http://smolder.readthedocs.org/en/latest/)
+
 1. [tests](docs/tests.md)
     - [inputs](docs/inputs.md)
     - [outcomes](docs/outcomes.md)
