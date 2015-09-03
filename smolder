@@ -90,8 +90,7 @@ def smolder_cli(**kwargs):
             LOG.debug("Valid schema")
         except ValueError as error:
             LOG.error(
-                "Invalid test.  Please update your tests to v0.2 or install the v0.1 branch of smolder. Error: {0}".format(
-                    error))
+                "Error, invalid test: {0}.  Tests now use v0.2 format. v0.1 branch is still available.".format(error))
             sys.exit(7)
     except IOError:
         LOG.exception("Couldn't open test file %s", kwargs['testfile'])
