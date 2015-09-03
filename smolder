@@ -6,6 +6,7 @@ from smolder import tcp_test
 from smolder.charcoal import Charcoal
 import logging
 import argh
+from yaml.parser import ParserError
 from argh import arg, dispatch_command
 import validictory
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
@@ -14,54 +15,55 @@ LOG = logging.getLogger('smolder')
 LOG.setLevel(logging.INFO)
 PARSER = argh.ArghParser()
 SCHEMA = {
+    "type": "object",
     "properties": {
         "name": {
-            "type": "string",
-            "required": "True"
+            "type": "string"
         },
         "uri": {
-            "type": "string",
-            "required": "True"
+            "type": "string"
         },
         "port": {
-            "type": "Int",
-            "required": "False"
+            "type": "integer",
+            "required": False
         },
         "inputs": {
             "type": "object",
-            "required": "False",
+            "required": False,
             "properties": {
-                "headers" :{"type": "any", "required": "False"},
-                "username": {"type": "any", "required": "False"},
-                "password": {"type": "any", "required": "False"},
-                "cookie": {"type": "any", "required": "False"},
-                "data": {"type": "any", "required": "False"},
-                "file": {"type": "any", "required": "False"},
-                "verify": {"type": "any", "required": "False"},
-                "allow_redirects": {"type": "any", "required": "False"},
-                "timeout": {"type": "any", "required": "False"},
-                "proxies": {"type": "any", "required": "False"}
+                "headers" :{"type": "any", "required": False},
+                "username": {"type": "any", "required": False},
+                "password": {"type": "any", "required": False},
+                "cookie": {"type": "any", "required": False},
+                "data": {"type": "any", "required": False},
+                "file": {"type": "any", "required": False},
+                "verify": {"type": "any", "required": False},
+                "allow_redirects": {"type": "any", "required": False},
+                "timeout": {"type": "any", "required": False},
+                "proxies": {"type": "any", "required": False}
             }
         },
         "outcomes": {
             "type": "object",
-            "required": "False"
+            "required": False
         },
         "protocol": {
             "type": "string",
-            "required": "False",
+            "required": False,
             "enum": ["tcp", "http", "https"]
         },
         "method": {
             "type": "string",
-            "required": "False",
-            "enum": ["GET", "POST", "PUT", "DELETE", "OPTION"]
+             "required": False,
+            "enum": ["GET", "get", "post", "POST", "put", "PUT", "delete", "DELETE", "option", "OPTION"]
         },
         "request_headers": {
-            "type": "None"
+            "type": "None",
+            "required": False
         },
         "url": {
-            "type": "None"
+            "type": "None",
+            "required": False
         }
     }
 }
@@ -82,6 +84,15 @@ def smolder_cli(**kwargs):
         myfile = open(kwargs['testfile'])
         test_input = yaml.load(myfile)
         tests = test_input['tests']
+        try:
+            for test in tests:
+                validictory.validate(test, SCHEMA)
+            LOG.debug("Valid schema")
+        except ValueError as error:
+            LOG.error(
+                "Invalid test.  Please update your tests to v0.2 or install the v0.1 branch of smolder. Error: {0}".format(
+                    error))
+            sys.exit(7)
     except IOError:
         LOG.exception("Couldn't open test file %s", kwargs['testfile'])
         sys.exit(6)
@@ -94,15 +105,13 @@ def smolder_cli(**kwargs):
     except KeyError:
         LOG.exception("No tests defined in %s", kwargs['testfile'])
         sys.exit(3)
+    except ParserError:
+        LOG.exception("Invalid yaml in file %s", kwargs['testfile'])
+        sys.exit(8)
     if len(tests) == 0:
         LOG.error("There are no tests configured in %s: You need at least one test", kwargs['testfile'])
         sys.exit(2)
-    try:
-        validictory.validate(tests, SCHEMA)
-        LOG.debug("Valid schema")
-    except ValueError as error:
-        LOG.error("Invalid test.  Please update your tests to v0.2 or use v0.1 branch of smolder. Error: {0}".format(error))
-        sys.exit(7)
+
 
     LOG.debug("Beginning default TCP test")
     port = getattr(tests[0], 'port', 80)
