@@ -5,7 +5,7 @@
     <title>Smolder by sky-shiny</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
@@ -22,7 +22,15 @@
       <h1>
 <a id="smolder" class="anchor" href="#smolder" aria-hidden="true"><span class="octicon octicon-link"></span></a>Smolder</h1>
 
-<p><a href="https://travis-ci.org/sky-shiny/smolder"><img src="https://travis-ci.org/sky-shiny/smolder.svg" alt="Build Status"></a></p>
+<p>"<a href="https://github.com/kennethreitz/requests">Requests</a> for humans."  :)
+<a href="https://travis-ci.org/sky-shiny/smolder"><img src="https://travis-ci.org/sky-shiny/smolder.svg?branch=master" alt="Build Status"></a></p>
+
+<p>The prevalence of SOA, microservices and dev/stage/live environment build processes precipitated the development of smolder.
+The challenges these technologies pose requires the use of restful api tests which are simple and repeatable on
+different endpoints without modifying the tests or the endpoints.  A lot of these environments require agents running the
+tests to be inside the network boundary and running inside internal build pipelines.</p>
+
+<p>Smolder aims to solve these problems by providing features such as:</p>
 
 <ul>
 <li>Smoke test your rest API.</li>
@@ -30,19 +38,21 @@
 <li>Validate redirects.</li>
 <li>Validate ssl certificates.</li>
 <li>Validate headers.</li>
+<li>Validate json object types using <a href="https://github.com/jamesturk/validictory">validictory</a>
+</li>
 <li>More</li>
 </ul>
 
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
 
-<pre><code>pip install git+git://github.com/sky-shiny/smolder.git
+<pre><code>pip install git+https://github.com/sky-shiny/smolder.git
 </code></pre>
 
 <h1>
 <a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h1>
 
-<pre><code>$&gt; smolder-cli status.github.com examples/github_status.json
+<pre><code>$&gt; smolder status.github.com examples/github_status.json
 
 Success connecting to status.github.com on port 80
 Preparing to execute 2 tests
@@ -69,140 +79,32 @@ Response time was 341ms longer than 200ms max (541ms) ................ [FAIL]
 FOUND 1 FAILURES IN 4 TESTS
 </code></pre>
 
-<p>Example <a href="https://github.com/sky-shiny/smolder/blob/master/examples/README.md">Readme</a></p>
+<h1>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h1>
+
+<ol>
+<li>
+<a href="docs/tests.md">tests</a>
+
+<ul>
+<li><a href="docs/inputs.md">inputs</a></li>
+<li><a href="docs/outcomes.md">outcomes</a></li>
+</ul>
+</li>
+<li><a href="docs/plugins.md">plugins</a></li>
+<li><a href="docs/examples.md">examples</a></li>
+<li><a href="docs/contributing.md">contributing</a></li>
+<li><a href="HISTORY">history</a></li>
+</ol>
 
 <h1>
-<a id="what-it-does" class="anchor" href="#what-it-does" aria-hidden="true"><span class="octicon octicon-link"></span></a>What it does</h1>
+<a id="alternatives" class="anchor" href="#alternatives" aria-hidden="true"><span class="octicon octicon-link"></span></a>Alternatives</h1>
 
-<p>It wraps the "requests" python library inserting headers, authentication etc and
-making your requests to a host: provided as a command line argument.</p>
-
-<p>It checks the response from the server for expected status-codes/body/header/dpath-json
-contents and passes or fails the test based on definition.</p>
-
-<p>Can be used to specify and pass/fail on performance of api response.</p>
-
-<p>A copy/paste curl equivalent of the request is included in the output for
-convenience.</p>
-
-<p>Easily introduced into a CI/CD deploy pipeline.</p>
-
-<p>Without --force, any API requests that are not GET's will be skipped as a safety
-mechanism to ensure we're not overwriting or creating data unconciously.</p>
-
-<h1>
-<a id="request-options" class="anchor" href="#request-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Request Options</h1>
-
-<table>
-<thead>
-<tr>
-<th>Request Option</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name *</td>
-<td>name for the test</td>
-</tr>
-<tr>
-<td>protocol *</td>
-<td>tcp, http, https or noop</td>
-</tr>
-<tr>
-<td>port *</td>
-<td>0 - 65535</td>
-</tr>
-<tr>
-<td>url</td>
-<td>/url/path/to/resource.json</td>
-</tr>
-<tr>
-<td>method</td>
-<td>GET, POST, PUT, DELETE, OPTION</td>
-</tr>
-<tr>
-<td>request_headers (recommended)</td>
-<td>header object to append to requests instansiation.  The host header is probably the most likely requirement.</td>
-</tr>
-<tr>
-<td>username</td>
-<td>basic auth username</td>
-</tr>
-<tr>
-<td>password</td>
-<td>basic auth password</td>
-</tr>
-<tr>
-<td>cookie</td>
-<td>cookie object to append to requests instansiation</td>
-</tr>
-<tr>
-<td>data</td>
-<td>data for POST or PUT.</td>
-</tr>
-<tr>
-<td>file</td>
-<td>provide dummy "filename" and dummy "content" as json arguments. Uploads the content as filename to the specified host.</td>
-</tr>
-<tr>
-<td>validate_cert</td>
-<td>Should we verify the ssl cert when making an https request?  Defaults to False.</td>
-</tr>
-</tbody>
-</table>
-
-<p>*: required</p>
-
-<h1>
-<a id="response-options" class="anchor" href="#response-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Response Options</h1>
-
-<table>
-<thead>
-<tr>
-<th>Response Test Options</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>response_body_contains</td>
-<td>PASS if string in body.</td>
-</tr>
-<tr>
-<td>response_body_doesnt_contain</td>
-<td>FAIL if string in body.</td>
-</tr>
-<tr>
-<td>response_max_time_ms</td>
-<td>FAIL if response takes longer than int.</td>
-</tr>
-<tr>
-<td>response_json_contains</td>
-<td>FAIL if json response at path doesn't match.</td>
-</tr>
-<tr>
-<td>expect_status_code</td>
-<td>FAIL if response status code differs from int.</td>
-</tr>
-<tr>
-<td>response_redirect</td>
-<td>FAIL if string not in response location header.</td>
-</tr>
-<tr>
-<td>response_headers</td>
-<td>FAIL if the headers received from the request doesn't contain the list of headers provided.</td>
-</tr>
-<tr>
-<td>response_header_values</td>
-<td>FAIL if the <em>values</em> of the headers in the test don't match the values in the response.</td>
-</tr>
-<tr>
-<td>show_body</td>
-<td>output the body to stdout.</td>
-</tr>
-</tbody>
-</table>
+<ol>
+<li><a href="https://www.runscope.com/">Runscope</a></li>
+<li><a href="http://vrest.io">vrest.io</a></li>
+<li><a href="http://stackoverflow.com/questions/12135309/automated-testing-for-rest-api">Stackoverflow</a></li>
+</ol>
 
 <h1>
 <a id="thanks" class="anchor" href="#thanks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thanks</h1>
@@ -226,4 +128,3 @@ mechanism to ensure we're not overwriting or creating data unconciously.</p>
   
   </body>
 </html>
-
