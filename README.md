@@ -66,7 +66,7 @@ Documentation
 2. [plugins](docs/plugins.md)
 3. [examples](docs/examples.md)
 4. [contributing](docs/contributing.md)
-5. [history](HISTORY)
+5. [history](./HISTORY)
 
 Alternatives
 ============
