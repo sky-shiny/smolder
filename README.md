@@ -29,9 +29,38 @@ pip install git+https://github.com/sky-shiny/smolder.git
 Example
 =======
 
+After installing copy/paste the following into a bash shell:
 ```
-$> smolder status.github.com examples/github_status.json
+cat <<EOF > github_status.yaml
+---
+tests:
+  -
+    name: "Github Status"
+    outcomes:
+      expect_status_code: 301
+      response_redirect: "https://status.github.com/api/status.json"
+    inputs:
+      headers:
+        User-Agent: "Smolder smoke test library"
+    uri: /api/status.json
+  -
+    inputs:
+      headers:
+        User-Agent: "Smolder smoke test library"
+    name: "Github Status ssl"
+    outcomes:
+      response_json_contains:
+        status: good
+      response_max_time_ms: 200
+    port: 443
+    protocol: https
+    uri: /api/status.json
+EOF
+smolder status.github.com github_status.yaml
+```
 
+Expected Output:
+```
 Success connecting to status.github.com on port 80
 Preparing to execute 2 tests
 
