@@ -54,7 +54,7 @@ SCHEMA = {
         },
         "method": {
             "type": "string",
-             "required": False,
+            "required": False,
             "enum": ["GET", "get", "post", "POST", "put", "PUT", "delete", "DELETE", "option", "OPTION"]
         },
         "request_headers": {
@@ -110,7 +110,6 @@ def smolder_cli(**kwargs):
     if len(tests) == 0:
         LOG.error("There are no tests configured in %s: You need at least one test", kwargs['testfile'])
         sys.exit(2)
-
 
     LOG.debug("Beginning default TCP test")
     port = getattr(tests[0], 'port', 80)

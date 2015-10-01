@@ -60,7 +60,7 @@ class Charcoal(object):
         except (AttributeError, KeyError):
             test_defaults["port"] = 80
         try:
-            test_defaults["method"] = test["method"]
+            test_defaults["method"] = str(test["method"]).lower()
         except (AttributeError, KeyError):
             test_defaults["method"] = "get"
 
