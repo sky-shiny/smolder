@@ -52,35 +52,43 @@ tests to be inside the network boundary and running inside internal build pipeli
 <h1>
 <a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h1>
 
-<pre><code>$&gt; smolder status.github.com examples/github_status.json
+<p>After installing copy/paste the following into a bash shell:</p>
 
-Success connecting to status.github.com on port 80
-Preparing to execute 2 tests
-
-------------------------------- Github Status -------------------------------
-                          http://status.github.com:80/
------------------------------------------------------------------------------
-
-curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
-"http://status.github.com:80/"
-Request took 227ms
-Status code == 301 and redirect == https://status.github.com/ ........ [PASS]
-
-------------------------------- Github Status -------------------------------
-                         https://status.github.com:443/
------------------------------------------------------------------------------
-
-curl -v -s -o /dev/null -H "User-Agent: Smolder smoke test library"  -X GET \
-"https://status.github.com:443/"
-Request took 541ms
-Status code == 200 ................................................... [PASS]
-Body contains "All systems operational" .............................. [PASS]
-Response time was 341ms longer than 200ms max (541ms) ................ [FAIL]
-FOUND 1 FAILURES IN 4 TESTS
+<pre><code>cat &lt;&lt;EOF &gt; github_status.yaml
+---
+tests:
+  -
+    name: "Github Status"
+    outcomes:
+      expect_status_code: 301
+      response_redirect: "https://status.github.com/api/status.json"
+    inputs:
+      headers:
+        User-Agent: "Smolder smoke test library"
+    uri: /api/status.json
+  -
+    inputs:
+      headers:
+        User-Agent: "Smolder smoke test library"
+    name: "Github Status ssl"
+    outcomes:
+      response_json_contains:
+        status: good
+      response_max_time_ms: 200
+    port: 443
+    protocol: https
+    uri: /api/status.json
+EOF
+smolder status.github.com github_status.yaml
 </code></pre>
+
+<p>Expected Output:
+<img src="https://raw.githubusercontent.com/sky-shiny/smolder/master/docs/output.png" alt="Output"></p>
 
 <h1>
 <a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h1>
+
+<p><a href="http://smolder.readthedocs.org/en/latest/">readthedocs</a></p>
 
 <ol>
 <li>
@@ -94,7 +102,7 @@ FOUND 1 FAILURES IN 4 TESTS
 <li><a href="docs/plugins.md">plugins</a></li>
 <li><a href="docs/examples.md">examples</a></li>
 <li><a href="docs/contributing.md">contributing</a></li>
-<li><a href="HISTORY">history</a></li>
+<li><a href="./HISTORY">history</a></li>
 </ol>
 
 <h1>
