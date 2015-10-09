@@ -2,6 +2,8 @@
 import logging
 import socket
 from retrying import retry
+from .colours import COLOURS
+
 
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
 logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:%S")
@@ -21,13 +23,15 @@ def tcp_test(host, port):
         my_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         my_sock.settimeout(1)
         my_sock.connect((host, port))
-        print("Connecting to {0} on port {1} [PASS]".format(host, port))
+        print("Connecting to {0} on port {1} {2}".format(host, port, COLOURS.to_green("[PASS]")))
         my_sock.shutdown(2)
         my_sock.close()
     except socket.error:
         my_sock.close()
+        print("Connecting to {0} on port {1} {2}".format(host, port, COLOURS.to_yellow("[FAIL]")))
         LOG.debug("Waiting for {0}:{1} to accept a connection".format(host, port))
         raise
     except Exception as error:
+        print("Connecting to {0} on port {1} {2}".format(host, port, COLOURS.to_yellow("[FAIL]")))
         LOG.debug("TCP test failed: {0}".format(error))
         raise
