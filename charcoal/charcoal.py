@@ -97,7 +97,10 @@ class Charcoal(object):
                     test_out = '%10s: %s' % ("SecureRequest", self.fail_test("Insecure request made"))
                     self.output = "\n".join([self.output, test_out])
                 else:
-                    test_out = '%10s: %s' % ("SecureRequest", self.fail_test("Insecure request made: add verify to your test['input']"))
+                    test_out = '%10s: %s' % ("SecureRequest", self.pass_test("Insecure request made and ignored"))
+                    self.output = "\n".join([self.output, test_out])
+                if 'verify' not in self.test['inputs']:
+                    test_out = '%10s: %s' % ("SecureRequest", self.fail_test("Insecure request not ignored by 'verify'"))
                     self.output = "\n".join([self.output, test_out])
 
         if 'show_body' in self.test:
