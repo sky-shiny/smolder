@@ -111,14 +111,16 @@ def smolder_cli(**kwargs):
         LOG.error("There are no tests configured in %s: You need at least one test", kwargs['testfile'])
         sys.exit(2)
 
-    LOG.debug("Beginning default TCP test")
-    port = getattr(tests[0], 'port', 80)
-    tcp_test(str(kwargs['host']), port)
-    LOG.debug("Passed default TCP test")
     print("Preparing to execute {0} tests".format(len(tests)))
     # Iterate through all the tests
 
     for test in test_input['tests']:
+        try:
+            port = test["port"]
+        except (AttributeError, KeyError):
+            print("Warning: No port definition found in the first test, using port 80 as default.")
+            port = 80
+        tcp_test(str(kwargs['host']), port)
         test_obj = Charcoal(test=test, host=kwargs['host'])
         print(str(test_obj))
         total_failed_tests += test_obj.failed
