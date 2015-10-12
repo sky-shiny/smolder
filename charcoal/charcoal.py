@@ -23,6 +23,7 @@ manager.collectPlugins()
 
 OUTPUT_WIDTH = 93
 
+
 class Charcoal(object):
     def __init__(self, test, host):
         """
@@ -32,8 +33,7 @@ class Charcoal(object):
 
         self.passed = 0
         self.failed = 0
-        test_defaults = {'inputs': {}}
-        host = host
+        test_defaults = {'inputs': {}, 'outcomes': {}}
         self.formatters = {}
         LOG.debug("Test: {0}".format(test))
         try:
@@ -64,22 +64,31 @@ class Charcoal(object):
         except (AttributeError, KeyError):
             test_defaults["method"] = "get"
 
+        try:
+            test_defaults["outcomes"]["expect_status_code"] = test["outcomes"]["expect_status_code"]
+        except (AttributeError, KeyError):
+            test_defaults["outcomes"]["expect_status_code"] = 200
+        try:
+            test_defaults["outcomes"]["tcp_test_port"] = test["outcomes"]["tcp_test_port"]
+        except (AttributeError, KeyError):
+            test_defaults["outcomes"]["tcp_test_port"] = test_defaults["port"]
 
         test.update(test_defaults)
         self.test = test.copy()
         LOG.debug("Test with defaults: {0}".format(self.test))
         inputs = self.test['inputs']
         request_url_format = '{protocol}://{host}:{port}{uri}'
-        inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=host, port=self.test['port'], uri=self.test['uri'])
+        inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=host, port=self.test['port'],
+                                                  uri=self.test['uri'])
         LOG.debug("Testing {0}".format(inputs['url']))
         self.inputs = inputs
-        self.output = ("-" * (OUTPUT_WIDTH))
+        self.output = ("-" * OUTPUT_WIDTH)
         this_name = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.test['name'][:OUTPUT_WIDTH])
         self.output = "\n".join([self.output, this_name])
         this_url = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.inputs["url"][:OUTPUT_WIDTH])
         self.output = "\n".join([self.output, this_url])
         self.output = "\n".join([self.output, self.__repr__()])
-        self.output = "\n".join([self.output, ("-" * (OUTPUT_WIDTH))])
+        self.output = "\n".join([self.output, ("-" * OUTPUT_WIDTH)])
         with warnings.catch_warnings():
             warnings.simplefilter("error")
             try:
@@ -94,14 +103,14 @@ class Charcoal(object):
                 end = int(round(time.time() * 1000))
                 self.duration_ms = end - start
                 if self.test['inputs']['verify']:
-                    test_out = '%10s: %s' % ("SecureRequest", self.fail_test("Insecure request made"))
-                    self.output = "\n".join([self.output, test_out])
+                    message, status = self.fail_test("Insecure request made")
+                    self.add_output("SecureRequest", message, status)
                 else:
-                    test_out = '%10s: %s' % ("SecureRequest", self.pass_test("Insecure request made and ignored"))
-                    self.output = "\n".join([self.output, test_out])
+                    message, status = self.warn_test("Insecure request made and ignored")
+                    self.add_output("SecureRequest", message, status)
                 if 'verify' not in self.test['inputs']:
-                    test_out = '%10s: %s' % ("SecureRequest", self.fail_test("Insecure request not ignored by 'verify'"))
-                    self.output = "\n".join([self.output, test_out])
+                    message, status = self.fail_test("Insecure request not ignored by 'verify'")
+                    self.add_output("SecureRequest", message, status)
 
         if 'show_body' in self.test:
             try:
@@ -115,9 +124,7 @@ class Charcoal(object):
                 if plugin_info.name == outcome:
                     manager.activatePluginByName(plugin_info.name)
                     message, status = plugin_info.plugin_object.run(self)
-                    test_out = plugin_info.name + ": " + message + "." * (
-                    OUTPUT_WIDTH - len(plugin_info.name) - len(message) - 8) + status.rjust(8)
-                    self.output = "\n".join([self.output, test_out])
+                    self.add_output(plugin_info.name, message, status)
                     manager.deactivatePluginByName(plugin_info.name)
 
         self.output = "\n".join([self.output, "\n"])
@@ -145,7 +152,8 @@ class Charcoal(object):
             curl_insecure = ''
         # Adding curl output to allow simple debugging of the requests
         command = 'curl {curl_insecure} -v -s -o /dev/null {headers} {data} -X {method} "{uri}"'
-        output = command.format(method=str(self.test['method']).upper(), headers=header, data=data, uri=self.inputs['url'], curl_insecure=curl_insecure)
+        output = command.format(method=str(self.test['method']).upper(), headers=header, data=data,
+                                uri=self.inputs['url'], curl_insecure=curl_insecure)
         return output
 
     def pass_test(self, message):
@@ -153,14 +161,26 @@ class Charcoal(object):
         status = "[PASS]"
         if getattr(self.test['outcomes'], "colour_output", True):
             status = COLOURS.to_green(status)
-        return (message, status)
+        return message, status
 
     def fail_test(self, message):
         self.failed += 1
         status = "[FAIL]"
         if getattr(self.test['outcomes'], "colour_output", True):
             status = COLOURS.to_red(status)
-            return (message, status)
+            return message, status
+
+    def warn_test(self, message):
+        self.passed += 1
+        status = "[WARN]"
+        if getattr(self.test['outcomes'], "colour_output", True):
+            status = COLOURS.to_yellow(status)
+            return message, status
+
+    def add_output(self, name, message, status):
+        test_out = name + ": " + message + "." * (
+            OUTPUT_WIDTH - len(name) - len(message) - 8) + status.rjust(8)
+        self.output = "\n".join([self.output, test_out])
 
     def _to_json(self):
         return jsonpickle.encode(self)
