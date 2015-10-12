@@ -1,6 +1,14 @@
 RELEASE HISTORY
 ===============
 
+Version 0.2.4
+-------------
+- Improved certificate validation
+
+Version 0.2.3
+-------------
+- Fix bug with tcp test defaults.
+
 Version 0.2.2
 -------------
 - Added input validation for tests
