@@ -1,6 +1,14 @@
 RELEASE HISTORY
 ===============
 
+Version 0.3.0
+-------------
+- 0.3.0 is looking to resolve defaults globally using immutable datastructures, deep copied and updated for defaults.
+- Handles issues with requests where the verify var accepts both bools and strings.
+- Adds support for smolder warnings (not python warnings).
+- Some unit test improvements.
+- Big enough change surface area to warrant a 'major' version bump.
+
 Version 0.2.4
 -------------
 - Improved certificate validation

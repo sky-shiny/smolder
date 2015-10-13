@@ -5,4 +5,5 @@ build/
 requirements.txt
 .coverage
 .idea
+/charcoal/tcptest.py
 .DS_Store
