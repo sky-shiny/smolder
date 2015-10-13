@@ -13,7 +13,7 @@
             },
             "outcomes": {
                 "expect_status_code": 301,
-                "response_redirect": "https://status.github.com/api/status.json",
+                "response_redirect": "https://status.github.com/.*/status.json",
                 "colour": "False"
             }
         },
