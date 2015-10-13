@@ -4,8 +4,16 @@ import time
 import logging
 import warnings
 from copy import deepcopy
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 import jsonpickle
 import requests
+try:
+    from tcptest import tcp_test
+except ImportError:
+    from .tcptest import tcp_test
 from yapsy.PluginManager import PluginManager
 
 from . import COLOURS
@@ -32,7 +40,7 @@ def deepupdate(original, update):
     Subdict's won't be overwritten but also updated.
     """
     for key, value in original.items():
-        if not key in update:
+        if key not in update:
             update[key] = value
         elif isinstance(value, dict):
             deepupdate(value, update[key])
@@ -49,17 +57,38 @@ class Charcoal(object):
         self.passed = 0
         self.failed = 0
 
+        try:
+            self.port = test["port"]
+        except (AttributeError, KeyError):
+            print("Warning: No port definition found in the first test, using port 80 as default.")
+            try:
+                if test["protocol"] == "https":
+                    self.port = 443
+                else:
+                    self.port = 80
+            except (AttributeError, KeyError):
+                self.port = 80
+
+
         LOG.debug("Test: {0}".format(test))
-        test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30), protocol="http", port=80, method="get",
-                             outcomes=dict(expect_status_code=200))
-        test_defaults["inputs"]["allow_redirects"] = False
-        test_defaults["inputs"]["timeout"] = 30
-        test_defaults["protocol"] = "http"
-        test_defaults["port"] = 80
-        test_defaults["method"] = "get"
-        test_defaults["outcomes"]["expect_status_code"] = 200
-        test_defaults["outcomes"]["colour_output"] = True
-        final_dict = deepupdate(test_defaults, test)
+        test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30), protocol="http", port=self.port, method="get",
+                             outcomes=dict(expect_status_code=200, colour_output=True))
+        intermediate_dict = deepupdate(test_defaults, test)
+
+        host_overrides_object = urlparse(host)
+        host_overrides = dict()
+        if host_overrides_object.scheme is not None:
+            host_overrides["protocol"] = host_overrides_object.scheme
+        if host_overrides_object.port is not None:
+            host_overrides["port"] = host_overrides_object.port
+        if host_overrides_object.hostname is not None:
+            self.host = host_overrides_object.hostname
+        else:
+            self.host = host
+        host_overrides = dict()
+        final_dict = deepupdate(intermediate_dict, host_overrides)
+        if "tcp_test" in test and test["tcp_test"]:
+            tcp_test(self.host, self.port)
         try:
             if type(final_dict["inputs"]["verify"]) == bool:
                 self.verify = final_dict["inputs"]["verify"]
@@ -86,7 +115,7 @@ class Charcoal(object):
         self.inputs = deepcopy(self.test['inputs'])
         request_url_format = '{protocol}://{host}:{port}{uri}'
         self.output = ("-" * OUTPUT_WIDTH)
-        self.inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=host,
+        self.inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=self.host,
                                                        port=self.test['port'],
                                                        uri=self.test['uri'])
         LOG.debug("Testing {0}".format(self.inputs['url']))
