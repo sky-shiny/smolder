@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
-import smolder
-from smolder.charcoal import Charcoal
+from charcoal import Charcoal
+from charcoal import tcp_test
 import yaml
 import os
 import logging
@@ -20,7 +20,7 @@ def test_github_status():
     myfile = open(THIS_DIR + '/fixtures/github_status.json')
     test_json = yaml.load(myfile)
     for test in test_json['tests']:
-        test_obj = smolder.charcoal.Charcoal(test=test, host='status.github.com')
+        test_obj = Charcoal(test=test, host='status.github.com')
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
     assert total_failed_tests == 0
@@ -32,7 +32,7 @@ def test_github_status_expect_fail():
     myfile = open(THIS_DIR + '/fixtures/harsh_github_status.json')
     test_json = yaml.load(myfile)
     for test in test_json['tests']:
-        test_obj = smolder.charcoal.Charcoal(test=test, host='status.github.com')
+        test_obj = Charcoal(test=test, host='status.github.com')
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
     assert total_failed_tests > 0
@@ -49,7 +49,7 @@ def test_validate_json():
     myfile = open(THIS_DIR + '/fixtures/validate_json.yaml')
     test_json = yaml.load(myfile)
     for test in test_json['tests']:
-        test_obj = smolder.charcoal.Charcoal(test=test, host='fakehost111.com')
+        test_obj = Charcoal(test=test, host='fakehost111.com')
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
     assert total_failed_tests == 0
@@ -89,9 +89,9 @@ def test_invalid_yaml_format():
 
 
 def test_tcp_test():
-    smolder.tcp_test('127.0.0.1', 22)  # Are you running an ssh server?
+    tcp_test('127.0.0.1', 22)  # Are you running an ssh server?
 
 
 @raises(Exception)
 def test_fail_tcp_test():
-    smolder.tcp_test('127.0.0.1', 4242)
+    tcp_test('127.0.0.1', 4242)
