@@ -58,6 +58,7 @@ class Charcoal(object):
         test_defaults["port"] = 80
         test_defaults["method"] = "get"
         test_defaults["outcomes"]["expect_status_code"] = 200
+        test_defaults["outcomes"]["colour_output"] = True
         final_dict = deepupdate(test_defaults, test)
         try:
             if type(final_dict["inputs"]["verify"]) == bool:
@@ -171,23 +172,23 @@ class Charcoal(object):
     def pass_test(self, message):
         self.passed += 1
         status = "[PASS]"
-        if getattr(self.test['outcomes'], "colour_output", True):
+        if self.test["outcomes"]["colour_output"]:
             status = COLOURS.to_green(status)
         return (message, status)
 
     def fail_test(self, message):
         self.failed += 1
         status = "[FAIL]"
-        if getattr(self.test['outcomes'], "colour_output", True):
+        if self.test["outcomes"]["colour_output"]:
             status = COLOURS.to_red(status)
-            return (message, status)
+        return (message, status)
 
     def warn_test(self, message):
         self.passed += 1
         status = "[WARN]"
-        if getattr(self.test['outcomes'], "colour_output", True):
+        if self.test["outcomes"]["colour_output"]:
             status = COLOURS.to_yellow(status)
-            return (message, status)
+        return (message, status)
 
     def add_output(self, name, message, status):
         test_out = name + ": " + message + "." * (OUTPUT_WIDTH - len(name) - len(message) - 8) + status.rjust(8)
