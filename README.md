@@ -75,8 +75,8 @@ Documentation
 4. [contributing](docs/contributing.md)
 5. [history](./HISTORY)
 
-Alternatives
-============
+Similar Projects
+================
 
 1. [Runscope](https://www.runscope.com/)
 2. [vrest.io](http://vrest.io)
