@@ -8,7 +8,7 @@ class ResponseRedirect(IPlugin):
 
     @staticmethod
     def run(req):
-        if "30" in  str(req.req.status_code):
+        if "30" in str(req.req.status_code):
             match = re.match(req.test['outcomes']['response_redirect'], req.req.headers['location'])
             if match:
                 message = req.pass_test("Redirect to {0}".format(req.test['outcomes']['response_redirect']))
