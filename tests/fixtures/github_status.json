@@ -13,7 +13,7 @@
             },
             "outcomes": {
                 "expect_status_code": 301,
-                "response_redirect": "https://status.github.com/api/status.json",
+                "response_redirect": "https://status.github.com/.*/status.json",
                 "colour": "False"
             }
         },
@@ -41,13 +41,30 @@
             "uri": "/api/status.json",
             "method": "get",
             "inputs": {
+                "verify": "True",
                 "headers": {
-                    "User-Agent": "Smolder smoke test library"
+                    "User-Agent": "Smolder smoke test library",
+                    "Accept": "application/json"
                 }
             },
             "outcomes": {
                 "response_body_contains": "good",
-                "response_max_time_ms": 2000
+                "response_max_time_ms": 2000,
+                "validate_json": {
+                    "schema": {
+                        "properties": {
+                            "status": {
+                                "type": "string"
+                            },
+                            "last_updated": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "response_json_contains": {
+                    "status": "good"
+                }
             }
         }
     ]

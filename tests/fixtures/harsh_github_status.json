@@ -28,11 +28,31 @@
                     "User-Agent": "Smolder smoke test library"
                 }
             },
+            "inputs": {
+                "verify": "True",
+                "headers": {
+                    "User-Agent": "Smolder smoke test library",
+                    "Accept": "application/json"
+                }
+            },
             "outcomes": {
+                "response_body_contains": "good",
+                "response_max_time_ms": 2000,
+                "validate_json": {
+                    "schema": {
+                        "properties": {
+                            "status": {
+                                "type": "int"
+                            },
+                            "last_updated": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
                 "response_json_contains": {
                     "status": "good"
                 },
-                "response_body_contains": "good",
                 "response_max_time_ms": 1,
                 "colour_output": "True"
             }
