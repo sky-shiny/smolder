@@ -3,6 +3,7 @@ import os
 import yaml
 import sys
 from smolder import Charcoal
+import fileinput
 from smolder import tcp_test
 import logging
 import argh
@@ -71,7 +72,7 @@ SCHEMA = {
 
 @dispatch_command
 @arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))
-@arg('testfile', default=os.environ.get('TEST_FILE'), metavar='TEST_FILE', help='The json file that details the tests to execute')
+@arg('testfile', nargs='?', help='The json file that details the tests to execute')
 @arg('--force', help='Use http methods that can potentially change data (PUT, POST, DELETE, etc. ie !GET)', default=False)
 def smolder_cli(**kwargs):
     """ Parse CLI args and if valid dispatch to lower methods """
@@ -81,7 +82,7 @@ def smolder_cli(**kwargs):
 
     # Load the test specification file, parse the json and create a 'tests' object
     try:
-        myfile = open(kwargs['testfile'])
+        myfile = "".join(fileinput.input(sys.argv[2:]))
         test_input = yaml.load(myfile)
         tests = test_input['tests']
         try:
