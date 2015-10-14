@@ -72,7 +72,7 @@ SCHEMA = {
 
 @dispatch_command
 @arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))
-@arg('testfile', nargs='?', help='The json file that details the tests to execute')
+@arg('testfile', default=os.environ.get('TEST_FILE'), metavar='TEST_FILE', nargs='?', help='The json file that details the tests to execute')
 @arg('--force', help='Use http methods that can potentially change data (PUT, POST, DELETE, etc. ie !GET)', default=False)
 def smolder_cli(**kwargs):
     """ Parse CLI args and if valid dispatch to lower methods """
