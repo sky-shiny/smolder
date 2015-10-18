@@ -4,7 +4,7 @@ Contributing
 Contributions welcome 
 
 - If tests pass and and the request is logical, it should get accepted.  
-- Please squash your commits into logical units.
+- Please squash/fixup your commits into logical units.
 - Pep8 is encouraged (for the code you write).
 
 Testing
