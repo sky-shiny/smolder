@@ -4,7 +4,6 @@ import yaml
 import sys
 import fileinput
 from smolder import Charcoal
-from smolder import tcp_test
 import logging
 import argh
 from yaml.parser import ParserError
@@ -117,19 +116,8 @@ def smolder_cli(**kwargs):
     # Iterate through all the tests
 
     for test in test_input['tests']:
-        try:
-            port = test["port"]
-        except (AttributeError, KeyError):
-            print("Warning: No port definition found in the first test, using port 80 as default.")
-            try:
-                if test["protocol"] == "https":
-                    port = 443
-                else:
-                    port = 80
-            except (AttributeError, KeyError):
-                port = 80
-        tcp_test(str(kwargs['host']), port)
         test_obj = Charcoal(test=test, host=kwargs['host'])
+
         print(str(test_obj))
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
