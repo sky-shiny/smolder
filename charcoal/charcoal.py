@@ -4,12 +4,14 @@ import time
 import logging
 import warnings
 from copy import deepcopy
+
 try:
     from urllib.parse import urlparse
 except ImportError:
     from urlparse import urlparse
 import jsonpickle
 import requests
+
 try:
     from tcptest import tcp_test
 except ImportError:
@@ -69,24 +71,27 @@ class Charcoal(object):
             except (AttributeError, KeyError):
                 self.port = 80
 
-
         LOG.debug("Test: {0}".format(test))
-        test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30), protocol="http", port=self.port, method="get",
-                             outcomes=dict(expect_status_code=200, colour_output=True))
-        intermediate_dict = deepupdate(test_defaults, test)
+        test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30), protocol="http", port=self.port,
+                             method="get", outcomes=dict(expect_status_code=200, colour_output=True))
 
         host_overrides_object = urlparse(host)
         host_overrides = dict()
-        if host_overrides_object.scheme is not None:
+        if host_overrides_object.scheme is not None and host_overrides_object.scheme is not "":
             host_overrides["protocol"] = host_overrides_object.scheme
+        else:
+            host_overrides["protocol"] = test_defaults["protocol"]
         if host_overrides_object.port is not None:
             host_overrides["port"] = host_overrides_object.port
+        else:
+            host_overrides["port"] = test_defaults["port"]
         if host_overrides_object.hostname is not None:
             self.host = host_overrides_object.hostname
         else:
             self.host = host
-        host_overrides = dict()
-        final_dict = deepupdate(intermediate_dict, host_overrides)
+        intermediate_dict = deepupdate(test_defaults, host_overrides)
+
+        final_dict = deepupdate(intermediate_dict, test)
         if "tcp_test" in test and test["tcp_test"]:
             tcp_test(self.host, self.port)
         try:
@@ -102,7 +107,7 @@ class Charcoal(object):
             else:
                 raise TypeError("Not sure what you want here")
             self.verify_specified = True
-            del(final_dict["inputs"]["verify"])
+            del (final_dict["inputs"]["verify"])
         except (AttributeError, KeyError):
             if 'https' in final_dict['protocol']:
                 self.verify = True
