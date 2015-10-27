@@ -10,7 +10,7 @@ logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:
 LOG = logging.getLogger('smolder')
 
 
-@retry(wait_exponential_multiplier=500, wait_exponential_max=30000, stop_max_attempt_number=7)
+# @retry(wait_exponential_multiplier=500, wait_exponential_max=30000, stop_max_attempt_number=7)
 def tcp_test(host, port):
     """
     Attempts to make a TCP socket connection on the specified host and

@@ -1,6 +1,13 @@
 RELEASE HISTORY
 ===============
 
+Version 0.3.1
+-------------
+- Adds support for default overrides
+- Supporting Docker testing
+- Community contributions
+- Big thanks to github.com/hekaldama
+
 Version 0.3.0
 -------------
 - 0.3.0 is looking to resolve defaults globally using immutable datastructures, deep copied and updated for defaults.

@@ -8,6 +8,7 @@ tests:
         User-Agent: "Smolder smoke test library"
         Accept: "application/json"
     name: "Test Json Validation"
+    tcp_test: False
     outcomes:
       expect_status_code: 200
       validate_json:
