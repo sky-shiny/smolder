@@ -1,4 +1,4 @@
-FROM frolvlad/alpine-python3:latest
+FROM mcameron/smolder:latest
 
 WORKDIR /src
 

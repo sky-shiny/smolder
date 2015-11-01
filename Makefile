@@ -1,4 +1,4 @@
-IMAGE_PATH=sky-shiny/smolder
+IMAGE_PATH=mcameron/smolder
 TAG?=latest
 IMAGE=$(IMAGE_PATH):$(TAG)
 COMMAND?=
