@@ -8,8 +8,6 @@ __author__ = 'maxcameron'
 from ansible.module_utils.basic import *
 #
 try:
-# import smolder
-#
     from smolder import Charcoal
     HAS_SMOLDER = True
 except ImportError:
@@ -60,15 +58,6 @@ def main():
     argument_spec = dict(
         host=dict(required=True),
         test=dict(required=True, type='dict')
-        # force=dict(required=False, default=False, type='bool'),
-        # name=dict(required=True),
-        # uri=dict(required=True),
-        # port=dict(required=True),
-        # inputs=dict(required=True),
-        # outcomes=dict(required=False),
-        # protocol=dict(required=False, choices=["tcp", "http", "https"]),
-        # method=dict(required=False,
-        #             choices=["GET", "get", "post", "POST", "put", "PUT", "delete", "DELETE", "option", "OPTION"]),
     )
 
     module = AnsibleModule(argument_spec)
