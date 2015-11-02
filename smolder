@@ -2,7 +2,6 @@
 import os
 import yaml
 import sys
-import fileinput
 from smolder import Charcoal
 import logging
 import argh
