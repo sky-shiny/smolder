@@ -1,0 +1,34 @@
+---
+- name: launch a compute instance
+  hosts: all
+  gather_facts: no
+  tasks:
+  - name: check redirect
+    smolder:
+      host: status.github.com
+      test:
+        name: "Github Status"
+        outcomes:
+          expect_status_code: 301
+          response_redirect: "https://status.github.com/api/status.json"
+        inputs:
+          headers:
+            User-Agent: "Smolder smoke test library"
+        uri: /api/status.json
+    connection: local
+  - name: check ssl
+    smolder:
+      host: status.github.com
+      test:
+        inputs:
+          headers:
+            User-Agent: "Smolder smoke test library"
+        name: "Github Status ssl"
+        outcomes:
+          response_json_contains:
+            status: good
+          response_max_time_ms: 600
+        port: 443
+        protocol: https
+        uri: /api/status.json
+    connection: local
