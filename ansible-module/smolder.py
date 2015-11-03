@@ -6,9 +6,11 @@
 __author__ = 'maxcameron'
 
 from ansible.module_utils.basic import *
+
 #
 try:
     from smolder import Charcoal
+
     HAS_SMOLDER = True
 except ImportError:
     HAS_SMOLDER = False
@@ -70,12 +72,13 @@ def main():
     total_passed_tests += test_obj.passed
     all_tests.append(test_obj)
     if total_failed_tests > 0:
-        module.fail_json(msg="FOUND {0} FAILURES IN {1} TESTS".format(str(total_failed_tests),
-                                                                      str(total_passed_tests + total_failed_tests)))
+        module.fail_json(msg="FOUND {0} FAILURES IN {1} TESTS".format(
+            str(total_failed_tests), str(total_passed_tests + total_failed_tests)),
+            stdout='\n' + str(test_obj))
     elif total_failed_tests == 0 and total_passed_tests == 0:
-        module.fail_json(msg="No tests run: check plugins")
+        module.fail_json(msg="No tests run: check plugins", stdout='\n' + str(test_obj))
     else:
-        module.exit_json(msg="ALL TESTS PASSED!")
+        module.exit_json(msg="ALL TESTS PASSED!", stdout='\n' + str(test_obj))
 
 
 if __name__ == '__main__':
