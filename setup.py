@@ -29,7 +29,7 @@ REQUIRES = [
     'Yapsy >= 1.11.23',
     'validictory >= 1.0.0',
     'nose >= 1.3.7',
-    'httpretty >= 0.8.10'
+    'httpretty == 0.8.10',
 ]
 
 with open('README.md', 'r') as f:
@@ -40,7 +40,7 @@ with open('HISTORY', 'r') as f:
 
 setup(
     name='smolder',
-    version='0.3.1',
+    version='0.4.0',
     description='Json wrapper around requests for simple smoke testing.',
     long_description=README + '\n\n' + HISTORY,
     author='Max Cameron',
@@ -73,5 +73,7 @@ setup(
         'Topic :: Software Development',
         'Topic :: Software Development :: Internationalization',
         'Topic :: Software Development :: Testing'
-    ),
+    ), requires=['requests', 'httpretty', 'nose', 'jsonpickle', 'argh', 'decorator', 'dpath',
+                 'ecdsa', 'Jinja2', 'MarkupSafe', 'requests', 'retry', 'retrying', 'six',
+                 'jsonpickle', 'PyYAML', 'Yapsy', 'validictory', 'nose', 'httpretty']
 )

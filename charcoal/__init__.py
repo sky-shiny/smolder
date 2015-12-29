@@ -19,4 +19,7 @@ from .tcptest import tcp_test
 from .colours import Colours
 from .colours import COLOURS
 from .charcoal import Charcoal
+from .get_verify import get_verify
+from .get_host_overrides import get_host_overrides
+
 __all__ = ['.']
