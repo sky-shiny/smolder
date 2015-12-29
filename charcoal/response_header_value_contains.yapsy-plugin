@@ -1,0 +1,9 @@
+[Core]
+Name = response_header_value_contains
+Module = response_header_value_contains
+
+[Documentation]
+Author = Yasser Nabi
+Version = 0.1
+Website = http://lotsofplugins.com
+Description = My first plugin
