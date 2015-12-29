@@ -39,6 +39,18 @@ def test_github_status_expect_fail():
     assert total_failed_tests > 0
 
 
+def test_tcp_tests():
+    total_failed_tests = 0
+    total_passed_tests = 0
+    myfile = open(THIS_DIR + '/fixtures/tcp_test.yaml')
+    test_json = yaml.load(myfile)
+    for test in test_json['tests']:
+        test_obj = Charcoal(test=test, host='status.github.com')
+        total_failed_tests += test_obj.failed
+        total_passed_tests += test_obj.passed
+    assert total_failed_tests == 0
+
+
 @httpretty.activate
 def test_validate_json():
     total_failed_tests = 0
@@ -93,6 +105,21 @@ def test_invalid_yaml_format():
 
 def test_tcp_test():
     charcoal.tcp_test('127.0.0.1', 22)  # Are you running an ssh server?
+
+
+def test_tcp_local():
+    myfile = open(THIS_DIR + '/fixtures/tcp_test_local.yaml')
+    test_json = yaml.load(myfile)
+    for test in test_json['tests']:
+        test_obj = Charcoal(test=test, host='localhost')
+
+
+@raises(Exception)
+def test_tcp_local_fail():
+    myfile = open(THIS_DIR + '/fixtures/tcp_test_local_fail.yaml')
+    test_json = yaml.load(myfile)
+    for test in test_json['tests']:
+        test_obj = Charcoal(test=test, host='localhost')
 
 
 @raises(socket.error)
