@@ -5,20 +5,13 @@ import logging
 import warnings
 from copy import deepcopy
 
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
+
 import jsonpickle
 import requests
 
-try:
-    from tcptest import tcp_test
-except ImportError:
-    from .tcptest import tcp_test
 from yapsy.PluginManager import PluginManager
 
-from . import COLOURS
+from . import COLOURS, get_verify, get_host_overrides, tcptest
 
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -40,6 +33,8 @@ def deepupdate(original, update):
     """
     Recursively update a dict.
     Subdict's won't be overwritten but also updated.
+    :param update:
+    :param original:
     """
     for key, value in original.items():
         if key not in update:
@@ -72,51 +67,37 @@ class Charcoal(object):
                 self.port = 80
 
         LOG.debug("Test: {0}".format(test))
-        test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30), protocol="http", port=self.port,
-                             method="get", outcomes=dict(expect_status_code=200, colour_output=True))
+        test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30),
+                             method="get",
+                             outcomes=dict(expect_status_code=200, colour_output=True))
 
-        host_overrides_object = urlparse(host)
-        host_overrides = dict()
-        if host_overrides_object.scheme is not None and host_overrides_object.scheme is not "":
-            host_overrides["protocol"] = host_overrides_object.scheme
-        else:
-            host_overrides["protocol"] = test_defaults["protocol"]
-        if host_overrides_object.port is not None:
-            host_overrides["port"] = host_overrides_object.port
-        else:
-            host_overrides["port"] = test_defaults["port"]
-        if host_overrides_object.hostname is not None:
-            self.host = host_overrides_object.hostname
+        host_overrides = get_host_overrides.get_host_overrides(host, self.port)
+
+        if host_overrides['hostname'] is not None:
+            self.host = host_overrides['hostname']
         else:
             self.host = host
         intermediate_dict = deepupdate(test_defaults, host_overrides)
 
         final_dict = deepupdate(intermediate_dict, test)
+
         if "tcp_test" in test and test["tcp_test"]:
-            tcp_test(self.host, self.port)
+            tcp_test = tcptest.tcp_test(self.host, self.port)
+
         try:
-            if type(final_dict["inputs"]["verify"]) == bool:
-                self.verify = final_dict["inputs"]["verify"]
-            elif final_dict["inputs"]["verify"] == "True":
-                self.verify = True
-            elif final_dict["inputs"]["verify"] == "False":
-                self.verify = False
-            elif type(final_dict["inputs"]["verify"]) == str:
-                LOG.debug("Fucking requests having one argument which can accept input of multiple types")
-                self.verify = final_dict["inputs"]["verify"]
-            else:
-                raise TypeError("Not sure what you want here")
-            self.verify_specified = True
-            del (final_dict["inputs"]["verify"])
+            verify = final_dict["inputs"]["verify"]
         except (AttributeError, KeyError):
-            if 'https' in final_dict['protocol']:
-                self.verify = True
-                self.verify_specified = False
-            else:
-                self.verify = False
-                self.verify_specified = False
+            verify = None
+        try:
+            proto = final_dict['protocol']
+        except (AttributeError, KeyError):
+            proto = None
+        (self.verify, self.verify_specified) = get_verify.get_verify(verify, proto)
+
         self.test = deepcopy(final_dict)
         LOG.debug("Test with defaults: {0}".format(self.test))
+        if "verify" in self.test["inputs"]:
+            del self.test["inputs"]["verify"]
         self.inputs = deepcopy(self.test['inputs'])
         request_url_format = '{protocol}://{host}:{port}{uri}'
         self.output = ("-" * OUTPUT_WIDTH)
@@ -208,21 +189,21 @@ class Charcoal(object):
         status = "[PASS]"
         if self.test["outcomes"]["colour_output"]:
             status = COLOURS.to_green(status)
-        return (message, status)
+        return message, status
 
     def fail_test(self, message):
         self.failed += 1
         status = "[FAIL]"
         if self.test["outcomes"]["colour_output"]:
             status = COLOURS.to_red(status)
-        return (message, status)
+        return message, status
 
     def warn_test(self, message):
         self.passed += 1
         status = "[WARN]"
         if self.test["outcomes"]["colour_output"]:
             status = COLOURS.to_yellow(status)
-        return (message, status)
+        return message, status
 
     def add_output(self, name, message, status):
         test_out = name + ": " + message + "." * (OUTPUT_WIDTH - len(name) - len(message) - 8) + status.rjust(8)

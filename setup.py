@@ -29,7 +29,7 @@ REQUIRES = [
     'Yapsy >= 1.11.23',
     'validictory >= 1.0.0',
     'nose >= 1.3.7',
-    'httpretty >= 0.8.10'
+    'httpretty == 0.8.10',
 ]
 
 with open('README.md', 'r') as f:
@@ -73,5 +73,7 @@ setup(
         'Topic :: Software Development',
         'Topic :: Software Development :: Internationalization',
         'Topic :: Software Development :: Testing'
-    ),
+    ), requires=['requests', 'httpretty', 'nose', 'jsonpickle', 'argh', 'decorator', 'dpath',
+                 'ecdsa', 'Jinja2', 'MarkupSafe', 'requests', 'retry', 'retrying', 'six',
+                 'jsonpickle', 'PyYAML', 'Yapsy', 'validictory', 'nose', 'httpretty']
 )
