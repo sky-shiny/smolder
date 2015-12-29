@@ -101,9 +101,14 @@ class Charcoal(object):
         self.inputs = deepcopy(self.test['inputs'])
         request_url_format = '{protocol}://{host}:{port}{uri}'
         self.output = ("-" * OUTPUT_WIDTH)
-        self.inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=self.host,
+        try:
+            self.inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=self.host,
                                                        port=self.test['port'],
                                                        uri=self.test['uri'])
+        except KeyError:
+            self.inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=self.host,
+                                                       port=self.test['port'],
+                                                       uri='')
         LOG.debug("Testing {0}".format(self.inputs['url']))
         self.output = ("-" * OUTPUT_WIDTH)
 
@@ -124,7 +129,10 @@ class Charcoal(object):
             except Exception:
                 warnings.simplefilter("ignore")
                 start = int(round(time.time() * 1000))
-                self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
+                if self.test["protocol"] != 'tcp':
+                    self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
+                else:
+                    tcp_test = tcptest.tcp_test(self.host, self.port)
                 end = int(round(time.time() * 1000))
                 self.duration_ms = end - start
                 if not self.verify_specified:
@@ -137,21 +145,21 @@ class Charcoal(object):
                     else:
                         message, status = self.warn_test("Insecure request made and ignored")
                         self.add_output("SecureRequest", message, status)
+        if self.test["protocol"] != 'tcp':
+            if 'show_body' in self.test:
+                try:
+                    req_content = self.req.content.decode()
+                except UnicodeDecodeError:
+                    req_content = self.req.content
+                self.output = "\n".join([self.output, req_content])
 
-        if 'show_body' in self.test:
-            try:
-                req_content = self.req.content.decode()
-            except UnicodeDecodeError:
-                req_content = self.req.content
-            self.output = "\n".join([self.output, req_content])
-
-        for plugin_info in manager.getAllPlugins():
-            for outcome in self.test['outcomes']:
-                if plugin_info.name == outcome:
-                    manager.activatePluginByName(plugin_info.name)
-                    message, status = plugin_info.plugin_object.run(self)
-                    self.add_output(plugin_info.name, message, status)
-                    manager.deactivatePluginByName(plugin_info.name)
+            for plugin_info in manager.getAllPlugins():
+                for outcome in self.test['outcomes']:
+                    if plugin_info.name == outcome:
+                        manager.activatePluginByName(plugin_info.name)
+                        message, status = plugin_info.plugin_object.run(self)
+                        self.add_output(plugin_info.name, message, status)
+                        manager.deactivatePluginByName(plugin_info.name)
 
         self.output = "\n".join([self.output, "\n"])
 

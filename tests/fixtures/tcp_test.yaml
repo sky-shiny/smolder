@@ -1,0 +1,16 @@
+---
+tests:
+  -
+    name: "Github Status"
+    port: 443
+    protocol: https
+    tcp_test: True
+    inputs:
+      headers:
+        User-Agent: "Smolder smoke test library"
+    outcomes:
+      response_body_contains: good
+      response_json_contains:
+        status: good
+      response_max_time_ms: 2000
+    uri: /api/status.json

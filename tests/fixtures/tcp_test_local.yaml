@@ -1,0 +1,6 @@
+---
+tests:
+  -
+    name: "Test TCP Port"
+    protocol: tcp
+    port: 22
