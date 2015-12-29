@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 import charcoal
 from charcoal import Charcoal
 import yaml
