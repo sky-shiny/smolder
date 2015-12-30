@@ -1,0 +1,14 @@
+---
+tests:
+  -
+    name: "BadSSL: see host for type"
+    port: 443
+    protocol: https
+    inputs:
+      verify: True
+      headers:
+        User-Agent: "Smolder smoke test library github.com/sky-shiny/smolder"
+    outcomes:
+      response_max_time_ms: 2000
+      expect_status_code: 200
+    uri: /
