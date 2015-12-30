@@ -5,7 +5,6 @@ import logging
 import warnings
 from copy import deepcopy
 
-
 import jsonpickle
 import requests
 
@@ -71,7 +70,7 @@ class Charcoal(object):
                              method="get",
                              outcomes=dict(expect_status_code=200, colour_output=True))
 
-        host_overrides = get_host_overrides.get_host_overrides(host, self.port)
+        host_overrides = get_host_overrides(host, self.port)
 
         if host_overrides['hostname'] is not None:
             self.host = host_overrides['hostname']
@@ -92,7 +91,7 @@ class Charcoal(object):
             proto = final_dict['protocol']
         except (AttributeError, KeyError):
             proto = None
-        (self.verify, self.verify_specified) = get_verify.get_verify(verify, proto)
+        (self.verify, self.verify_specified) = get_verify(verify, proto)
 
         self.test = deepcopy(final_dict)
         LOG.debug("Test with defaults: {0}".format(self.test))
@@ -103,12 +102,12 @@ class Charcoal(object):
         self.output = ("-" * OUTPUT_WIDTH)
         try:
             self.inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=self.host,
-                                                       port=self.test['port'],
-                                                       uri=self.test['uri'])
+                                                           port=self.test['port'],
+                                                           uri=self.test['uri'])
         except KeyError:
             self.inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=self.host,
-                                                       port=self.test['port'],
-                                                       uri='')
+                                                           port=self.test['port'],
+                                                           uri='')
         LOG.debug("Testing {0}".format(self.inputs['url']))
         self.output = ("-" * OUTPUT_WIDTH)
 
