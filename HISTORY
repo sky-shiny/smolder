@@ -1,6 +1,16 @@
 RELEASE HISTORY
 ===============
 
+
+Version 0.4.1
+-------------
+- Adds error handling for bad ssl certificates.
+- Unit tests in place for all types of bad ssl certificates currently handled by badssl.com
+
+Version 0.4.0
+-------------
+- Breaks out input handling into modules that can be independently tested.
+
 Version 0.3.1
 -------------
 - Adds support for default overrides
@@ -10,7 +20,7 @@ Version 0.3.1
 
 Version 0.3.0
 -------------
-- 0.3.0 is looking to resolve defaults globally using immutable datastructures, deep copied and updated for defaults.
+- 0.3.0 is looking to resolve defaults globally using immutable data structures, deep copied and updated for defaults.
 - Handles issues with requests where the verify var accepts both bools and strings.
 - Adds support for smolder warnings (not python warnings).
 - Some unit test improvements.
