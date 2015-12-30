@@ -15,6 +15,7 @@ expect_status_code | FAIL if response status code differs from int.
 response_redirect | FAIL if string not in response location header.
 response_headers | FAIL if the headers received from the request doesn't contain the list of headers provided.
 response_header_values | FAIL if the *values* of the headers in the test don't match the values in the response.
+response_header_value_contains | FAIL if the value of the headers in the response do not match a given regexp pattern.
 show_body | output the body to stdout.
 colour_output  | Colour PASS/FAIL
 
