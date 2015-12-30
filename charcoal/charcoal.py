@@ -81,7 +81,7 @@ class Charcoal(object):
         final_dict = deepupdate(intermediate_dict, test)
 
         if "tcp_test" in test and test["tcp_test"]:
-            tcp_test = tcptest.tcp_test(self.host, self.port)
+            tcptest.tcp_test(self.host, self.port)
 
         try:
             verify = final_dict["inputs"]["verify"]
@@ -131,7 +131,7 @@ class Charcoal(object):
                 if self.test["protocol"] != 'tcp':
                     self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
                 else:
-                    tcp_test = tcptest.tcp_test(self.host, self.port)
+                    tcptest.tcp_test(self.host, self.port)
                 end = int(round(time.time() * 1000))
                 self.duration_ms = end - start
                 if not self.verify_specified:
