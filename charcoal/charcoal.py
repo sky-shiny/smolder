@@ -91,6 +91,7 @@ class Charcoal(object):
             proto = final_dict['protocol']
         except (AttributeError, KeyError):
             proto = None
+
         (self.verify, self.verify_specified) = get_verify.get_verify(verify, proto)
 
         self.test = deepcopy(final_dict)
