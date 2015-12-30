@@ -130,7 +130,12 @@ class Charcoal(object):
                 warnings.simplefilter("ignore")
                 start = int(round(time.time() * 1000))
                 if self.test["protocol"] != 'tcp':
-                    self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
+                    try:
+                        self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
+                    except requests.exceptions.SSLError:
+                        message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']")
+                        self.add_output("SSLVerify", message, status)
+                        return
                 else:
                     tcptest.tcp_test(self.host, self.port)
                 end = int(round(time.time() * 1000))
