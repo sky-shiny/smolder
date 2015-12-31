@@ -2,10 +2,16 @@ RELEASE HISTORY
 ===============
 
 
+Version 0.4.2
+-------------
+- More specific SSL error handling
+- Schema validation happens inside the class for Ansible module support
+
 Version 0.4.1
 -------------
 - Adds error handling for bad ssl certificates.
 - Unit tests in place for all types of bad ssl certificates currently handled by badssl.com
+- New plugin "response_header_value_contains", big thanks to https://github.com/yasn77
 
 Version 0.4.0
 -------------
@@ -16,7 +22,7 @@ Version 0.3.1
 - Adds support for default overrides
 - Supporting Docker testing
 - Community contributions
-- Big thanks to github.com/hekaldama
+- Big thanks to https://github.com/hekaldama
 
 Version 0.3.0
 -------------
