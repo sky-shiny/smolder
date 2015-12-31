@@ -6,6 +6,7 @@
 __author__ = 'maxcameron'
 
 from ansible.module_utils.basic import *
+import json
 
 #
 try:
@@ -67,18 +68,23 @@ def main():
     if not HAS_SMOLDER:
         module.fail_json(msg='smolder is required for this module')
 
-    test_obj = Charcoal(test=test_input, host=module.params["host"])
+    test_obj = Charcoal(test=test_input, host=module.params["host"], output_format='json')
     total_failed_tests += test_obj.failed
     total_passed_tests += test_obj.passed
     all_tests.append(test_obj)
+    test_output = json.loads(str(test_obj))
     if total_failed_tests > 0:
         module.fail_json(msg="FOUND {0} FAILURES IN {1} TESTS".format(
             str(total_failed_tests), str(total_passed_tests + total_failed_tests)),
-            stdout='\n\033[0m' + str(test_obj))
+            stdout='\n\033[0m' + test_output['msg'])
     elif total_failed_tests == 0 and total_passed_tests == 0:
-        module.fail_json(msg="No tests run: check plugins", stdout='\n\033[0m' + str(test_obj))
+        module.fail_json(msg="No tests run: check plugins", stdout='\n\033[0m' + test_output['msg'])
     else:
-        module.exit_json(msg="ALL TESTS PASSED!", stdout='\n\033[0m' + str(test_obj))
+        module.exit_json(msg="ALL TESTS PASSED!", stdout='\n\033[0m' +
+                         test_output['msg'],
+                         response_headers=test_output['response_headers'],
+                         response_status_code=test_output['response_status_code'],
+                         request_inputs=test_output['request_inputs'])
 
 
 if __name__ == '__main__':

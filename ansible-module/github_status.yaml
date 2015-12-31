@@ -32,3 +32,6 @@
         protocol: https
         uri: /api/status.json
     connection: local
+    register: reply
+  - fail: msg="Timing-Allow-Origin is not https://github.com"
+    when: reply.response_headers['Timing-Allow-Origin'] != 'https://github.com'
