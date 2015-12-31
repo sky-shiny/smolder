@@ -20,7 +20,8 @@ SCHEMA = {
             "type": "string"
         },
         "uri": {
-            "type": "string"
+            "type": "string",
+            "required": False
         },
         "port": {
             "type": "integer",
@@ -30,7 +31,7 @@ SCHEMA = {
             "type": "object",
             "required": False,
             "properties": {
-                "headers" :{"type": "any", "required": False},
+                "headers": {"type": "any", "required": False},
                 "username": {"type": "any", "required": False},
                 "password": {"type": "any", "required": False},
                 "cookie": {"type": "any", "required": False},
