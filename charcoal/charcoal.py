@@ -189,21 +189,21 @@ class Charcoal(object):
             try:
                 LOG.debug("Verify is a: {0}, with value: {1}".format(type(self.verify), self.verify))
                 start = int(round(time.time() * 1000))
-                self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
-                end = int(round(time.time() * 1000))
-                self.duration_ms = end - start
-            except Exception:
-                warnings.simplefilter("ignore")
-                start = int(round(time.time() * 1000))
                 if self.test["protocol"] != 'tcp':
-                    try:
-                        self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
-                    except requests.exceptions.SSLError:
-                        message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']")
-                        self.add_output("SSLVerify", message, status)
-                        return
+                    self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
                 else:
                     tcptest.tcp_test(self.host, self.port)
+                end = int(round(time.time() * 1000))
+                self.duration_ms = end - start
+            except (RuntimeWarning, requests.exceptions.SSLError):
+                warnings.simplefilter("ignore")
+                start = int(round(time.time() * 1000))
+                try:
+                    self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
+                except requests.exceptions.SSLError:
+                    message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']")
+                    self.add_output("SSLVerify", message, status)
+                    return
                 end = int(round(time.time() * 1000))
                 self.duration_ms = end - start
                 if not self.verify_specified:
