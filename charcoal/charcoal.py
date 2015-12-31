@@ -7,7 +7,7 @@ from copy import deepcopy
 
 import jsonpickle
 import requests
-
+import validictory
 from yapsy.PluginManager import PluginManager
 
 from . import COLOURS, get_verify, get_host_overrides, tcptest
@@ -26,6 +26,61 @@ manager.setPluginPlaces([THIS_DIR, "~/.smolder_plugins"])
 manager.collectPlugins()
 
 OUTPUT_WIDTH = 108
+
+SCHEMA = {
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "uri": {
+            "type": "string",
+            "required": False
+        },
+        "port": {
+            "type": "integer",
+            "required": False
+        },
+        "inputs": {
+            "type": "object",
+            "required": False,
+            "properties": {
+                "headers": {"type": "any", "required": False},
+                "username": {"type": "any", "required": False},
+                "password": {"type": "any", "required": False},
+                "cookie": {"type": "any", "required": False},
+                "data": {"type": "any", "required": False},
+                "file": {"type": "any", "required": False},
+                "verify": {"type": "any", "required": False},
+                "allow_redirects": {"type": "any", "required": False},
+                "timeout": {"type": "any", "required": False},
+                "proxies": {"type": "any", "required": False}
+            }
+        },
+        "outcomes": {
+            "type": "object",
+            "required": False
+        },
+        "protocol": {
+            "type": "string",
+            "required": False,
+            "enum": ["tcp", "http", "https"]
+        },
+        "method": {
+            "type": "string",
+            "required": False,
+            "enum": ["GET", "get", "post", "POST", "put", "PUT", "delete", "DELETE", "option", "OPTION"]
+        },
+        "request_headers": {
+            "type": "None",
+            "required": False
+        },
+        "url": {
+            "type": "None",
+            "required": False
+        }
+    }
+}
 
 
 def deepupdate(original, update):
@@ -52,6 +107,14 @@ class Charcoal(object):
 
         self.passed = 0
         self.failed = 0
+        self.duration_ms = 0
+        try:
+            validictory.validate(test, SCHEMA)
+            LOG.debug("Valid schema")
+        except ValueError as error:
+            LOG.error("Error, invalid test format: {0}.  Tests now use v0.2 format. v0.1 branch is still available."
+                      .format(error))
+            raise
 
         try:
             self.port = test["port"]
@@ -118,6 +181,9 @@ class Charcoal(object):
         self.output = "\n".join([self.output, this_url])
         self.output = "\n".join([self.output, self.__repr__()])
         self.output = "\n".join([self.output, ("-" * OUTPUT_WIDTH)])
+        self.run()
+
+    def run(self):
         with warnings.catch_warnings():
             warnings.simplefilter("error")
             try:
