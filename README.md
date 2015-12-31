@@ -17,6 +17,7 @@ Smolder aims to solve these problems by providing features such as:
 - Validate ssl certificates.
 - Validate headers.
 - Validate json object types using [validictory](https://github.com/jamesturk/validictory)
+- Write plugins using [Yapsy](https://github.com/tibonihoo/yapsy)
 - More
 
 Installation
