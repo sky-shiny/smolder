@@ -219,9 +219,9 @@ class Charcoal(object):
                     else:
                         message, status = self.warn_test("Insecure request made and ignored")
                         self.add_output("SecureRequest", message, status)
-        self.output.append(dict(self.req.headers), sec='response_headers')
-        self.output.append(self.req.status_code, sec='response_status_code')
         if self.test["protocol"] != 'tcp':
+            self.output.append(dict(self.req.headers), sec='response_headers')
+            self.output.append(self.req.status_code, sec='response_status_code')
             if 'show_body' in self.test:
                 try:
                     req_content = self.req.content.decode()
