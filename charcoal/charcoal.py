@@ -12,7 +12,7 @@ import validictory
 from yapsy.PluginManager import PluginManager
 
 from . import COLOURS, get_verify, get_host_overrides, tcptest
-from output import Output
+from .output import Output
 
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
