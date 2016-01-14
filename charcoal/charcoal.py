@@ -130,7 +130,7 @@ class Charcoal(object):
             except (AttributeError, KeyError):
                 self.port = 80
 
-        self.output = Output(format=output_format)
+        self.output = Output(output_format=output_format)
         LOG.debug("Test: {0}".format(test))
         test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30),
                              method="get",

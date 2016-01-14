@@ -5,9 +5,9 @@ from collections import defaultdict
 
 class Output(defaultdict):
 
-    def __init__(self, format=None):
+    def __init__(self, output_format=None):
         super(Output, self).__init__(msg='')
-        self.format = format
+        self.format = output_format
 
     def __str__(self):
         if self.format == 'json':
