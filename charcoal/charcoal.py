@@ -5,12 +5,14 @@ import logging
 import warnings
 from copy import deepcopy
 
+
 import jsonpickle
 import requests
 import validictory
 from yapsy.PluginManager import PluginManager
 
 from . import COLOURS, get_verify, get_host_overrides, tcptest
+from .output import Output
 
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -99,7 +101,7 @@ def deepupdate(original, update):
 
 
 class Charcoal(object):
-    def __init__(self, test, host):
+    def __init__(self, test, host, output_format=None):
         """
 
         :rtype : object
@@ -128,6 +130,7 @@ class Charcoal(object):
             except (AttributeError, KeyError):
                 self.port = 80
 
+        self.output = Output(output_format=output_format)
         LOG.debug("Test: {0}".format(test))
         test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30),
                              method="get",
@@ -163,7 +166,6 @@ class Charcoal(object):
             del self.test["inputs"]["verify"]
         self.inputs = deepcopy(self.test['inputs'])
         request_url_format = '{protocol}://{host}:{port}{uri}'
-        self.output = ("-" * OUTPUT_WIDTH)
         try:
             self.inputs['url'] = request_url_format.format(protocol=self.test['protocol'], host=self.host,
                                                            port=self.test['port'],
@@ -173,14 +175,15 @@ class Charcoal(object):
                                                            port=self.test['port'],
                                                            uri='')
         LOG.debug("Testing {0}".format(self.inputs['url']))
-        self.output = ("-" * OUTPUT_WIDTH)
+        self.output.append("-" * OUTPUT_WIDTH)
 
         this_name = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.test['name'][:OUTPUT_WIDTH])
-        self.output = "\n".join([self.output, this_name])
+        self.output.append(this_name)
         this_url = ("{0:^" + str(OUTPUT_WIDTH) + "}").format(self.inputs["url"][:OUTPUT_WIDTH])
-        self.output = "\n".join([self.output, this_url])
-        self.output = "\n".join([self.output, self.__repr__()])
-        self.output = "\n".join([self.output, ("-" * OUTPUT_WIDTH)])
+        self.output.append(this_url)
+        self.output.append(self.__repr__())
+        self.output.append("-" * OUTPUT_WIDTH)
+        self.output.append(self.inputs, sec='request_inputs')
         self.run()
 
     def run(self):
@@ -217,12 +220,14 @@ class Charcoal(object):
                         message, status = self.warn_test("Insecure request made and ignored")
                         self.add_output("SecureRequest", message, status)
         if self.test["protocol"] != 'tcp':
+            self.output.append(dict(self.req.headers), sec='response_headers')
+            self.output.append(self.req.status_code, sec='response_status_code')
             if 'show_body' in self.test:
                 try:
                     req_content = self.req.content.decode()
                 except UnicodeDecodeError:
                     req_content = self.req.content
-                self.output = "\n".join([self.output, req_content])
+                self.output.append(req_content)
 
             for plugin_info in manager.getAllPlugins():
                 for outcome in self.test['outcomes']:
@@ -232,10 +237,9 @@ class Charcoal(object):
                         self.add_output(plugin_info.name, message, status)
                         manager.deactivatePluginByName(plugin_info.name)
 
-        self.output = "\n".join([self.output, "\n"])
 
     def __str__(self):
-        return self.output
+        return str(self.output)
 
     def __repr__(self):
         LOG.debug(self.inputs)
@@ -286,7 +290,7 @@ class Charcoal(object):
 
     def add_output(self, name, message, status):
         test_out = name + ": " + message + "." * (OUTPUT_WIDTH - len(name) - len(message) - 8) + status.rjust(8)
-        self.output = "\n".join([self.output, test_out])
+        self.output.append(test_out)
 
     def _to_json(self):
         return jsonpickle.encode(self)

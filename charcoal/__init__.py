@@ -21,5 +21,6 @@ from .colours import COLOURS
 from .charcoal import Charcoal
 from .get_verify import get_verify
 from .get_host_overrides import get_host_overrides
+from .output import Output
 
 __all__ = ['.']
