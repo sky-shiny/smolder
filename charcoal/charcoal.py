@@ -5,7 +5,6 @@ import logging
 import warnings
 from copy import deepcopy
 
-
 import jsonpickle
 import requests
 import validictory
@@ -236,7 +235,6 @@ class Charcoal(object):
                         message, status = plugin_info.plugin_object.run(self)
                         self.add_output(plugin_info.name, message, status)
                         manager.deactivatePluginByName(plugin_info.name)
-
 
     def __str__(self):
         return str(self.output)
