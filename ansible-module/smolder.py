@@ -96,6 +96,17 @@ EXAMPLES = '''
         uri: /api-definition
 '''
 
+RETURN = '''
+response_headers:
+  description: the response headers received
+  returned: success
+  type: string
+response_status_code:
+  description: the response status code
+  returned: success
+  type: string
+'''
+
 
 def main():
     argument_spec = dict(
@@ -126,5 +137,3 @@ def main():
 from ansible.module_utils.basic import *
 if __name__ == '__main__':
     main()
-
-
