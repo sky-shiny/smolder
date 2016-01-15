@@ -35,14 +35,11 @@ REQUIRES = [
 with open('README.md', 'r') as f:
     README = f.read()
 
-with open('HISTORY', 'r') as f:
-    HISTORY = f.read()
-
 setup(
     name='smolder',
-    version='0.5.0',
+    version='0.5.4',
     description='Json wrapper around requests for simple smoke testing.',
-    long_description=README + '\n\n' + HISTORY,
+    long_description=README,
     author='Max Cameron',
     author_email='maxwell.cameron@johngaltsystems.com',
     url='http://sky-shiny.github.io/smolder/',
