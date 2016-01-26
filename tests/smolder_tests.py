@@ -85,7 +85,7 @@ def test_validate_json_fail():
             LOG.debug(str(test_obj))
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
-    assert total_failed_tests >= 0
+    assert total_failed_tests > 0
 
 
 @raises(yaml.parser.ParserError)
@@ -106,8 +106,7 @@ def test_invalid_yaml_format():
 def test_tcp():
     charcoal.tcp_test('8.8.8.8', 53)  
 
-
-def test_tcp():
+def test_tcp_local():
     total_failed_tests = 0
     total_passed_tests = 0
     myfile = open(THIS_DIR + '/fixtures/tcp_test_local.yaml')
@@ -121,12 +120,22 @@ def test_tcp():
     assert total_failed_tests == 0
 
 
-@raises(Exception)
 def test_tcp_local_fail():
+    total_failed_tests = 0
+    total_passed_tests = 0
     myfile = open(THIS_DIR + '/fixtures/tcp_test_local_fail.yaml')
     test_json = yaml.load(myfile)
     for test in test_json['tests']:
         test_obj = Charcoal(test=test, host='localhost')
+    if test_obj.failed > 0:
+        LOG.debug(str(test_obj))
+        total_failed_tests += test_obj.failed
+        total_passed_tests += test_obj.passed
+    assert total_failed_tests > 0
+
+
+def test_tcp_test():
+    charcoal.tcp_test('127.0.0.1', 22)  # Are you running an ssh server?
 
 
 @raises(socket.error)
