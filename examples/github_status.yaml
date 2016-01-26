@@ -9,6 +9,7 @@ tests:
       headers:
         User-Agent: "Smolder smoke test library"
     uri: /api/status.json
+    tcp_test: True
   -
     inputs:
       headers:
@@ -21,3 +22,4 @@ tests:
     port: 443
     protocol: https
     uri: /api/status.json
+    tcp_test: True
