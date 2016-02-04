@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import time
 import yaml
 import sys
 from smolder import Charcoal
@@ -72,7 +73,7 @@ SCHEMA = {
 @dispatch_command
 @arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))
 @arg('testfile', default=os.environ.get('TEST_FILE'), metavar='TEST_FILE', nargs='?', help='The json file that details the tests to execute')
-@arg('--force', help='Use http methods that can potentially change data (PUT, POST, DELETE, etc. ie !GET)', default=False)
+@arg('--sleep', help='Sleep for a given amount of time before kicking off', default=0)
 def smolder_cli(**kwargs):
     """ Parse CLI args and if valid dispatch to lower methods """
     all_tests = []
@@ -114,6 +115,7 @@ def smolder_cli(**kwargs):
 
     print("Preparing to execute {0} tests".format(len(tests)))
     # Iterate through all the tests
+    time.sleep(kwargs['sleep']) if 'sleep' in kwargs else time.sleep(0)
 
     for test in test_input['tests']:
         test_obj = Charcoal(test=test, host=kwargs['host'])
