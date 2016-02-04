@@ -37,7 +37,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='smolder',
-    version='0.5.4',
+    version='0.5.9',
     description='Json wrapper around requests for simple smoke testing.',
     long_description=README,
     author='Max Cameron',
