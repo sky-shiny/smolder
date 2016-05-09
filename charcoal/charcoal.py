@@ -70,7 +70,7 @@ SCHEMA = {
         "method": {
             "type": "string",
             "required": False,
-            "enum": ["GET", "get", "post", "POST", "put", "PUT", "delete", "DELETE", "option", "OPTION"]
+            "enum": ["GET", "get", "post", "POST", "put", "PUT", "delete", "DELETE", "option", "OPTION", "PURGE", "purge"]
         },
         "request_headers": {
             "type": "None",
@@ -192,7 +192,7 @@ class Charcoal(object):
                 LOG.debug("Verify is a: {0}, with value: {1}".format(type(self.verify), self.verify))
                 start = int(round(time.time() * 1000))
                 if self.test["protocol"] != 'tcp':
-                    self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
+                    self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
                 else:
                     tcptest.tcp_test(self.host, self.port)
                 end = int(round(time.time() * 1000))
@@ -201,7 +201,7 @@ class Charcoal(object):
                 warnings.simplefilter("ignore")
                 start = int(round(time.time() * 1000))
                 try:
-                    self.req = getattr(requests, self.test['method'].lower())(verify=self.verify, **self.inputs)
+                    self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
                 except requests.exceptions.SSLError:
                     message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']")
                     self.add_output("SSLVerify", message, status)
