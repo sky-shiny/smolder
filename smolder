@@ -56,7 +56,7 @@ SCHEMA = {
         "method": {
             "type": "string",
             "required": False,
-            "enum": ["GET", "get", "post", "POST", "put", "PUT", "delete", "DELETE", "option", "OPTION"]
+            "enum": ["GET", "get", "post", "POST", "put", "PUT", "delete", "DELETE", "option", "OPTION", "PURGE", "purge"]
         },
         "request_headers": {
             "type": "None",
