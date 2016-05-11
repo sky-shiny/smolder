@@ -187,10 +187,9 @@ class Charcoal(object):
 
     def run(self):
         with warnings.catch_warnings():
+            warnings.simplefilter("error")
             try:
                 LOG.debug("Verify is a: {0}, with value: {1}".format(type(self.verify), self.verify))
-                if self.verify:
-                    warnings.simplefilter("error", requests.exceptions.SSLError)
                 start = int(round(time.time() * 1000))
                 if self.test["protocol"] != 'tcp':
                     self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
@@ -199,12 +198,12 @@ class Charcoal(object):
                 end = int(round(time.time() * 1000))
                 self.duration_ms = end - start
             except (RuntimeWarning, requests.exceptions.SSLError):
-                warnings.simplefilter("default", requests.exceptions.SSLError)
+                warnings.simplefilter("ignore")
                 start = int(round(time.time() * 1000))
                 try:
                     self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
-                except (requests.exceptions.SSLError) as e:
-                    message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']: %s" % (str(e)))
+                except requests.exceptions.SSLError:
+                    message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']")
                     self.add_output("SSLVerify", message, status)
                     return
                 end = int(round(time.time() * 1000))
