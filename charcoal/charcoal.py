@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import os
 import time
+import ldap
 import logging
 import warnings
 from copy import deepcopy
@@ -55,7 +56,11 @@ SCHEMA = {
                 "verify": {"type": "any", "required": False},
                 "allow_redirects": {"type": "any", "required": False},
                 "timeout": {"type": "any", "required": False},
-                "proxies": {"type": "any", "required": False}
+                "proxies": {"type": "any", "required": False},
+                "bind_dn": {"type": "None","required": False},
+                "bind_pw": {"type": "None","required": False},
+                "dn": {"type": "None","required": False},
+                "attr_key": {"type": "None", "required": False}
             }
         },
         "outcomes": {
@@ -65,7 +70,7 @@ SCHEMA = {
         "protocol": {
             "type": "string",
             "required": False,
-            "enum": ["tcp", "http", "https"]
+            "enum": ["tcp", "http", "https","ldap","ldaps"]
         },
         "method": {
             "type": "string",
@@ -76,10 +81,7 @@ SCHEMA = {
             "type": "None",
             "required": False
         },
-        "url": {
-            "type": "None",
-            "required": False
-        }
+        "url": {"type": "None","required": False}
     }
 }
 
@@ -192,34 +194,42 @@ class Charcoal(object):
                 if self.verify:
                     warnings.simplefilter("error", requests.exceptions.SSLError)
                 start = int(round(time.time() * 1000))
-                if self.test["protocol"] != 'tcp':
+                if self.test["protocol"] in ['http','https']:
                     self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
-                else:
+                elif self.test["protocol"] in ['ldap','ldaps']:
+                    self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
+                elif self.test["protocol"] == 'tcp':
                     tcptest.tcp_test(self.host, self.port)
                 end = int(round(time.time() * 1000))
                 self.duration_ms = end - start
             except (RuntimeWarning, requests.exceptions.SSLError):
-                warnings.simplefilter("default", requests.exceptions.SSLError)
-                start = int(round(time.time() * 1000))
-                try:
-                    self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
-                except (requests.exceptions.SSLError) as e:
-                    message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']: %s" % (str(e)))
-                    self.add_output("SSLVerify", message, status)
-                    return
-                end = int(round(time.time() * 1000))
-                self.duration_ms = end - start
-                if not self.verify_specified:
-                    message, status = self.fail_test("Insecure request not ignored by inputs['verify']")
-                    self.add_output("SecureRequest", message, status)
-                else:
-                    if self.verify:
-                        message, status = self.fail_test("Insecure request made")
+
+                if self.test["protocol"] in ['http','https']:
+                    warnings.simplefilter("default", requests.exceptions.SSLError)
+                    start = int(round(time.time() * 1000))
+                    try:
+                        self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
+                    except (requests.exceptions.SSLError) as e:
+                        message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']: %s" % (str(e)))
+                        self.add_output("SSLVerify", message, status)
+                        return
+                    end = int(round(time.time() * 1000))
+                    self.duration_ms = end - start
+                    if not self.verify_specified:
+                        message, status = self.fail_test("Insecure request not ignored by inputs['verify']")
                         self.add_output("SecureRequest", message, status)
                     else:
-                        message, status = self.warn_test("Insecure request made and ignored")
-                        self.add_output("SecureRequest", message, status)
-        if self.test["protocol"] != 'tcp':
+                        if self.verify:
+                            message, status = self.fail_test("Insecure request made")
+                            self.add_output("SecureRequest", message, status)
+                        else:
+                            message, status = self.warn_test("Insecure request made and ignored")
+                            self.add_output("SecureRequest", message, status)
+
+
+
+        # HTTP(s) TESTS
+        if self.test["protocol"] in ['http','https']:
             self.output.append(dict(self.req.headers), sec='response_headers')
             self.output.append(self.req.status_code, sec='response_status_code')
             if 'show_body' in self.test:
@@ -229,6 +239,41 @@ class Charcoal(object):
                     req_content = self.req.content
                 self.output.append(req_content)
 
+        # LDAP(s) TESTS
+        elif self.test["protocol"] in ['ldap','ldaps']:
+
+            try:
+                port = int(self.test['port'])
+            except ValueError:
+                if self.test["protocol"] == 'ldap':
+                    port = 389
+                else:
+                    port = 636
+
+            uri = "{0}://{1}:{2}".format(self.test['protocol'], self.host, port)
+
+            try:
+                # We're going to try hitting the LDAP server at an IP: Ignore the fact
+                # that this doesn't match the LDAP servers cert
+                ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+                ldap_connection = ldap.initialize(uri=uri)
+
+            except ldap.CONNECT_ERROR:
+                message, status = self.fail_test("Couldn't connect to %s" % uri, success=False)
+                return
+
+            try:
+                ldap_connection.simple_bind(self.inputs['bind_dn'], self.inputs['bind_pw'])
+                self.req = ldap_connection
+                
+            except ldap.LDAPError:
+                message, status = self.fail_test("Couldn't bind using dn=%s and password %s" % (self.inputs['bind_dn'], '*' * len(self.inputs['bind_pw'])), success=False)
+                return 
+
+
+
+        # Run plugins for everything exceot TCP tests
+        if self.test["protocol"] != 'tcp':
             for plugin_info in manager.getAllPlugins():
                 for outcome in self.test['outcomes']:
                     if plugin_info.name == outcome:

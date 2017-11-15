@@ -41,7 +41,11 @@ SCHEMA = {
                 "verify": {"type": "any", "required": False},
                 "allow_redirects": {"type": "any", "required": False},
                 "timeout": {"type": "any", "required": False},
-                "proxies": {"type": "any", "required": False}
+                "proxies": {"type": "any", "required": False},
+                "bind_dn": {"type": "None","required": False},
+                "bind_pw": {"type": "None","required": False},
+                "dn": {"type": "None","required": False},
+                "attr_key": {"type": "None", "required": False}
             }
         },
         "outcomes": {
@@ -51,7 +55,7 @@ SCHEMA = {
         "protocol": {
             "type": "string",
             "required": False,
-            "enum": ["tcp", "http", "https"]
+            "enum": ["tcp", "http", "https","ldap","ldaps"]
         },
         "method": {
             "type": "string",
@@ -62,13 +66,9 @@ SCHEMA = {
             "type": "None",
             "required": False
         },
-        "url": {
-            "type": "None",
-            "required": False
-        }
+        "url": {"type": "None","required": False}
     }
 }
-
 
 @dispatch_command
 @arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))

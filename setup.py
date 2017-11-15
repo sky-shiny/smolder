@@ -30,6 +30,7 @@ REQUIRES = [
     'validictory >= 1.0.0',
     'nose >= 1.3.7',
     'httpretty == 0.8.10',
+    'ldap'
 ]
 
 with open('README.md', 'r') as f:
@@ -72,5 +73,5 @@ setup(
         'Topic :: Software Development :: Testing'
     ), requires=['requests', 'httpretty', 'nose', 'jsonpickle', 'argh', 'decorator', 'dpath',
                  'ecdsa', 'Jinja2', 'MarkupSafe', 'requests', 'retry', 'retrying', 'six',
-                 'jsonpickle', 'PyYAML', 'Yapsy', 'validictory', 'nose', 'httpretty']
+                 'jsonpickle', 'PyYAML', 'Yapsy', 'validictory', 'nose', 'httpretty', 'ldap']
 )
