@@ -57,10 +57,10 @@ SCHEMA = {
                 "allow_redirects": {"type": "any", "required": False},
                 "timeout": {"type": "any", "required": False},
                 "proxies": {"type": "any", "required": False},
-                "bind_dn": {"type": "None","required": False},
-                "bind_pw": {"type": "None","required": False},
-                "dn": {"type": "None","required": False},
-                "attr_key": {"type": "None", "required": False}
+                "bind_dn": {"type": "any","required": False},
+                "bind_pw": {"type": "any","required": False},
+                "dn": {"type": "any","required": False},
+                "attr_key": {"type": "any", "required": False}
             }
         },
         "outcomes": {
@@ -133,9 +133,14 @@ class Charcoal(object):
 
         self.output = Output(output_format=output_format)
         LOG.debug("Test: {0}".format(test))
+        
+
         test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30),
                              method="get",
-                             outcomes=dict(expect_status_code=200, colour_output=True))
+                             outcomes=dict(colour_output=True))
+
+        if test['protocol'] in ['http','https']:
+            test_defaults['outcomes']['expect_status_code'] = 200
 
         host_overrides = get_host_overrides.get_host_overrides(host, self.port)
 
@@ -197,7 +202,35 @@ class Charcoal(object):
                 if self.test["protocol"] in ['http','https']:
                     self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
                 elif self.test["protocol"] in ['ldap','ldaps']:
-                    self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
+                    
+                    try:
+                        port = int(self.test['port'])
+                    except ValueError:
+                        if self.test["protocol"] == 'ldap':
+                            port = 389
+                        else:
+                            port = 636
+
+                    uri = "{0}://{1}:{2}".format(self.test['protocol'], self.host, port)
+
+                    try:
+                        # We're going to try hitting the LDAP server at an IP: Ignore the fact
+                        # that this doesn't match the LDAP servers cert
+                        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+                        ldap_connection = ldap.initialize(uri=uri)
+
+                    except ldap.CONNECT_ERROR:
+                        message, status = self.fail_test("Couldn't connect to %s" % uri, success=False)
+                        return
+
+                    try:
+                        ldap_connection.simple_bind(self.inputs['bind_dn'], self.inputs['bind_pw'])
+                        self.req = ldap_connection
+                        
+                    except ldap.LDAPError:
+                        message, status = self.fail_test("Couldn't bind using dn=%s and password %s" % (self.inputs['bind_dn'], '*' * len(self.inputs['bind_pw'])), success=False)
+                        return 
+
                 elif self.test["protocol"] == 'tcp':
                     tcptest.tcp_test(self.host, self.port)
                 end = int(round(time.time() * 1000))
@@ -239,38 +272,6 @@ class Charcoal(object):
                     req_content = self.req.content
                 self.output.append(req_content)
 
-        # LDAP(s) TESTS
-        elif self.test["protocol"] in ['ldap','ldaps']:
-
-            try:
-                port = int(self.test['port'])
-            except ValueError:
-                if self.test["protocol"] == 'ldap':
-                    port = 389
-                else:
-                    port = 636
-
-            uri = "{0}://{1}:{2}".format(self.test['protocol'], self.host, port)
-
-            try:
-                # We're going to try hitting the LDAP server at an IP: Ignore the fact
-                # that this doesn't match the LDAP servers cert
-                ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
-                ldap_connection = ldap.initialize(uri=uri)
-
-            except ldap.CONNECT_ERROR:
-                message, status = self.fail_test("Couldn't connect to %s" % uri, success=False)
-                return
-
-            try:
-                ldap_connection.simple_bind(self.inputs['bind_dn'], self.inputs['bind_pw'])
-                self.req = ldap_connection
-                
-            except ldap.LDAPError:
-                message, status = self.fail_test("Couldn't bind using dn=%s and password %s" % (self.inputs['bind_dn'], '*' * len(self.inputs['bind_pw'])), success=False)
-                return 
-
-
 
         # Run plugins for everything exceot TCP tests
         if self.test["protocol"] != 'tcp':
@@ -300,15 +301,19 @@ class Charcoal(object):
         else:
             data = ''
 
-        if not self.verify and self.test["protocol"] == "https":
-            curl_insecure = '--insecure'
-        else:
-            curl_insecure = ''
+
 
         # Adding curl output to allow simple debugging of the requests
-        command = 'curl {curl_insecure} -v -s -o /dev/null {headers} {data} -X {method} "{uri}"'
-        output = command.format(method=str(self.test['method']).upper(), headers=header, data=data,
-                                uri=self.inputs['url'], curl_insecure=curl_insecure)
+        if self.test['protocol'] in ['http','https']:
+            if not self.verify and self.test["protocol"] == "https":
+                curl_insecure = '--insecure'
+            else:
+                curl_insecure = ''
+            command = 'curl {curl_insecure} -v -s -o /dev/null {headers} {data} -X {method} "{uri}"'
+            output = command.format(method=str(self.test['method']).upper(), headers=header, data=data, uri=self.inputs['url'], curl_insecure=curl_insecure)
+        elif self.test['protocol'] in ['ldap','ldaps']:
+            command = 'ldapsearch -LLL -D "{bind_dn}" -w "{bind_pw}" -H {protocol}://{hostname} -xb "{dn}" {attr}'
+            output = command.format(bind_dn=self.test['inputs']['bind_dn'], bind_pw=self.test['inputs']['bind_pw'], protocol=self.test['protocol'], hostname=self.host, dn=self.test['inputs']['dn'], attr=self.test['inputs']['attr_key'])
         return output
 
     def pass_test(self, message):

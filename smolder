@@ -42,10 +42,10 @@ SCHEMA = {
                 "allow_redirects": {"type": "any", "required": False},
                 "timeout": {"type": "any", "required": False},
                 "proxies": {"type": "any", "required": False},
-                "bind_dn": {"type": "None","required": False},
-                "bind_pw": {"type": "None","required": False},
-                "dn": {"type": "None","required": False},
-                "attr_key": {"type": "None", "required": False}
+                "bind_dn": {"type": "any","required": False},
+                "bind_pw": {"type": "any","required": False},
+                "dn": {"type": "any","required": False},
+                "attr_key": {"type": "any", "required": False}
             }
         },
         "outcomes": {

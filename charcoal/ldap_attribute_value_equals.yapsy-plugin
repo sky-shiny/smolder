@@ -3,7 +3,7 @@ Name = ldap_attribute_value_equals
 Module = ldap_attribute_value_equals
 
 [Documentation]
-Author = Neil Saunddrs
+Author = Neil Saunders
 Version = 0.1
 Website = http://lotsofplugins.com
 Description = My first plugin
