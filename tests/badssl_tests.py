@@ -76,7 +76,7 @@ def test_ssl_sha1_2016_badssl_com():
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
     LOG.debug(total_failed_tests)
-    assert total_failed_tests == 0
+    assert total_failed_tests > 0
 
 
 def test_ssl_sha1_2017_badssl_com():
@@ -90,7 +90,7 @@ def test_ssl_sha1_2017_badssl_com():
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
     LOG.debug(total_failed_tests)
-    assert total_failed_tests == 0
+    assert total_failed_tests > 0
 
 
 def test_ssl_sha256_badssl_com():
@@ -300,7 +300,7 @@ def test_ssl_dh480_badssl_com():
         total_failed_tests += test_obj.failed
         total_passed_tests += test_obj.passed
     LOG.debug(total_failed_tests)
-    assert total_failed_tests == 0
+    assert total_failed_tests > 0
 
 
 def test_ssl_dh1024_badssl_com():
