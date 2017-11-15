@@ -23,7 +23,7 @@ Smolder aims to solve these problems by providing features such as:
 Example
 =======
 
-After installing copy/paste the following into a bash shell:
+Copy/paste the following into a bash shell:
 ```
 cat <<EOF > github_status.yaml
 ---
@@ -50,7 +50,8 @@ tests:
     protocol: https
     uri: /api/status.json
 EOF
-docker run -v $(pwd)/github_status.yaml:/tmp/smolder.yaml mcameron/smolder status.github.com /tmp/smolder.yaml
+docker run -v $(pwd)/github_status.yaml:/tmp/smolder.yaml \
+  mcameron/smolder status.github.com /tmp/smolder.yaml
 ```
 
 Expected Output:
