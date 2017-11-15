@@ -66,7 +66,7 @@ pip install git+https://github.com/sky-shiny/smolder.git
 Documentation
 =============
 
-[readthedocs](http://smolder.readthedocs.org/en/latest/)
+[readthedocs](http://smolder.readthedocs.io)
 
 1. [tests](docs/tests.md)
     - [inputs](docs/inputs.md)
