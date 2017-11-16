@@ -3,17 +3,37 @@ import charcoal
 from charcoal import Charcoal
 import yaml
 import os
+import sys
 import logging
 import json
 import socket
 from nose.tools import raises
 import requests
 import httpretty
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 LOG = logging.getLogger('smolder')
 LOG.setLevel(logging.DEBUG)
 
+
+def test_stdin():
+    myfile = open(THIS_DIR + '/fixtures/github_status.json')
+    test_json = yaml.load(myfile)
+    with mock.patch('__builtin__.raw_input', return_value=test_json):
+        total_failed_tests = 0
+        total_passed_tests = 0
+        f = sys.stdin
+        myfile = "".join(f.read())
+        test_input = yaml.load(myfile)
+        for test in test_json['tests']:
+            test_obj = Charcoal(test=test, host='status.github.com')
+            total_failed_tests += test_obj.failed
+            total_passed_tests += test_obj.passed
+        assert total_failed_tests == 0
 
 def test_github_status():
     total_failed_tests = 0
@@ -104,7 +124,7 @@ def test_invalid_yaml_format():
 
 
 def test_tcp():
-    charcoal.tcp_test('8.8.8.8', 53)  
+    charcoal.tcp_test('8.8.8.8', 53)
 
 def test_tcp_local():
     total_failed_tests = 0
