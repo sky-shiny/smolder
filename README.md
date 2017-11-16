@@ -23,10 +23,9 @@ Smolder aims to solve these problems by providing features such as:
 Example
 =======
 
-Copy/paste the following into a bash shell:
+Copy/paste the following into your shell:
 ```
-cat <<EOF > github_status.yaml
----
+echo "---
 tests:
   -
     name: "Github Status"
@@ -49,9 +48,7 @@ tests:
     port: 443
     protocol: https
     uri: /api/status.json
-EOF
-docker run -v $(pwd)/github_status.yaml:/tmp/smolder.yaml \
-  mcameron/smolder status.github.com /tmp/smolder.yaml
+" | docker run -i mcameron/smolder status.github.com 
 ```
 
 Expected Output:
