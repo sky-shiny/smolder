@@ -20,17 +20,10 @@ Smolder aims to solve these problems by providing features such as:
 - Write plugins using [Yapsy](https://github.com/tibonihoo/yapsy)
 - More
 
-Installation
-============
-
-```
-pip install git+https://github.com/sky-shiny/smolder.git
-```
-
 Example
 =======
 
-After installing copy/paste the following into a bash shell:
+Copy/paste the following into a bash shell:
 ```
 cat <<EOF > github_status.yaml
 ---
@@ -57,16 +50,24 @@ tests:
     protocol: https
     uri: /api/status.json
 EOF
-smolder status.github.com github_status.yaml
+docker run -v $(pwd)/github_status.yaml:/tmp/smolder.yaml \
+  mcameron/smolder status.github.com /tmp/smolder.yaml
 ```
 
 Expected Output:
 ![Output](https://raw.githubusercontent.com/sky-shiny/smolder/master/docs/output.png)
 
+Installation
+============
+
+```
+pip install git+https://github.com/sky-shiny/smolder.git
+```
+
 Documentation
 =============
 
-[readthedocs](http://smolder.readthedocs.org/en/latest/)
+[readthedocs](http://smolder.readthedocs.io)
 
 1. [tests](docs/tests.md)
     - [inputs](docs/inputs.md)

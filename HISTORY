@@ -1,6 +1,14 @@
 RELEASE HISTORY
 ===============
 
+Version 0.5.5
+-------------
+- Improving ansible module support for tcp tests.
+
+Version 0.5.4
+-------------
+- Improving packaging
+
 Version 0.5.0
 -------------
 - Adding output plugin handling.  Props to https://github.com/yasn77.

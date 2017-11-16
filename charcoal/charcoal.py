@@ -152,9 +152,6 @@ class Charcoal(object):
 
         final_dict = deepupdate(intermediate_dict, test)
 
-        if "tcp_test" in test and test["tcp_test"]:
-            tcptest.tcp_test(self.host, self.port)
-
         try:
             verify = final_dict["inputs"]["verify"]
         except (AttributeError, KeyError):
@@ -167,6 +164,13 @@ class Charcoal(object):
         (self.verify, self.verify_specified) = get_verify.get_verify(verify, proto)
 
         self.test = deepcopy(final_dict)
+        if "tcp_test" in test and test["tcp_test"]:
+            try:
+                tcptest.tcp_test(self.host, self.port)
+                self.pass_test("Connecting to {0} on port {1}".format(self.host, self.port))
+            except Exception:
+                self.fail_test("Connecting to {0} on port {1}".format(self.host, self.port))
+
         LOG.debug("Test with defaults: {0}".format(self.test))
         if "verify" in self.test["inputs"]:
             del self.test["inputs"]["verify"]
@@ -199,6 +203,7 @@ class Charcoal(object):
                 if self.verify:
                     warnings.simplefilter("error", requests.exceptions.SSLError)
                 start = int(round(time.time() * 1000))
+
                 if self.test["protocol"] in ['http','https']:
                     self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
 
@@ -229,7 +234,12 @@ class Charcoal(object):
                     self.req = c
 
                 elif self.test["protocol"] == 'tcp':
-                    tcptest.tcp_test(self.host, self.port)
+                    try:
+                        tcptest.tcp_test(self.host, self.port)
+                        self.pass_test("Connecting to {0} on port {1}".format(self.host, self.port))
+                    except Exception as error:
+                        self.fail_test("Connecting to {0} on port {1}".format(self.host, self.port))
+
                 end = int(round(time.time() * 1000))
                 self.duration_ms = end - start
             except (RuntimeWarning, requests.exceptions.SSLError):

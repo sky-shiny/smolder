@@ -3,4 +3,4 @@ tests:
   -
     name: "Test TCP Port"
     protocol: tcp
-    port: 22
+    port: 53
