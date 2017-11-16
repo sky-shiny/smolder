@@ -82,7 +82,10 @@ def smolder_cli(**kwargs):
 
     # Load the test specification file, parse the json and create a 'tests' object
     try:
-        f = open(kwargs['testfile']) if kwargs['testfile'] else sys.stdin
+        if kwargs['testfile'] is not None:
+            f = open(kwargs['testfile'])
+        else:
+            f = sys.stdin
         myfile = "".join(f.read())
         test_input = yaml.load(myfile)
         tests = test_input['tests']
