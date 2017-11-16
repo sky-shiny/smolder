@@ -1,26 +1,25 @@
 IMAGE_PATH=mcameron/smolder
 TAG?=latest
 IMAGE=$(IMAGE_PATH):$(TAG)
+SHELL := /bin/bash
 
+# From http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-build:
+build: ## Build docker image
 	docker build -t $(IMAGE) .
 
-push:
+push: ## Publish docker image
 	docker push $(IMAGE)
 
-run:
-	docker run --rm -it $(IMAGE) $(COMMAND)
+test: ## Test docker image
+	docker run --name smolder --rm -itd $(IMAGE) sh
+	docker exec smolder nosetests
+	docker rm -f smolder
 
-test:
-	docker run --net host $(IMAGE) nosetests 
+all: ## build test push
+	build test push
 
-
-# Dependent / chained tasks
-bootstrap: 
-	build test
-ci: 
-	test push deploy
-
-local:
-	docker run -v $$(pwd):/src --rm -it $(IMAGE) 
+.DEFAULT_GOAL := help
+.PHONY: all clean build run config test ssh
