@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 import os
 import time
-import ldap
 import logging
 import warnings
 from copy import deepcopy
+from ldap3 import Connection, Server, ANONYMOUS, SIMPLE, SYNC, ASYNC
 
 import jsonpickle
 import requests
@@ -201,6 +201,7 @@ class Charcoal(object):
                 start = int(round(time.time() * 1000))
                 if self.test["protocol"] in ['http','https']:
                     self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
+
                 elif self.test["protocol"] in ['ldap','ldaps']:
                     
                     try:
@@ -211,25 +212,21 @@ class Charcoal(object):
                         else:
                             port = 636
 
-                    uri = "{0}://{1}:{2}".format(self.test['protocol'], self.host, port)
 
-                    try:
-                        # We're going to try hitting the LDAP server at an IP: Ignore the fact
-                        # that this doesn't match the LDAP servers cert
-                        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
-                        ldap_connection = ldap.initialize(uri=uri)
+                    # We're going to try hitting the LDAP server at an IP: Ignore the fact
+                    # that this doesn't match the LDAP servers cert
+                    # define the server
+                    s = Server(self.host, port=port, use_ssl=self.test['protocol']=='ldaps') 
 
-                    except ldap.CONNECT_ERROR:
-                        message, status = self.fail_test("Couldn't connect to %s" % uri, success=False)
+                    # define the connection
+                    c = Connection(s, user=self.inputs['bind_dn'], password=self.inputs['bind_pw'], read_only=True)
+
+                    # perform the Bind operation
+                    if not c.bind():
+                        message, status = self.fail_test("Couldn't bind using dn=%s and password %s" % (self.inputs['bind_dn'], '*' * len(self.inputs['bind_pw'])), success=False)
                         return
 
-                    try:
-                        ldap_connection.simple_bind(self.inputs['bind_dn'], self.inputs['bind_pw'])
-                        self.req = ldap_connection
-                        
-                    except ldap.LDAPError:
-                        message, status = self.fail_test("Couldn't bind using dn=%s and password %s" % (self.inputs['bind_dn'], '*' * len(self.inputs['bind_pw'])), success=False)
-                        return 
+                    self.req = c
 
                 elif self.test["protocol"] == 'tcp':
                     tcptest.tcp_test(self.host, self.port)

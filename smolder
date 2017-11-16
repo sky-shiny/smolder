@@ -9,6 +9,7 @@ import argh
 from yaml.parser import ParserError
 from argh import arg, dispatch_command
 import validictory
+
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
 logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:%S")
 LOG = logging.getLogger('smolder')
