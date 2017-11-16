@@ -139,7 +139,7 @@ class Charcoal(object):
                              method="get",
                              outcomes=dict(colour_output=True))
 
-        if test['protocol'] in ['http','https']:
+        if 'protocol' in test and test['protocol'] not in ['http','https']:
             test_defaults['outcomes']['expect_status_code'] = 200
 
         host_overrides = get_host_overrides.get_host_overrides(host, self.port)
@@ -309,7 +309,8 @@ class Charcoal(object):
             data = ''
 
 
-
+        output = ""
+        
         # Adding curl output to allow simple debugging of the requests
         if self.test['protocol'] in ['http','https']:
             if not self.verify and self.test["protocol"] == "https":
@@ -318,10 +319,13 @@ class Charcoal(object):
                 curl_insecure = ''
             command = 'curl {curl_insecure} -v -s -o /dev/null {headers} {data} -X {method} "{uri}"'
             output = command.format(method=str(self.test['method']).upper(), headers=header, data=data, uri=self.inputs['url'], curl_insecure=curl_insecure)
+
         elif self.test['protocol'] in ['ldap','ldaps']:
             command = 'ldapsearch -LLL -D "{bind_dn}" -w "{bind_pw}" -H {protocol}://{hostname} -xb "{dn}" {attr}'
             output = command.format(bind_dn=self.test['inputs']['bind_dn'], bind_pw=self.test['inputs']['bind_pw'], protocol=self.test['protocol'], hostname=self.host, dn=self.test['inputs']['dn'], attr=self.test['inputs']['attr_key'])
+
         return output
+
 
     def pass_test(self, message):
         self.passed += 1
