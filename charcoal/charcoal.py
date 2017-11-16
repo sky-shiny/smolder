@@ -139,7 +139,7 @@ class Charcoal(object):
                              method="get",
                              outcomes=dict(colour_output=True))
 
-        if 'protocol' in test and test['protocol'] not in ['http','https']:
+        if 'protocol' not in test or ('protocol' in test and test['protocol'] in ['http','https']):
             test_defaults['outcomes']['expect_status_code'] = 200
 
         host_overrides = get_host_overrides.get_host_overrides(host, self.port)
@@ -310,7 +310,7 @@ class Charcoal(object):
 
 
         output = ""
-        
+
         # Adding curl output to allow simple debugging of the requests
         if self.test['protocol'] in ['http','https']:
             if not self.verify and self.test["protocol"] == "https":
