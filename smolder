@@ -9,6 +9,7 @@ import argh
 from yaml.parser import ParserError
 from argh import arg, dispatch_command
 import validictory
+
 FORMAT = '%(asctime)-15s %(name)s [%(levelname)s]: %(message)s'
 logging.basicConfig(format=FORMAT, level=logging.ERROR, datefmt="%Y-%m-%d %H:%M:%S")
 LOG = logging.getLogger('smolder')
@@ -41,7 +42,11 @@ SCHEMA = {
                 "verify": {"type": "any", "required": False},
                 "allow_redirects": {"type": "any", "required": False},
                 "timeout": {"type": "any", "required": False},
-                "proxies": {"type": "any", "required": False}
+                "proxies": {"type": "any", "required": False},
+                "bind_dn": {"type": "any","required": False},
+                "bind_pw": {"type": "any","required": False},
+                "dn": {"type": "any","required": False},
+                "attr_key": {"type": "any", "required": False}
             }
         },
         "outcomes": {
@@ -51,7 +56,7 @@ SCHEMA = {
         "protocol": {
             "type": "string",
             "required": False,
-            "enum": ["tcp", "http", "https"]
+            "enum": ["tcp", "http", "https","ldap","ldaps"]
         },
         "method": {
             "type": "string",
@@ -62,13 +67,9 @@ SCHEMA = {
             "type": "None",
             "required": False
         },
-        "url": {
-            "type": "None",
-            "required": False
-        }
+        "url": {"type": "None","required": False}
     }
 }
-
 
 @dispatch_command
 @arg('host', help='IP address or DNS name to run tests against', default=os.environ.get('TEST_HOST'))

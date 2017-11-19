@@ -1,7 +1,8 @@
-from yapsy.IPlugin import IPlugin
 import logging
-LOG = logging.getLogger('smolder')
+from yapsy.IPlugin import IPlugin
+from ldap3 import Connection, Server, ANONYMOUS, SIMPLE, SYNC, ASYNC
 
+LOG = logging.getLogger('smolder')
 
 class ResponseHeaderValues(IPlugin):
 

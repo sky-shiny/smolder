@@ -4,6 +4,7 @@ import time
 import logging
 import warnings
 from copy import deepcopy
+from ldap3 import Connection, Server, ANONYMOUS, SIMPLE, SYNC, ASYNC
 
 import jsonpickle
 import requests
@@ -55,7 +56,11 @@ SCHEMA = {
                 "verify": {"type": "any", "required": False},
                 "allow_redirects": {"type": "any", "required": False},
                 "timeout": {"type": "any", "required": False},
-                "proxies": {"type": "any", "required": False}
+                "proxies": {"type": "any", "required": False},
+                "bind_dn": {"type": "any","required": False},
+                "bind_pw": {"type": "any","required": False},
+                "dn": {"type": "any","required": False},
+                "attr_key": {"type": "any", "required": False}
             }
         },
         "outcomes": {
@@ -65,7 +70,7 @@ SCHEMA = {
         "protocol": {
             "type": "string",
             "required": False,
-            "enum": ["tcp", "http", "https"]
+            "enum": ["tcp", "http", "https","ldap","ldaps"]
         },
         "method": {
             "type": "string",
@@ -76,10 +81,7 @@ SCHEMA = {
             "type": "None",
             "required": False
         },
-        "url": {
-            "type": "None",
-            "required": False
-        }
+        "url": {"type": "None","required": False}
     }
 }
 
@@ -131,9 +133,14 @@ class Charcoal(object):
 
         self.output = Output(output_format=output_format)
         LOG.debug("Test: {0}".format(test))
+        
+
         test_defaults = dict(inputs=dict(allow_redirects=False, timeout=30),
                              method="get",
-                             outcomes=dict(expect_status_code=200, colour_output=True))
+                             outcomes=dict(colour_output=True))
+
+        if 'protocol' not in test or ('protocol' in test and test['protocol'] in ['http','https']):
+            test_defaults['outcomes']['expect_status_code'] = 200
 
         host_overrides = get_host_overrides.get_host_overrides(host, self.port)
 
@@ -196,38 +203,73 @@ class Charcoal(object):
                 if self.verify:
                     warnings.simplefilter("error", requests.exceptions.SSLError)
                 start = int(round(time.time() * 1000))
-                if self.test["protocol"] != 'tcp':
+
+                if self.test["protocol"] in ['http','https']:
                     self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
-                else:
+
+                elif self.test["protocol"] in ['ldap','ldaps']:
+                    
+                    try:
+                        port = int(self.test['port'])
+                    except ValueError:
+                        if self.test["protocol"] == 'ldap':
+                            port = 389
+                        else:
+                            port = 636
+
+
+                    # We're going to try hitting the LDAP server at an IP: Ignore the fact
+                    # that this doesn't match the LDAP servers cert
+                    # define the server
+                    s = Server(self.host, port=port, use_ssl=self.test['protocol']=='ldaps') 
+
+                    # define the connection
+                    c = Connection(s, user=self.inputs['bind_dn'], password=self.inputs['bind_pw'], read_only=True)
+
+                    # perform the Bind operation
+                    if not c.bind():
+                        message, status = self.fail_test("Couldn't bind using dn=%s and password %s" % (self.inputs['bind_dn'], '*' * len(self.inputs['bind_pw'])), success=False)
+                        return
+
+                    self.req = c
+
+                elif self.test["protocol"] == 'tcp':
                     try:
                         tcptest.tcp_test(self.host, self.port)
                         self.pass_test("Connecting to {0} on port {1}".format(self.host, self.port))
                     except Exception as error:
                         self.fail_test("Connecting to {0} on port {1}".format(self.host, self.port))
+
                 end = int(round(time.time() * 1000))
                 self.duration_ms = end - start
             except (RuntimeWarning, requests.exceptions.SSLError):
-                warnings.simplefilter("default", requests.exceptions.SSLError)
-                start = int(round(time.time() * 1000))
-                try:
-                    self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
-                except (requests.exceptions.SSLError) as e:
-                    message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']: %s" % (str(e)))
-                    self.add_output("SSLVerify", message, status)
-                    return
-                end = int(round(time.time() * 1000))
-                self.duration_ms = end - start
-                if not self.verify_specified:
-                    message, status = self.fail_test("Insecure request not ignored by inputs['verify']")
-                    self.add_output("SecureRequest", message, status)
-                else:
-                    if self.verify:
-                        message, status = self.fail_test("Insecure request made")
+
+                if self.test["protocol"] in ['http','https']:
+                    warnings.simplefilter("default", requests.exceptions.SSLError)
+                    start = int(round(time.time() * 1000))
+                    try:
+                        self.req = requests.request(self.test['method'].upper(), verify=self.verify, **self.inputs)
+                    except (requests.exceptions.SSLError) as e:
+                        message, status = self.fail_test("Certificate verify failed and not ignored by inputs['verify']: %s" % (str(e)))
+                        self.add_output("SSLVerify", message, status)
+                        return
+                    end = int(round(time.time() * 1000))
+                    self.duration_ms = end - start
+                    if not self.verify_specified:
+                        message, status = self.fail_test("Insecure request not ignored by inputs['verify']")
                         self.add_output("SecureRequest", message, status)
                     else:
-                        message, status = self.warn_test("Insecure request made and ignored")
-                        self.add_output("SecureRequest", message, status)
-        if self.test["protocol"] != 'tcp':
+                        if self.verify:
+                            message, status = self.fail_test("Insecure request made")
+                            self.add_output("SecureRequest", message, status)
+                        else:
+                            message, status = self.warn_test("Insecure request made and ignored")
+                            self.add_output("SecureRequest", message, status)
+
+
+
+        # HTTP(s) TESTS
+        if self.test["protocol"] in ['http','https']:
             self.output.append(dict(self.req.headers), sec='response_headers')
             self.output.append(self.req.status_code, sec='response_status_code')
             if 'show_body' in self.test:
@@ -237,6 +279,9 @@ class Charcoal(object):
                     req_content = self.req.content
                 self.output.append(req_content)
 
+
+        # Run plugins for everything exceot TCP tests
+        if self.test["protocol"] != 'tcp':
             for plugin_info in manager.getAllPlugins():
                 for outcome in self.test['outcomes']:
                     if plugin_info.name == outcome:
@@ -263,16 +308,24 @@ class Charcoal(object):
         else:
             data = ''
 
-        if not self.verify and self.test["protocol"] == "https":
-            curl_insecure = '--insecure'
-        else:
-            curl_insecure = ''
+
+        output = ""
 
         # Adding curl output to allow simple debugging of the requests
-        command = 'curl {curl_insecure} -v -s -o /dev/null {headers} {data} -X {method} "{uri}"'
-        output = command.format(method=str(self.test['method']).upper(), headers=header, data=data,
-                                uri=self.inputs['url'], curl_insecure=curl_insecure)
+        if self.test['protocol'] in ['http','https']:
+            if not self.verify and self.test["protocol"] == "https":
+                curl_insecure = '--insecure'
+            else:
+                curl_insecure = ''
+            command = 'curl {curl_insecure} -v -s -o /dev/null {headers} {data} -X {method} "{uri}"'
+            output = command.format(method=str(self.test['method']).upper(), headers=header, data=data, uri=self.inputs['url'], curl_insecure=curl_insecure)
+
+        elif self.test['protocol'] in ['ldap','ldaps']:
+            command = 'ldapsearch -LLL -D "{bind_dn}" -w "{bind_pw}" -H {protocol}://{hostname} -xb "{dn}" {attr}'
+            output = command.format(bind_dn=self.test['inputs']['bind_dn'], bind_pw=self.test['inputs']['bind_pw'], protocol=self.test['protocol'], hostname=self.host, dn=self.test['inputs']['dn'], attr=self.test['inputs']['attr_key'])
+
         return output
+
 
     def pass_test(self, message):
         self.passed += 1
